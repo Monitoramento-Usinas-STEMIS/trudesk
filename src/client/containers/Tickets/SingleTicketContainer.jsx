@@ -261,6 +261,7 @@ class SingleTicketContainer extends React.Component {
   }
 
   render () {
+    const { shared, viewdata } = this.props
     const mappedGroups = this.props.groupsState
       ? this.props.groupsState.groups.map(group => {
           return { text: group.get('name'), value: group.get('_id') }
@@ -287,7 +288,7 @@ class SingleTicketContainer extends React.Component {
         return helpers.hasPermOverRole(this.ticket.owner.role, this.props.sessionUser.role, 'tickets:update', false)
       }
     }
-
+    const isCustomer = !shared.sessionUser.role.isAdmin && !shared.sessionUser.role.isAgent;
     return (
       <div className={'uk-clearfix uk-position-relative'} style={{ width: '100%', height: '100vh' }}>
         {!this.ticket && <SpinLoader active={true} />}
@@ -371,7 +372,7 @@ class SingleTicketContainer extends React.Component {
                     <div className='uk-width-1-1 padding-left-right-15'>
                       <div className='tru-card ticket-details uk-clearfix'>
                         {/* Type */}
-                        <div className='uk-width-1-2 uk-float-left nopadding'>
+                        <div className='uk-width-1-1 nopadding'>
                           <div className='marginright5'>
                             <span>Type</span>
                             {hasTicketUpdate && (
@@ -413,7 +414,8 @@ class SingleTicketContainer extends React.Component {
                           </div>
                         </div>
                         {/* Priority */}
-                        <div className='uk-width-1-2 uk-float-left nopadding'>
+                        {!isCustomer && (
+                        <div className='uk-width-1-1 nopadding'>
                           <div className='marginleft5'>
                             <span>Priority</span>
                             {hasTicketUpdate && (
@@ -440,6 +442,7 @@ class SingleTicketContainer extends React.Component {
                             {!hasTicketUpdate && <div className={'input-box'}>{this.ticket.priority.name}</div>}
                           </div>
                         </div>
+                        )}
                         {/*  Group */}
                         <div className='uk-width-1-1 nopadding uk-clearfix'>
                           <span>Group</span>

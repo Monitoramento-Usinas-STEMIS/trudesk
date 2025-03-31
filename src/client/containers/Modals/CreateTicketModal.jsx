@@ -179,6 +179,8 @@ class CreateTicketModal extends React.Component {
     const mappedTicketTags = this.props.ticketTags.toArray().map(tag => {
       return { text: tag.get('name'), value: tag.get('_id') }
     })
+    const isCustomer = !shared.sessionUser.role.isAdmin && !shared.sessionUser.role.isAgent;
+
     return (
       <BaseModal {...this.props} options={{ bgclose: false }}>
         <form className={'uk-form-stacked'} onSubmit={e => this.onFormSubmit(e)}>
@@ -249,47 +251,35 @@ class CreateTicketModal extends React.Component {
               </GridItem>
             </Grid>
           </div>
-          <div className='uk-margin-medium-bottom'>
-            <label className={'uk-form-label'}>Priority</label>
-            <div
-              ref={i => (this.priorityLoader = i)}
-              style={{ height: '32px', width: '32px', position: 'relative' }}
-              className={'hide'}
-            >
-              <SpinLoader
-                style={{ background: 'transparent' }}
-                spinnerStyle={{ width: '24px', height: '24px' }}
-                active={true}
-              />
-            </div>
-            <div ref={i => (this.priorityWrapper = i)} className={'uk-clearfix'}>
-              {this.priorities.map(priority => {
-                return (
+          {!isCustomer && (
+            <div className='uk-margin-medium-bottom'>
+              <label className={'uk-form-label'}>Priority</label>
+              <div ref={i => (this.priorityLoader = i)} className={'hide'}>
+                <SpinLoader active={true} />
+              </div>
+              <div ref={i => (this.priorityWrapper = i)} className={'uk-clearfix'}>
+                {this.priorities.map(priority => (
                   <div key={priority._id} className={'uk-float-left'}>
                     <span className={'icheck-inline'}>
                       <input
                         id={'p___' + priority._id}
                         name={'priority'}
                         type='radio'
-                        className={'with-gap'}
                         value={priority._id}
-                        onChange={e => {
-                          this.onPriorityRadioChange(e)
-                        }}
+                        onChange={e => this.onPriorityRadioChange(e)}
                         checked={this.selectedPriority === priority._id}
-                        data-md-icheck
                       />
-                      <label htmlFor={'p___' + priority._id} className={'mb-10 inline-label'}>
+                      <label htmlFor={'p___' + priority._id}>
                         <span className='uk-badge' style={{ backgroundColor: priority.htmlColor }}>
                           {priority.name}
                         </span>
                       </label>
                     </span>
                   </div>
-                )
-              })}
+                ))}
+              </div>
             </div>
-          </div>
+          )}
           <div className='uk-margin-medium-bottom'>
             <span>Description</span>
             <div className='error-border-wrap uk-clearfix'>
