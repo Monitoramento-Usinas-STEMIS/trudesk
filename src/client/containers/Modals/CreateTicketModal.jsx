@@ -43,9 +43,12 @@ class CreateTicketModal extends React.Component {
   @observable selectedPriority = ''
   issueText = ''
 
-  constructor (props) {
-    super(props)
-    makeObservable(this)
+  constructor(props) {
+    super(props);
+    makeObservable(this);
+    this.state = {
+      usina: '',
+    };
   }
 
   componentDidMount () {
@@ -139,6 +142,7 @@ class CreateTicketModal extends React.Component {
     data.tags = this.tagSelect.value
     data.priority = this.selectedPriority
     data.issue = this.issueMde.easymde.value()
+    data.usina = this.state.usina
     data.socketid = this.props.socket.io.engine.id
 
     this.props.createTicket(data)
@@ -195,6 +199,16 @@ class CreateTicketModal extends React.Component {
               data-validation-error-msg={`Please enter a valid Subject. Subject must contain at least ${viewdata
                 .get('ticketSettings')
                 .get('minSubject')} characters.`}
+            />
+          </div>
+          <div className='uk-margin-medium-bottom'>
+            <label>Usina</label>
+            <input
+              type='text'
+              name={'usina'}
+              className={'md-input'}
+              onChange={e => this.setState({ usina: e.target.value })}
+              value={this.state.usina || ''}
             />
           </div>
           <div className='uk-margin-medium-bottom'>

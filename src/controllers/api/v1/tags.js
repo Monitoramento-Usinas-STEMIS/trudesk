@@ -54,41 +54,43 @@ apiTags.createTag = function (req, res) {
 }
 
 apiTags.getTagsWithLimit = function (req, res) {
-  var qs = req.query;
-  var limit = qs.limit ? qs.limit : 25;
-  var page = qs.page ? qs.page : 0;
-  var tagSchema = require('../../../models/tag');
-  var result = { success: true };
+  var qs = req.query
+  var limit = qs.limit ? qs.limit : 25
+  var page = qs.page ? qs.page : 0
+
+  var tagSchema = require('../../../models/tag')
+  var result = { success: true }
 
   async.parallel(
     [
       function (done) {
         try {
-          const userGroup = req.user.group; 
-          tagSchema.getTagsWithLimitByGroup(parseInt(limit), parseInt(page), userGroup, function (err, tags) {
-            if (err) return done(err);
-            result.tags = tags;
-            return done();
-          });
+          tagSchema.getTagsWithLimit(parseInt(limit), parseInt(page), function (err, tags) {
+            if (err) return done(err)
+
+            result.tags = tags
+            return done()
+          })
         } catch (e) {
-          return done({ message: 'Invalid Limit and/or page' });
+          return done({ message: 'Invalid Limit and/or page' })
         }
       },
       function (done) {
-        const userGroup = req.user.group;
-        tagSchema.countDocuments({ group: userGroup }, function (err, count) {
-          if (err) return done(err);
-          result.totalCount = count;
-          return done();
-        });
+        tagSchema.countDocuments({}, function (err, count) {
+          if (err) return done(err)
+          result.count = count
+
+          return done()
+        })
       }
     ],
     function (err) {
-      if (err) return res.status(400).json({ success: false, error: err });
-      return res.json(result);
+      if (err) return res.status(500).json({ success: false, error: err.message })
+
+      return res.json(result)
     }
-  );
-};
+  )
+}
 
 /**
  * @api {put} /api/v1/tags/:id Update Tag

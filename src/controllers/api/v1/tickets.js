@@ -456,6 +456,8 @@ apiTickets.create = function (req, res) {
 
         ticket.subject = sanitizeHtml(ticket.subject).trim()
 
+        ticket.usina = sanitizeHtml(ticket.usina).trim()
+
         var marked = require('marked')
         var tIssue = ticket.issue
         tIssue = tIssue.replace(/(\r\n|\n\r|\r|\n)/g, '<br>')

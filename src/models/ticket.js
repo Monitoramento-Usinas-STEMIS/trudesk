@@ -60,6 +60,7 @@ const COLLECTION = 'tickets'
  * @property {Number} priority ```Required```
  * @property {Array} tags An array of Tags.
  * @property {String} subject ```Required``` The subject of the ticket. (Overview)
+ * @property {String} usina 
  * @property {String} issue ```Required``` Detailed information about the ticket problem/task
  * @property {Date} closedDate show the datetime the ticket was moved to status 3.
  * @property {Array} comments An array of {@link Comment} items
@@ -106,6 +107,7 @@ const ticketSchema = mongoose.Schema({
   },
   tags: [{ type: mongoose.Schema.Types.ObjectId, ref: 'tags', autopopulate: true }],
   subject: { type: String, required: true },
+  usina: { type: String, required: true },
   issue: { type: String, required: true },
   closedDate: { type: Date },
   dueDate: { type: Date },
