@@ -44,6 +44,7 @@ function register (socket) {
   events.onCommentNoteSet(socket)
   events.onRemoveCommentNote(socket)
   events.onAttachmentsUIUpdate(socket)
+  events.onSetTicketUsina(socket);
 }
 
 function eventLoop () {}
@@ -105,6 +106,45 @@ events.onUpdateAssigneeList = function (socket) {
     })
   })
 }
+
+events.onSetTicketUsina = function (socket) {
+  socket.on('TICKETS_USINA_SET', async data => {
+    const ticketId = data._id;
+    const usina = data.value;
+    const ownerId = socket.request.user._id;
+
+    if (!ticketId || !usina) return;
+
+    try {
+      const ticket = await ticketSchema.findById(ticketId);
+      if (!ticket) return;
+
+      ticket.usina = usina; // Atualiza o campo "Usina"
+      ticket.history.push({
+        action: 'ticket:usina:updated',
+        description: `Usina updated to "${usina}"`,
+        owner: ownerId,
+        date: new Date()
+      });
+
+      await ticket.save();
+
+      // Envia a atualização para todos os clientes conectados
+      socket.broadcast.emit('TICKETS_UI_USINA_UPDATE', {
+        _id: ticketId,
+        usina
+      });
+
+      // Também envia para o próprio cliente que fez a alteração
+      socket.emit('TICKETS_UI_USINA_UPDATE', {
+        _id: ticketId,
+        usina
+      });
+    } catch (error) {
+      console.error('Erro ao atualizar o campo Usina:', error);
+    }
+  });
+};
 
 events.onSetAssignee = function (socket) {
   socket.on(socketEvents.TICKETS_ASSIGNEE_SET, function (data) {

@@ -1,16 +1,3 @@
-/*
- *       .                             .o8                     oooo
- *    .o8                             "888                     `888
- *  .o888oo oooo d8b oooo  oooo   .oooo888   .ooooo.   .oooo.o  888  oooo
- *    888   `888""8P `888  `888  d88' `888  d88' `88b d88(  "8  888 .8P'
- *    888    888      888   888  888   888  888ooo888 `"Y88b.   888888.
- *    888 .  888      888   888  888   888  888    .o o.  )88b  888 `88b.
- *    "888" d888b     `V88V"V8P' `Y8bod88P" `Y8bod8P' 8""888P' o888o o888o
- *  ========================================================================
- *  Updated:    6/21/19 9:32 AM
- *  Copyright (c) 2014-2019 Trudesk, Inc. All rights reserved.
- */
-
 import React, { Fragment, createRef } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -37,7 +24,9 @@ import {
   TICKETS_DUEDATE_SET,
   TICKETS_UI_TAGS_UPDATE,
   TICKETS_COMMENT_NOTE_REMOVE,
-  TICKETS_COMMENT_NOTE_SET
+  TICKETS_COMMENT_NOTE_SET,
+  TICKETS_UI_USINA_UPDATE,
+  TICKETS_USINA_SET
 } from 'serverSocket/socketEventConsts'
 
 import AssigneeDropdownPartial from 'containers/Tickets/AssigneeDropdownPartial'
@@ -65,11 +54,10 @@ const fetchTicket = parent => {
   axios
     .get(`/api/v2/tickets/${parent.props.ticketUid}`)
     .then(res => {
-      // setTimeout(() => {
       parent.ticket = res.data.ticket
       parent.isSubscribed =
         parent.ticket && parent.ticket.subscribers.findIndex(i => i._id === parent.props.shared.sessionUser._id) !== -1
-      // }, 3000)
+      parent.usina = res.data.ticket.usina || ''
     })
     .catch(error => {
       if (error.response.status === 403) {
@@ -92,6 +80,7 @@ const showPriorityConfirm = () => {
 class SingleTicketContainer extends React.Component {
   @observable ticket = null
   @observable isSubscribed = false
+  @observable usina = ''
   assigneeDropdownPartial = createRef()
 
   constructor (props) {
@@ -107,12 +96,12 @@ class SingleTicketContainer extends React.Component {
     this.onUpdateTicketGroup = this.onUpdateTicketGroup.bind(this)
     this.onUpdateTicketDueDate = this.onUpdateTicketDueDate.bind(this)
     this.onUpdateTicketTags = this.onUpdateTicketTags.bind(this)
+    this.onUpdateTicketUsina = this.onUpdateTicketUsina.bind(this)
   }
 
   @computed
   get notesTagged () {
     this.ticket.notes.forEach(i => (i.isNote = true))
-
     return this.ticket.notes
   }
 
@@ -121,10 +110,8 @@ class SingleTicketContainer extends React.Component {
     if (!helpers.canUser('tickets:notes', true)) {
       return sortBy(this.ticket.comments, 'date')
     }
-
     let commentsAndNotes = union(this.ticket.comments, this.notesTagged)
     commentsAndNotes = sortBy(commentsAndNotes, 'date')
-
     return commentsAndNotes
   }
 
@@ -141,6 +128,7 @@ class SingleTicketContainer extends React.Component {
     this.props.socket.on(TICKETS_UI_GROUP_UPDATE, this.onUpdateTicketGroup)
     this.props.socket.on(TICKETS_UI_DUEDATE_UPDATE, this.onUpdateTicketDueDate)
     this.props.socket.on(TICKETS_UI_TAGS_UPDATE, this.onUpdateTicketTags)
+    this.props.socket.on(TICKETS_UI_USINA_UPDATE, this.onUpdateTicketUsina)
 
     fetchTicket(this)
     this.props.fetchTicketTypes()
@@ -161,6 +149,7 @@ class SingleTicketContainer extends React.Component {
     this.props.socket.off(TICKETS_UI_GROUP_UPDATE, this.onUpdateTicketGroup)
     this.props.socket.off(TICKETS_UI_DUEDATE_UPDATE, this.onUpdateTicketDueDate)
     this.props.socket.off(TICKETS_UI_TAGS_UPDATE, this.onUpdateTicketTags)
+    this.props.socket.off(TICKETS_UI_USINA_UPDATE, this.onUpdateTicketUsina)
 
     this.props.unloadGroups()
   }
@@ -168,6 +157,7 @@ class SingleTicketContainer extends React.Component {
   onUpdateTicket (data) {
     if (this.ticket._id === data._id) {
       this.ticket = data
+      this.usina = data.usina || ''
     }
   }
 
@@ -207,6 +197,12 @@ class SingleTicketContainer extends React.Component {
     if (this.ticket._id === data._id) this.ticket.tags = data.tags
   }
 
+  onUpdateTicketUsina (data) {
+    if (this.ticket._id === data._id) {
+      this.ticket.usina = data.usina
+    }
+  }
+
   onCommentNoteSubmit (e, type) {
     e.preventDefault()
     const isNote = type === 'note'
@@ -214,7 +210,6 @@ class SingleTicketContainer extends React.Component {
       .post(`/api/v1/tickets/add${isNote ? 'note' : 'comment'}`, {
         _id: !isNote && this.ticket._id,
         comment: !isNote && this.commentMDE.getEditorText(),
-
         ticketid: isNote && this.ticket._id,
         note: isNote && this.noteMDE.getEditorText()
       })
@@ -227,7 +222,6 @@ class SingleTicketContainer extends React.Component {
             this.ticket.comments = res.data.ticket.comments
             this.commentMDE.setEditorText('')
           }
-
           helpers.scrollToBottom('.page-content-right', true)
           this.ticket.history = res.data.ticket.history
         }
@@ -274,7 +268,6 @@ class SingleTicketContainer extends React.Component {
         })
       : []
 
-    // Perms
     const hasTicketUpdate = this.ticket && this.ticket.status.isResolved === false && helpers.canUser('tickets:update')
     const statusObj = this.ticket ? this.props.ticketStatuses.find(s => s.get('_id') === this.ticket.status._id) : null
 
@@ -311,7 +304,6 @@ class SingleTicketContainer extends React.Component {
                     hasPerm={hasTicketStatusUpdate()}
                   />
                 </div>
-                {/*  Left Side */}
                 <div className='page-content-left full-height scrollable'>
                   <div className='ticket-details-wrap uk-position-relative uk-clearfix'>
                     <div className='ticket-assignee-wrap uk-clearfix' style={{ paddingRight: 30 }}>
@@ -371,7 +363,6 @@ class SingleTicketContainer extends React.Component {
 
                     <div className='uk-width-1-1 padding-left-right-15'>
                       <div className='tru-card ticket-details uk-clearfix'>
-                        {/* Type */}
                         <div className='uk-width-1-1 nopadding'>
                           <div className='marginright5'>
                             <span>Type</span>
@@ -380,22 +371,17 @@ class SingleTicketContainer extends React.Component {
                                 value={this.ticket.type._id}
                                 onChange={e => {
                                   const type = this.props.ticketTypes.find(t => t.get('_id') === e.target.value)
-
                                   const priority = type
                                     .get('priorities')
                                     .findIndex(p => p.get('_id') === this.ticket.priority._id)
-
                                   const hasPriority = priority !== -1
-
                                   if (!hasPriority) {
                                     this.props.socket.emit(TICKETS_PRIORITY_SET, {
                                       _id: this.ticket._id,
                                       value: type.get('priorities').find(() => true)
                                     })
-
                                     showPriorityConfirm()
                                   }
-
                                   this.props.socket.emit(TICKETS_TYPE_SET, {
                                     _id: this.ticket._id,
                                     value: e.target.value
@@ -413,7 +399,6 @@ class SingleTicketContainer extends React.Component {
                             {!hasTicketUpdate && <div className='input-box'>{this.ticket.type.name}</div>}
                           </div>
                         </div>
-                        {/* Priority */}
                         {!isCustomer && (
                         <div className='uk-width-1-1 nopadding'>
                           <div className='marginleft5'>
@@ -443,7 +428,6 @@ class SingleTicketContainer extends React.Component {
                           </div>
                         </div>
                         )}
-                        {/*  Group */}
                         <div className='uk-width-1-1 nopadding uk-clearfix'>
                           <span>Group</span>
                           {hasTicketUpdate && (
@@ -466,9 +450,8 @@ class SingleTicketContainer extends React.Component {
                           )}
                           {!hasTicketUpdate && <div className={'input-box'}>{this.ticket.group.name}</div>}
                         </div>
-                        {/*  Due Date */}
                         <div className='uk-width-1-1 p-0'>
-                          <span>Due Date</span> {hasTicketUpdate && <span>-&nbsp;</span>}
+                          <span>Due Date</span> {hasTicketUpdate && <span>- </span>}
                           {hasTicketUpdate && (
                             <div className={'uk-display-inline'}>
                               <a
@@ -492,7 +475,6 @@ class SingleTicketContainer extends React.Component {
                                   const dueDate = moment(e.target.value, helpers.getShortDateFormat())
                                     .utc()
                                     .toISOString()
-
                                   this.props.socket.emit(TICKETS_DUEDATE_SET, { _id: this.ticket._id, value: dueDate })
                                 }}
                               />
@@ -504,8 +486,29 @@ class SingleTicketContainer extends React.Component {
                             </div>
                           )}
                         </div>
-
-                        {/* Tags */}
+                        <div className='uk-width-1-1 nopadding'>
+                          <span>Usina</span>
+                          {hasTicketUpdate && (
+                            <input
+                              type='text'
+                              className='md-input'
+                              value={this.ticket.usina || ''}
+                              onChange={e => {
+                                const newValue = e.target.value;
+                                this.ticket.usina = newValue; 
+                              }}
+                              onBlur={() => {
+                                this.props.socket.emit('TICKETS_USINA_SET', {
+                                  _id: this.ticket._id,
+                                  value: this.ticket.usina
+                                });
+                              }}
+                            />
+                          )}
+                          {!hasTicketUpdate && (
+                            <div className={'input-box'}>{this.ticket.usina || 'Não especificado'}</div>
+                          )}
+                        </div>
                         <div className='uk-width-1-1 nopadding'>
                           <span>
                             Tags
@@ -567,7 +570,6 @@ class SingleTicketContainer extends React.Component {
                   </div>
                 </div>
               </div>
-              {/* Right Side */}
               <div className='page-message nopadding' style={{ marginLeft: 360 }}>
                 <div className='page-title-right noshadow'>
                   {this.props.common.get('hasThirdParty') && (
@@ -624,7 +626,7 @@ class SingleTicketContainer extends React.Component {
                             rel='noopener noreferrer'
                             target='_blank'
                           >
-                            <i className='material-icons'>&#xE8AD;</i>
+                            <i className='material-icons'></i>
                           </a>
                         </li>
                       )}
@@ -645,8 +647,6 @@ class SingleTicketContainer extends React.Component {
                       editorWindow={this.editorWindow}
                       socket={this.props.socket}
                     />
-
-                    {/* Tabs */}
                     {this.hasCommentsOrNotes && (
                       <TruTabWrapper>
                         <TruTabSelectors style={{ marginLeft: 110 }}>
@@ -672,8 +672,6 @@ class SingleTicketContainer extends React.Component {
                             />
                           )}
                         </TruTabSelectors>
-
-                        {/* Tab Sections */}
                         <TruTabSection sectionId={0} active={true}>
                           <div className='all-comments'>
                             {this.commentsAndNotes.map(item => (
@@ -788,8 +786,6 @@ class SingleTicketContainer extends React.Component {
                         </TruTabSection>
                       </TruTabWrapper>
                     )}
-
-                    {/* Comment / Notes Form */}
                     {this.ticket.status.isResolved === false &&
                       (helpers.canUser('comments:create', true) || helpers.canUser('tickets:notes', true)) && (
                         <div className='uk-width-1-1 ticket-reply uk-clearfix'>
