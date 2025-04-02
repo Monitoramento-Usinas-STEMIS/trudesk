@@ -119,7 +119,7 @@ events.onSetTicketUsina = function (socket) {
       const ticket = await ticketSchema.findById(ticketId);
       if (!ticket) return;
 
-      ticket.usina = usina; // Atualiza o campo "Usina"
+      ticket.usina = usina; 
       ticket.history.push({
         action: 'ticket:usina:updated',
         description: `Usina updated to "${usina}"`,
@@ -129,13 +129,11 @@ events.onSetTicketUsina = function (socket) {
 
       await ticket.save();
 
-      // Envia a atualização para todos os clientes conectados
       socket.broadcast.emit('TICKETS_UI_USINA_UPDATE', {
         _id: ticketId,
         usina
       });
 
-      // Também envia para o próprio cliente que fez a alteração
       socket.emit('TICKETS_UI_USINA_UPDATE', {
         _id: ticketId,
         usina
