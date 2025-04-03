@@ -107,7 +107,7 @@ class EditGroupModal extends React.Component {
             />
           </div>
           <div className={'uk-margin-medium-bottom'}>
-            <label style={{ marginBottom: 5 }}>Group Members</label>
+            <label style={{ marginBottom: 5 }}>Enterprise Members</label>
             <MultiSelect
               items={mappedAccounts}
               initialSelected={selectedMembers}

@@ -52,9 +52,9 @@ class GroupsContainer extends React.Component {
             <span class="uk-text-danger" style="font-size: 15px;">This is a permanent action.</span> 
         </p>
         <p style="font-size: 12px;">
-            Agents may lose access to resources once this group is deleted.
+            Agents may lose access to resources once this enterprise is deleted.
         </p>
-        <span>Groups that are associated with ticket cannot be deleted.</span>
+        <span>Enterprises that are associated with ticket cannot be deleted.</span>
         `,
       () => {
         this.props.deleteGroup({ _id })
@@ -119,7 +119,7 @@ class GroupsContainer extends React.Component {
     return (
       <div>
         <PageTitle
-          title={'Customer Groups'}
+          title={'Enterprises'}
           rightComponent={
             <div className={'uk-grid uk-grid-collapse'}>
               <div className={'uk-width-1-1 mt-15 uk-text-right'}>
@@ -139,8 +139,8 @@ class GroupsContainer extends React.Component {
           <Table
             headers={[
               <TableHeader key={0} width={'25%'} height={40} text={'Name'} padding={'8px 8px 8px 15px'} />,
-              <TableHeader key={1} width={'50%'} text={'Group Members'} />,
-              <TableHeader key={2} width={130} text={'Group Actions'} />
+              <TableHeader key={1} width={'50%'} text={'Enterprise Members'} />,
+              <TableHeader key={2} width={130} text={'Enterprise Actions'} />
             ]}
           >
             {tableItems}

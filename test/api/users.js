@@ -64,7 +64,7 @@ describe('api/users.js', function () {
               400,
               {
                 success: false,
-                error: 'Invalid Group Array'
+                error: 'Invalid Enterprise Array'
               },
               cb
             )

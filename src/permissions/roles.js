@@ -63,7 +63,6 @@ var roles = {
     description: 'Support User',
     allowedAction: [
       'ticket:*',
-      'dashboard:*',
       'accounts:create edit view delete',
       'comment:editSelf create delete',
       'notes:create view',

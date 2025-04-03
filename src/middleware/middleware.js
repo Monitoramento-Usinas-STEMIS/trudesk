@@ -95,6 +95,19 @@ middleware.redirectIfUser = function (req, res, next) {
   return next()
 }
 
+middleware.redirectIfAgent = function (req, res, next) {
+  const role = _.find(global.roles, { _id: req.user.role._id });
+  const isAgent = role.grants.indexOf('agent:*') !== -1;
+  const isAdmin = role.grants.indexOf('admin:*') !== -1;
+
+  // Redireciona apenas se for agente e não administrador
+  if (isAgent && !isAdmin) {
+    return res.redirect('/tickets');
+  }
+
+  return next();
+};
+
 middleware.ensurel2Auth = function (req, res, next) {
   if (req.session.l2auth === 'totp') {
     if (req.user) {

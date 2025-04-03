@@ -90,7 +90,7 @@ class Sidebar extends React.Component {
       >
         <div id={'side-nav-container'} style={{ minHeight: 'calc(100% - 50px)' }}>
           <ul className='side-nav'>
-            {sessionUser && Helpers.canUser('agent:*', true) && (
+            {sessionUser && Helpers.canUser('admin:*', true) && (
               <SidebarItem
                 text='Dashboard'
                 icon='dashboard'
@@ -178,7 +178,7 @@ class Sidebar extends React.Component {
             )}
             {sessionUser && Helpers.canUser('groups:view') && (
               <SidebarItem
-                text='Customer Groups'
+                text='Enterprises'
                 icon='supervisor_account'
                 href='/groups'
                 class='navGroups'

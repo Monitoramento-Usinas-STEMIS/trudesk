@@ -429,7 +429,7 @@ class SingleTicketContainer extends React.Component {
                         </div>
                         )}
                         <div className='uk-width-1-1 nopadding uk-clearfix'>
-                          <span>Group</span>
+                          <span>Enterprise</span>
                           {hasTicketUpdate && (
                             <select
                               value={this.ticket.group._id}

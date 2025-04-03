@@ -247,7 +247,7 @@ class CreateAccountModal extends React.Component {
             {!this.isAgentRole && (
               <div>
                 <div className='uk-margin-medium-bottom'>
-                  <label className='uk-form-label'>Groups</label>
+                  <label className='uk-form-label'>Enterprises</label>
                   <MultiSelect
                     items={groups}
                     onChange={e => this.onGroupSelectChange(e)}
@@ -258,7 +258,7 @@ class CreateAccountModal extends React.Component {
                     style={{ display: 'inline-block', marginTop: '3px', fontWeight: 'bold', color: '#d85030' }}
                     ref={r => (this.groupSelectErrorMessage = r)}
                   >
-                    Please select a group for this user.
+                    Please select a Enterprise for this user.
                   </span>
                 </div>
               </div>

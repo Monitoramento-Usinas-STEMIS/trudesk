@@ -83,6 +83,7 @@ function mainRoutes (router, middleware, controllers) {
     '/dashboard',
     middleware.redirectToLogin,
     middleware.redirectIfUser,
+    middleware.redirectIfAgent,
     middleware.loadCommonData,
     controllers.main.dashboard
   )
