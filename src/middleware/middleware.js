@@ -100,7 +100,6 @@ middleware.redirectIfAgent = function (req, res, next) {
   const isAgent = role.grants.indexOf('agent:*') !== -1;
   const isAdmin = role.grants.indexOf('admin:*') !== -1;
 
-  // Redireciona apenas se for agente e não administrador
   if (isAgent && !isAdmin) {
     return res.redirect('/tickets');
   }

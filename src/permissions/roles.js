@@ -50,7 +50,6 @@ var roles = {
     description: 'Moderators',
     allowedAction: [
       'mod:*',
-      'dashboard:*',
       'ticket:create edit view attachment removeAttachment',
       'comment:*',
       'notes:*',
