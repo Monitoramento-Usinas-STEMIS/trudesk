@@ -207,8 +207,11 @@ class CreateTicketModal extends React.Component {
               type='text'
               name={'usina'}
               className={'md-input'}
+              placeholder='Exemplo: Avelar 32' 
               onChange={e => this.setState({ usina: e.target.value })}
               value={this.state.usina || ''}
+              data-validation='required' 
+              data-validation-error-msg='This field is mandatory.' 
             />
           </div>
           <div className='uk-margin-medium-bottom'>
