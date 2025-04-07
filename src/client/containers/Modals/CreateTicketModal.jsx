@@ -68,7 +68,6 @@ class CreateTicketModal extends React.Component {
     )
   }
   onTypeRadioChange = (e) => {
-    e.preventDefault();
     const selectedType = e.target.value
     this.setState({ selectedType })
     this.onTicketTypeSelectChange({ target: { value: selectedType } }) // reaproveita a lógica existente
@@ -250,7 +249,7 @@ class CreateTicketModal extends React.Component {
           </div>
           <div className='uk-margin-medium-bottom'>
             <Grid>
-              <GridItem width={'2-3'}>
+              <GridItem width={'1-1'}>
                 <label className={'uk-form-label'}>Tags</label>
                 <SingleSelect
                   showTextbox={false}

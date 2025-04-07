@@ -401,7 +401,7 @@ class SingleTicketContainer extends React.Component {
                         </div>
                         {!isCustomer && (
                         <div className='uk-width-1-1 nopadding'>
-                          <div className='marginleft5'>
+                          <div className='marginright5'>
                             <span>Priority</span>
                             {hasTicketUpdate && (
                               <select
