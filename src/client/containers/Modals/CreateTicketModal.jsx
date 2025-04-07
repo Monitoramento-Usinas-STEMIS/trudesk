@@ -48,6 +48,7 @@ class CreateTicketModal extends React.Component {
     makeObservable(this);
     this.state = {
       usina: '',
+      selectedType: this.props.viewdata.get('defaultTicketType').get('_id') || ''
     };
   }
 
@@ -66,7 +67,12 @@ class CreateTicketModal extends React.Component {
       }
     )
   }
-
+  onTypeRadioChange = (e) => {
+    e.preventDefault();
+    const selectedType = e.target.value
+    this.setState({ selectedType })
+    this.onTicketTypeSelectChange({ target: { value: selectedType } }) // reaproveita a lógica existente
+  }
   componentDidUpdate () {}
 
   componentWillUnmount () {
@@ -138,7 +144,7 @@ class CreateTicketModal extends React.Component {
 
     data.subject = e.target.subject.value
     data.group = this.groupSelect.value
-    data.type = this.typeSelect.value
+    data.type = this.state.selectedType
     data.tags = this.tagSelect.value
     data.priority = this.selectedPriority
     data.issue = this.issueMde.easymde.value()
@@ -189,11 +195,12 @@ class CreateTicketModal extends React.Component {
       <BaseModal {...this.props} options={{ bgclose: false }}>
         <form className={'uk-form-stacked'} onSubmit={e => this.onFormSubmit(e)}>
           <div className='uk-margin-medium-bottom'>
-            <label>Subject</label>
+            <label className={'uk-form-label'}>Subject</label>
             <input
               type='text'
               name={'subject'}
               className={'md-input'}
+              placeholder='Example: TCU with problem' 
               data-validation='length'
               data-validation-length={`min${viewdata.get('ticketSettings').get('minSubject')}`}
               data-validation-error-msg={`Please enter a valid Subject. Subject must contain at least ${viewdata
@@ -202,12 +209,12 @@ class CreateTicketModal extends React.Component {
             />
           </div>
           <div className='uk-margin-medium-bottom'>
-            <label>Usina</label>
+            <label className={'uk-form-label'}>Usina</label>
             <input
               type='text'
               name={'usina'}
               className={'md-input'}
-              placeholder='Exemplo: Avelar 32' 
+              placeholder='Example: Avelar 32' 
               onChange={e => this.setState({ usina: e.target.value })}
               value={this.state.usina || ''}
               data-validation='required' 
@@ -243,19 +250,6 @@ class CreateTicketModal extends React.Component {
           </div>
           <div className='uk-margin-medium-bottom'>
             <Grid>
-              <GridItem width={'1-3'}>
-                <label className={'uk-form-label'}>Type</label>
-                <SingleSelect
-                  showTextbox={false}
-                  items={mappedTicketTypes}
-                  width={'100%'}
-                  defaultValue={this.props.viewdata.get('defaultTicketType').get('_id')}
-                  onSelectChange={e => {
-                    this.onTicketTypeSelectChange(e)
-                  }}
-                  ref={i => (this.typeSelect = i)}
-                />
-              </GridItem>
               <GridItem width={'2-3'}>
                 <label className={'uk-form-label'}>Tags</label>
                 <SingleSelect
@@ -267,6 +261,28 @@ class CreateTicketModal extends React.Component {
                 />
               </GridItem>
             </Grid>
+          </div>
+          <div className='uk-clearfix uk-margin-medium-bottom'>
+            <label className={'uk-form-label'}>Type</label>
+            {this.props.ticketTypes.toArray().map(type => (
+              <div key={type.get('_id')} className='uk-float-left' style={{ marginRight: '10px' }}>
+                <span className='icheck-inline'>
+                  <input
+                    id={'t___' + type.get('_id')}
+                    name='type'
+                    type='radio'
+                    value={type.get('_id')}
+                    onChange={e => this.onTypeRadioChange(e)}
+                    checked={this.state.selectedType === type.get('_id')}
+                  />
+                  <label htmlFor={'t___' + type.get('_id')}>
+                    <span className='uk-badge uk-badge-notification'>
+                      {type.get('name')}
+                    </span>
+                  </label>
+                </span>
+              </div>
+            ))}
           </div>
           {!isCustomer && (
             <div className='uk-margin-medium-bottom'>
