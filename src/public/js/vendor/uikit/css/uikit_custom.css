@@ -362,6 +362,19 @@
     display: block;
     padding-bottom: 8px;
 }
+
+.uk-form-stacked .uk-form-label-usina {
+    font-weight: 500;
+    font-size: 13px;
+    display: block;
+    padding-bottom: 8px;
+
+    /* Garante que o label fique estático */
+    position: static !important;
+    transform: none !important;
+    top: auto !important;
+    left: auto !important;
+}
 .uk-form-stacked .uk-form-label + p {
     margin-top: 0;
 }

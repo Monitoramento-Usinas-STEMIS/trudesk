@@ -194,7 +194,7 @@ class CreateTicketModal extends React.Component {
       <BaseModal {...this.props} options={{ bgclose: false }}>
         <form className={'uk-form-stacked'} onSubmit={e => this.onFormSubmit(e)}>
           <div className='uk-margin-medium-bottom'>
-            <label className={'uk-form-label'}>Subject</label>
+            <label className={'uk-form-label-usina'}>Subject</label>
             <input
               type='text'
               name={'subject'}
@@ -208,7 +208,7 @@ class CreateTicketModal extends React.Component {
             />
           </div>
           <div className='uk-margin-medium-bottom'>
-            <label className={'uk-form-label'}>Usina</label>
+            <label className={'uk-form-label-usina'}>Usina</label>
             <input
               type='text'
               name={'usina'}
