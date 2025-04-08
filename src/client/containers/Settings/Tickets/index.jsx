@@ -213,7 +213,7 @@ class TicketsSettings extends React.Component {
   onRemoveTagClicked (e, tag) {
     UIKit.modal.confirm(
       `Really delete tag <strong>${tag.get()}</strong><br />
-        <i style="font-size: 13px; color: #e53935">This will remove the tag from all associated tickets.</i>`,
+        <i style="font-size: 13px; color: #e53935">This will remove the Equipment from all associated tickets.</i>`,
       () => {
         axios
           .delete(`/api/v1/tags/${tag.get('_id')}`)
@@ -460,7 +460,7 @@ class TicketsSettings extends React.Component {
         {/*</SettingItem>*/}
 
         <SettingItem
-          title={'Ticket Tags'}
+          title={'Ticket Equipments'}
           subtitle={'Create/Modify Ticket Tags'}
           component={
             <Button
@@ -479,7 +479,7 @@ class TicketsSettings extends React.Component {
           <Grid extraClass={'uk-margin-medium-bottom'}>
             {this.props.tagsSettings.tags.size < 1 && (
               <div style={{ width: '100%', padding: '55px', textAlign: 'center' }}>
-                <h3 style={{ fontSize: '24px', fontWeight: '300' }}>No Tags Found</h3>
+                <h3 style={{ fontSize: '24px', fontWeight: '300' }}>No Equipments Found</h3>
               </div>
             )}
             <SpinLoader active={this.props.tagsSettings.loading} extraClass={'panel-bg'} />

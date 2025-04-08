@@ -98,7 +98,7 @@ class AddTagsModal extends React.Component {
     return (
       <BaseModal options={{ bgclose: false }}>
         <div className={'uk-clearfix'}>
-          <h5 style={{ fontWeight: 300 }}>Add Tags</h5>
+          <h5 style={{ fontWeight: 300 }}>Add Equipments</h5>
           <div>
             <form className='nomargin' onSubmit={e => this.onSubmit(e)}>
               <div className='search-container'>
@@ -108,7 +108,7 @@ class AddTagsModal extends React.Component {
                   className='chosen-select'
                   multiple
                   data-placeholder=' '
-                  data-noresults='No Tags Found for '
+                  data-noresults='No Equipments Found for '
                   ref={r => (this.select = r)}
                 >
                   {mappedTags.map(tag => (
@@ -145,7 +145,7 @@ class AddTagsModal extends React.Component {
                   extraClass={'uk-modal-close'}
                   ref={r => (this.closeButton = r)}
                 />
-                <Button type={'submit'} text={'Save Tags'} style={'success'} small={true} waves={true} />
+                <Button type={'submit'} text={'Save Equipments'} style={'success'} small={true} waves={true} />
               </div>
             </form>
           </div>

@@ -216,7 +216,7 @@ function createAdminTeamDepartment (callback) {
       function (adminTeam, next) {
         Department.create(
           {
-            name: 'Support - All Groups (Default)',
+            name: 'Support - All Enterprises (Default)',
             teams: adminTeam._id,
             allGroups: true,
             groups: []

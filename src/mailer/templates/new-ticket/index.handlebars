@@ -54,13 +54,13 @@
         </p>
         <hr>
         <h2>{{{ticket.subject}}}</h2>
-        <h5><span class="strong">Ticket Group:</span> {{ticket.group.name}}</h5>
+        <h5><span class="strong">Ticket Enterprise:</span> {{ticket.group.name}}</h5>
         <h5><span class="strong">Ticket Submitted by:</span> {{ticket.owner.fullname}}</h5>
         <h5><span class="strong">Submitted Date:</span> {{ticket.date}}</h5>
         <h5><span class="strong">Ticket Type:</span> {{ticket.type.name}}</h5>
         <h5><span class="strong">Ticket Priority:</span> {{ticket.priority.name}}</h5>
         <h5>
-            <span class="strong">Tags:</span>
+            <span class="strong">Equipments:</span>
             <ul>
                 {{#each ticket.tags}}
                     <li>{{name}}</li>

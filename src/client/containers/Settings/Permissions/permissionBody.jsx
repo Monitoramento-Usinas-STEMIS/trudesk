@@ -112,7 +112,7 @@ class PermissionBody extends React.Component {
       { title: 'Print', perm: 'print' },
       { title: 'Notes', perm: 'notes' },
       { title: 'Manage Public Tickets', perm: 'public' },
-      { title: 'Can View All Tickets in Assigned Groups', perm: 'viewall' }
+      { title: 'Can View All Tickets in Assigned Enterprises', perm: 'viewall' }
     ]
   }
 
@@ -236,10 +236,10 @@ class PermissionBody extends React.Component {
           />
           <PermissionGroupPartial
             ref={i => (this.groupPermGroup = i)}
-            title={'Groups'}
+            title={'Enterprises'}
             role={this.props.role}
             grants={this.groupGrants}
-            subtitle={'Group Permissions'}
+            subtitle={'Enterprise Permissions'}
           />
           <PermissionGroupPartial
             ref={i => (this.teamPermGroup = i)}

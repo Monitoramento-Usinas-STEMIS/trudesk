@@ -47,17 +47,17 @@ class CreateTagModal extends React.Component {
       <BaseModal>
         <form className='uk-form-stacked' onSubmit={e => this.onSubmit(e)}>
           <div>
-            <h2 className={'nomargin mb-5'}>Create Tag</h2>
-            <p className='uk-text-muted'>Tags categorize tickets, making it easy to identify issues</p>
+            <h2 className={'nomargin mb-5'}>Create Equipment</h2>
+            <p className='uk-text-muted'>Equipments categorize tickets, making it easy to identify issues</p>
 
-            <label>Tag Name</label>
+            <label>Equipment Name</label>
             <input
               type='text'
               className={'md-input'}
               name={'name'}
               data-validation='length'
               data-validation-length='min2'
-              data-validation-error-msg='Please enter a valid tag name. Tag name must contain at least 2 characters.'
+              data-validation-error-msg='Please enter a valid equipment name. Equipment name must contain at least 2 characters.'
               value={this.state.name}
               onChange={e => this.onNameChange(e)}
             />

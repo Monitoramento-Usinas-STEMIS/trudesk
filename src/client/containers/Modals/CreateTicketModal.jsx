@@ -250,7 +250,7 @@ class CreateTicketModal extends React.Component {
           <div className='uk-margin-medium-bottom'>
             <Grid>
               <GridItem width={'1-1'}>
-                <label className={'uk-form-label'}>Tags</label>
+                <label className={'uk-form-label'}>Equipments</label>
                 <SingleSelect
                   showTextbox={false}
                   items={mappedTicketTags}

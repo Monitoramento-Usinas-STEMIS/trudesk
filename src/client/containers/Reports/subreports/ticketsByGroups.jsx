@@ -72,14 +72,14 @@ const ReportTicketByGroups = () => {
         hover={false}
         header={
           <div style={{ padding: '10px 15px' }}>
-            <h4 style={{ width: '100%', textAlign: 'left', fontSize: '14px', margin: 0 }}>Tickets by Groups</h4>
+            <h4 style={{ width: '100%', textAlign: 'left', fontSize: '14px', margin: 0 }}>Tickets by Enterprises</h4>
           </div>
         }
         extraContentClass={'nopadding'}
         content={
           <div>
             <p className='padding-15 nomargin uk-text-muted'>
-              Please select the start and end dates and which groups to include in the report.
+              Please select the start and end dates and which enterprises to include in the report.
             </p>
             <hr className='uk-margin-large-bottom' style={{ marginTop: 0 }} />
             <div className={'padding-15'}>
@@ -114,7 +114,7 @@ const ReportTicketByGroups = () => {
                   <GridItem width={'1-1'}>
                     <div className='uk-margin-medium-top uk-margin-medium-bottom'>
                       <label htmlFor='groups' className={'uk-form-label'}>
-                        Groups
+                        Enterprises
                       </label>
                       <SingleSelect
                         multiple={true}

@@ -11,10 +11,10 @@
       <ion-item>Status<span class="item-note">{{ticket.status | statusMap}}</span></ion-item>
       <ion-item>Priority<span class="item-note">{{ticket.priority.name}}</span></ion-item>
       <ion-item>Type<span class="item-note">{{ticket.type.name}}</span></ion-item>
-      <ion-item>Group<span class="item-note">{{ticket.group.name}}</span></ion-item>
+      <ion-item>Enterprise<span class="item-note">{{ticket.group.name}}</span></ion-item>
       <ion-item>Assignee<span class="item-note">{{ticket.assignee.fullname | assigneeMap}}</span></ion-item>
 
-      <ion-item class="item-divider">Tags</ion-item>
+      <ion-item class="item-divider">Equipments</ion-item>
       <ion-item ng-repeat="tag in ticket.tags">{{tag.name}}</ion-item>
       <ion-item class="item-divider">Ticket History</ion-item>
       <ion-item ng-repeat="history in ticket.history" type="item-text-wrap">

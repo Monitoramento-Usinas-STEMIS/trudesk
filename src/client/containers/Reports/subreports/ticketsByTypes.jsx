@@ -137,7 +137,7 @@ const ReportTicketsByTypes = () => {
                   <GridItem width={'1-1'}>
                     <div className='uk-margin-medium-top uk-margin-medium-bottom'>
                       <label htmlFor='groups' className={'uk-form-label'}>
-                        Groups
+                        Enterprises
                       </label>
                       <SingleSelect
                         multiple={true}

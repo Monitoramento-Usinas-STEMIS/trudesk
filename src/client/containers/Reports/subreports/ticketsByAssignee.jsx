@@ -105,7 +105,7 @@ const ReportTicketsByAssignee = () => {
           <div>
             <SpinLoader active={isLoading} />
             <p className='padding-15 nomargin uk-text-muted'>
-              Please select the start and end dates and which groups to include in the report.
+              Please select the start and end dates and which enterprises to include in the report.
             </p>
             <hr className='uk-margin-large-bottom' style={{ marginTop: 0 }} />
             <div className={'padding-15'}>
@@ -140,7 +140,7 @@ const ReportTicketsByAssignee = () => {
                   <GridItem width={'1-1'}>
                     <div className='uk-margin-medium-top uk-margin-medium-bottom'>
                       <label htmlFor='groups' className={'uk-form-label'}>
-                        Groups
+                        Enterprises
                       </label>
                       <SingleSelect
                         multiple={true}

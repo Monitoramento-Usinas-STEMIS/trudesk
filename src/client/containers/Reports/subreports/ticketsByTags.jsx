@@ -94,7 +94,7 @@ const ReportTicketsByTags = () => {
         hover={false}
         header={
           <div style={{ padding: '10px 15px' }}>
-            <h4 style={{ width: '100%', textAlign: 'left', fontSize: '14px', margin: 0 }}>Tickets by Tags</h4>
+            <h4 style={{ width: '100%', textAlign: 'left', fontSize: '14px', margin: 0 }}>Tickets by Equipments</h4>
           </div>
         }
         extraContentClass={'nopadding'}
@@ -102,7 +102,7 @@ const ReportTicketsByTags = () => {
           <div>
             <SpinLoader active={isLoading} />
             <p className='padding-15 nomargin uk-text-muted'>
-              Please select the start and end dates and which groups to include in the report.
+              Please select the start and end dates and which enterprise to include in the report.
             </p>
             <hr className='uk-margin-large-bottom' style={{ marginTop: 0 }} />
             <div className={'padding-15'}>
@@ -137,7 +137,7 @@ const ReportTicketsByTags = () => {
                   <GridItem width={'1-1'}>
                     <div className='uk-margin-medium-top uk-margin-medium-bottom'>
                       <label htmlFor='groups' className={'uk-form-label'}>
-                        Groups
+                        Enterprises
                       </label>
                       <SingleSelect
                         multiple={true}
@@ -151,7 +151,7 @@ const ReportTicketsByTags = () => {
                   </GridItem>
                   <GridItem width={'1-1'}>
                     <div className='uk-margin-medium-top uk-margin-medium-bottom'>
-                      <label htmlFor='priorities'>Tags</label>
+                      <label htmlFor='priorities'>Equipments</label>
                       <SingleSelect
                         multiple={true}
                         items={tags}

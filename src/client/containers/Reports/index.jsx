@@ -63,7 +63,7 @@ class ReportsContainer extends React.Component {
                           className={'no-ajaxy'}
                           onClick={e => this.onSelectReportClicked(e, 'tickets_by_groups')}
                         >
-                          Tickets by Groups
+                          Tickets by Enterprises
                         </a>
                       </li>
                       <li>
@@ -90,7 +90,7 @@ class ReportsContainer extends React.Component {
                           className={'no-ajaxy'}
                           onClick={e => this.onSelectReportClicked(e, 'tickets_by_tags')}
                         >
-                          Tickets by Tags
+                          Tickets by Equipments
                         </a>
                       </li>
                       <li>

@@ -511,7 +511,7 @@ class SingleTicketContainer extends React.Component {
                         </div>
                         <div className='uk-width-1-1 nopadding'>
                           <span>
-                            Tags
+                            Equipments
                             {hasTicketUpdate && (
                               <Fragment>
                                 <span> - </span>
@@ -527,7 +527,7 @@ class SingleTicketContainer extends React.Component {
                                       })
                                     }}
                                   >
-                                    Edit Tags
+                                    Edit Equipments
                                   </a>
                                 </div>
                               </Fragment>

@@ -174,7 +174,7 @@ class DashboardContainer extends React.Component {
                 style={{ minHeight: 256 }}
                 header={
                   <div className='uk-text-left'>
-                    <h6 style={{ padding: 15, margin: 0, fontSize: '14px' }}>Top 5 Groups</h6>
+                    <h6 style={{ padding: 15, margin: 0, fontSize: '14px' }}>Top 5 Enterprises</h6>
                   </div>
                 }
                 content={
@@ -192,7 +192,7 @@ class DashboardContainer extends React.Component {
                 style={{ minHeight: 256 }}
                 header={
                   <div className='uk-text-left'>
-                    <h6 style={{ padding: 15, margin: 0, fontSize: '14px' }}>Top 10 Tags</h6>
+                    <h6 style={{ padding: 15, margin: 0, fontSize: '14px' }}>Top 10 Equipments</h6>
                   </div>
                 }
                 content={
