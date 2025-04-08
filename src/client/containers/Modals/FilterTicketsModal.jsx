@@ -54,6 +54,7 @@ class FilterTicketsModal extends React.Component {
     const startDate = e.target.filterDate_Start.value
     const endDate = e.target.filterDate_End.value
     const subject = e.target.subject.value
+    const usina = e.target.usina.value
     const statuses = this.statusSelect.value
     const tags = this.tagsSelect.value
     const types = this.typesSelect.value
@@ -65,6 +66,8 @@ class FilterTicketsModal extends React.Component {
     if (endDate) queryString += `&de=${endDate}`
 
     if (subject) queryString += `&fs=${subject}`
+
+    if (usina) queryString += `&un=${usina}`
 
     each(statuses, i => {
       queryString += `&st=${i}`
@@ -124,6 +127,10 @@ class FilterTicketsModal extends React.Component {
           <div className='uk-margin-medium-bottom'>
             <label>Subject</label>
             <input type='text' name={'subject'} className={'md-input'} />
+          </div>
+          <div className='uk-margin-medium-bottom'>
+            <label>Usina</label>
+            <input type='text' name={'usina'} className={'md-input'} />
           </div>
           <div className='uk-grid uk-grid-collapse uk-margin-small-bottom'>
             <div className='uk-width-1-2' style={{ padding: '0 15px 0 0' }}>

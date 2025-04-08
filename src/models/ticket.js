@@ -949,6 +949,9 @@ function buildQueryWithObject (SELF, grpId, object, count) {
 
     // Subject Filter
     if (object.filter.subject) query.or([{ subject: new RegExp(object.filter.subject, 'i') }])
+    
+    // Usina Filter
+    if (object.filter.usina) query.or([{ usina: new RegExp(object.filter.usina, 'i') }])
 
     // Issue Filter
     if (object.filter.issue) query.or([{ issue: new RegExp(object.filter.issue, 'i') }])

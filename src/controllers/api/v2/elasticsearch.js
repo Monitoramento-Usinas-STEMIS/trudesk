@@ -110,6 +110,7 @@ apiElasticSearch.search = function (req, res) {
                     fields: [
                       'uid^5',
                       'subject^4',
+                      'usina^4',
                       'issue^4',
                       'owner.fullname',
                       'owner.username',

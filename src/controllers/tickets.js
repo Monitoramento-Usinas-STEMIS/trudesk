@@ -222,6 +222,7 @@ ticketsController.filter = function (req, res, next) {
   const queryString = req.query
   const uid = queryString.uid
   const subject = queryString.fs
+  const usina = queryString.un
   const issue = queryString.it
   const dateStart = queryString.ds
   const dateEnd = queryString.de
@@ -250,6 +251,7 @@ ticketsController.filter = function (req, res, next) {
   const filter = {
     uid: uid,
     subject: xss(subject),
+    usina: xss(usina),
     issue: issue,
     date: {
       start: dateStart,
