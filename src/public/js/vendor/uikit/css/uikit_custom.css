@@ -369,7 +369,6 @@
     display: block;
     padding-bottom: 8px;
 
-    /* Garante que o label fique estático */
     position: static !important;
     transform: none !important;
     top: auto !important;
