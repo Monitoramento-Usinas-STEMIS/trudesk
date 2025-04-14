@@ -28,6 +28,8 @@ import CreateStatusModal from './CreateStatusModal'
 import DeleteTicketStatusModal from './DeleteTicketStatusModal'
 import CreateTagModal from './CreateTagModal'
 import AddTagsModal from './AddTagsModal'
+import CreateErrorTypeModal from './CreateErrorTypeModal'
+import AddErrorTypeModal from './AddErrorTypeModal'
 import CreateTicketModal from './CreateTicketModal'
 import CreateRoleModal from './CreateRoleModal'
 import DeleteRoleModal from './DeleteRoleModal'
@@ -59,6 +61,8 @@ const MODAL_COMPONENTS = {
   DELETE_STATUS: DeleteTicketStatusModal,
   CREATE_TAG: CreateTagModal,
   ADD_TAGS_MODAL: AddTagsModal,
+  CREATE_ERROR_TYPE: CreateErrorTypeModal,
+  ADD_ERROR_TYPE_MODAL: AddErrorTypeModal,
   CREATE_ROLE: CreateRoleModal,
   DELETE_ROLE: DeleteRoleModal,
   VIEW_ALL_NOTIFICATIONS: ViewAllNotificationsModal,

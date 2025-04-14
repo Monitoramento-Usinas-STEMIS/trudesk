@@ -1876,6 +1876,20 @@ apiTickets.getTagCount = function (req, res) {
   res.json({ success: true, tags })
 }
 
+apiTickets.getErrorTypeCount = function (req, res) {
+  const cache = global.cache
+  let timespan = req.params.timespan
+  if (_.isUndefined(timespan) || _.isNaN(timespan)) timespan = 0
+
+  if (_.isUndefined(cache)) {
+    return res.status(400).send('Error type stats are still loading...')
+  }
+
+  const errorTypes = cache.get('errorTypes:' + timespan + ':usage')
+
+  res.json({ success: true, errorTypes })
+}
+
 /**
  * @api {get} /api/v1/tickets/count/topgroups/:timespan/:topNum Top Groups Count
  * @apiName getTopTicketGroups
@@ -2060,6 +2074,19 @@ apiTickets.getTags = function (req, res) {
     })
 
     res.json({ success: true, tags: tags })
+  })
+}
+
+apiTickets.getErrorTypes = function (req, res) {
+  var errorTypeSchema = require('../../../models/errorType')
+  errorTypeSchema.getErrorTypes(function (err, errorTypes) {
+    if (err) return res.status(400).json({ success: false, error: err })
+
+    _.each(errorTypes, function (item) {
+      item.__v = undefined
+    })
+
+    res.json({ success: true, errorTypes: errorTypes })
   })
 }
 

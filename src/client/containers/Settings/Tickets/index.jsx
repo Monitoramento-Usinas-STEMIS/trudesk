@@ -49,6 +49,8 @@ class TicketsSettings extends React.Component {
     super(props)
 
     this.getTicketTags = this.getTicketTags.bind(this)
+    this.getTicketErrorTypes = this.getTicketErrorTypes.bind(this)
+    
   }
 
   static toggleEditPriority (e) {
@@ -129,6 +131,12 @@ class TicketsSettings extends React.Component {
     if (e) e.preventDefault()
     this.props.tagsUpdateCurrentPage(page)
     this.props.getTagsWithPage({ limit: 16, page })
+  }
+
+  getTicketErrorTypes (e, page) {
+    if (e) e.preventDefault()
+    this.props.errorTypesUpdateCurrentPage(page)
+    this.props.getErrorTypesWithPage({ limit: 16, page })
   }
 
   onDefaultTicketTypeChange (e) {
@@ -565,6 +573,112 @@ class TicketsSettings extends React.Component {
             </GridItem>
           </Grid>
         </SettingItem>
+        <SettingItem
+  title={'Error Types'}
+  subtitle={'Create/Modify Error Types'}
+  component={
+    <Button
+      text={'Create'}
+      style={'success'}
+      flat={true}
+      waves={true}
+      extraClass={'mt-10 right'}
+      onClick={e =>
+        this.showModal(e, 'CREATE_ERROR_TYPE', { page: 'settings', currentPage: this.props.errorTypesSettings.currentPage })
+      }
+    />
+  }
+  footer={<ul id={'errorTypePagination'} className={'uk-pagination'} />}
+>
+  <Grid extraClass={'uk-margin-medium-bottom'}>
+    {this.props.errorTypesSettings.errorTypes.size < 1 && (
+      <div style={{ width: '100%', padding: '55px', textAlign: 'center' }}>
+        <h3 style={{ fontSize: '24px', fontWeight: '300' }}>No Error Types Found</h3>
+      </div>
+    )}
+    <SpinLoader active={this.props.errorTypesSettings.loading} extraClass={'panel-bg'} />
+    <GridItem width={'1-1'}>
+      <Grid extraClass={'zone ml-0'}>
+        {this.props.errorTypesSettings.errorTypes.map(i => {
+          return (
+            <GridItem width={'1-2'} key={i.get('_id')} extraClass={'error-type-wrapper br bb'}>
+              <Grid extraClass={'view-error-type'}>
+                <GridItem width={'1-1'}>
+                  <ZoneBox>
+                    <Grid>
+                      <GridItem width={'1-2'}>
+                        <h5
+                          style={{
+                            fontSize: '16px',
+                            lineHeight: '31px',
+                            margin: 0,
+                            padding: 0,
+                            fontWeight: 300
+                          }}
+                        >
+                          {i.get('name')}
+                        </h5>
+                      </GridItem>
+                      <GridItem width={'1-2'} extraClass={'uk-text-right'}>
+                        <ButtonGroup classNames={'mt-5'}>
+                          <Button
+                            text={'edit'}
+                            flat={true}
+                            waves={true}
+                            small={true}
+                            onClick={e => this.toggleEditErrorType(e)}
+                          />
+                          <Button
+                            text={'remove'}
+                            flat={true}
+                            waves={true}
+                            style={'danger'}
+                            small={true}
+                            onClick={e => this.onRemoveErrorTypeClicked(e, i)}
+                          />
+                        </ButtonGroup>
+                      </GridItem>
+                    </Grid>
+                  </ZoneBox>
+                </GridItem>
+              </Grid>
+              <Grid extraClass={'edit-error-type z-box uk-clearfix nbt hide'} style={{ paddingTop: '5px' }}>
+                <GridItem width={'1-1'}>
+                  <form onSubmit={e => this.onSubmitUpdateErrorType(e, i.get('_id'))}>
+                    <Grid>
+                      <GridItem width={'2-3'}>
+                        <input type='text' className={'md-input'} name={'name'} defaultValue={i.get('name')} />
+                      </GridItem>
+                      <GridItem width={'1-3'} style={{ paddingTop: '10px' }}>
+                        <ButtonGroup classNames={'uk-float-right uk-text-right'}>
+                          <Button
+                            text={'cancel'}
+                            flat={true}
+                            waves={true}
+                            small={true}
+                            onClick={e => this.toggleEditErrorType(e)}
+                          />
+                          <Button
+                            type={'submit'}
+                            text={'save'}
+                            flat={true}
+                            waves={true}
+                            small={true}
+                            style={'success'}
+                          />
+                        </ButtonGroup>
+                      </GridItem>
+                    </Grid>
+                  </form>
+                </GridItem>
+              </Grid>
+            </GridItem>
+          )
+        })}
+      </Grid>
+    </GridItem>
+  </Grid>
+</SettingItem>
       </div>
     )
   }
@@ -575,9 +689,12 @@ TicketsSettings.propTypes = {
   viewdata: PropTypes.object.isRequired,
   settings: PropTypes.object.isRequired,
   tagsSettings: PropTypes.object.isRequired,
+  errorTypesSettings: PropTypes.object.isRequired,
   updateSetting: PropTypes.func.isRequired,
   getTagsWithPage: PropTypes.func.isRequired,
+  getErrorTypesWithPage: PropTypes.func.isRequired,
   tagsUpdateCurrentPage: PropTypes.func.isRequired,
+  errorTypesUpdateCurrentPage: PropTypes.func.isRequired,
   showModal: PropTypes.func.isRequired,
   deleteStatus: PropTypes.func.isRequired
 }
@@ -585,13 +702,16 @@ TicketsSettings.propTypes = {
 const mapStateToProps = state => ({
   viewdata: state.common.viewdata,
   settings: state.settings.settings,
-  tagsSettings: state.tagsSettings
+  tagsSettings: state.tagsSettings,
+  errorTypesSettings: state.errorTypesSettings
 })
 
 export default connect(mapStateToProps, {
   updateSetting,
   getTagsWithPage,
+  getErrorTypesWithPage,
   tagsUpdateCurrentPage,
+  errorTypesUpdateCurrentPage,
   showModal,
   deleteStatus
 })(TicketsSettings)

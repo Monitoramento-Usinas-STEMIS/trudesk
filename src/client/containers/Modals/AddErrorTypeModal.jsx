@@ -15,7 +15,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
-import { getErrorsTypeWithPage } from 'actions/tickets'
+import { getErrorTypesWithPage } from 'actions/errorTypes'
 import { showModal, hideModal } from 'actions/common'
 
 import BaseModal from 'containers/Modals/BaseModal'
@@ -25,17 +25,17 @@ import axios from 'axios'
 import $ from 'jquery'
 import helpers from 'lib/helpers'
 
-import { TICKETS_UI_ERRORSTYPE_UPDATE } from 'serverSocket/socketEventConsts'
+import { ERROR_TYPES_UI_UPDATE } from 'serverSocket/socketEventConsts'
 
-class AddErrorsTypeModal extends React.Component {
+class AddErrorTypeModal extends React.Component {
   componentDidMount () {
-    this.props.getErrorsTypeWithPage({ limit: -1, page: 0 })
+    this.props.getErrorTypesWithPage({ limit: -1, page: 0 })
   }
 
   componentDidUpdate () {
     helpers.setupChosen()
-    if (!$(this.select).val() && this.props.currentErrorsType && this.props.currentErrorsType.length > 0)
-      $(this.select).val(this.props.currenteErrorsType)
+    if (!$(this.select).val() && this.props.currentErrorTypes && this.props.currentErrorTypes.length > 0)
+      $(this.select).val(this.props.currentErrorTypes)
 
     $(this.select).trigger('chosen:updated')
   }
@@ -50,14 +50,14 @@ class AddErrorsTypeModal extends React.Component {
 
   onSubmit (e) {
     e.preventDefault()
-    let selectedErrorsType = $(e.target.errorsType).val()
-    if (!selectedErrorsType) selectedErrorsType = []
+    let selectedErrorTypes = $(e.target.errorTypes).val()
+    if (!selectedErrorTypes) selectedErrorTypes = []
     axios
-      .put(`/api/v1/tickets/${this.props.ticketId}`, {
-        errorstype: selectedErrorsType
+      .put(`/api/v1/error-types`, {
+        errorTypes: selectedErrorTypes
       })
       .then(() => {
-        this.props.socket.emit(TICKETS_UI_ERRORSTYPE_UPDATE, { ticketId: this.props.ticketId })
+        this.props.socket.emit(ERROR_TYPES_UI_UPDATE)
         this.closeButton.click()
       })
       .catch(error => {
@@ -68,14 +68,14 @@ class AddErrorsTypeModal extends React.Component {
 
   onClearClicked () {
     axios
-      .put(`/api/v1/tickets/${this.props.ticketId}`, {
-        errorstype: []
+      .put(`/api/v1/error-types`, {
+        errorTypes: []
       })
       .then(() => {
         $(this.select)
           .val('')
           .trigger('chosen:updated')
-        this.props.socket.emit(TICKETS_UI_ERRORSTYPE_UPDATE, { ticketId: this.props.ticketId })
+        this.props.socket.emit(ERROR_TYPES_UI_UPDATE)
       })
       .catch(error => {
         Log.error(error)
@@ -84,13 +84,13 @@ class AddErrorsTypeModal extends React.Component {
   }
 
   render () {
-    const mappedErrorsType =
-      this.props.errorsTypeSettings.errorstype &&
-      this.props.errorsTypeSettings.errorstype
-        .map(errortype => {
+    const mappedErrorTypes =
+      this.props.errorTypesSettings.errorTypes &&
+      this.props.errorTypesSettings.errorTypes
+        .map(errorType => {
           return {
-            text: errortype.get('name'),
-            value: errortype.get('_id')
+            text: errorType.get('name'),
+            value: errorType.get('_id')
           }
         })
         .toArray()
@@ -98,22 +98,22 @@ class AddErrorsTypeModal extends React.Component {
     return (
       <BaseModal options={{ bgclose: false }}>
         <div className={'uk-clearfix'}>
-          <h5 style={{ fontWeight: 300 }}>Add ErrorType</h5>
+          <h5 style={{ fontWeight: 300 }}>Add Error Types</h5>
           <div>
             <form className='nomargin' onSubmit={e => this.onSubmit(e)}>
               <div className='search-container'>
                 <select
-                  name='errorstype'
-                  id='errorstype'
+                  name='errorTypes'
+                  id='errorTypes'
                   className='chosen-select'
                   multiple
                   data-placeholder=' '
-                  data-noresults='No ErrorType Found for '
+                  data-noresults='No Error Types Found for '
                   ref={r => (this.select = r)}
                 >
-                  {mappedErrorsType.map(errortype => (
-                    <option key={errortype.value} value={errortype.value}>
-                      {errortype.text}
+                  {mappedErrorTypes.map(errorType => (
+                    <option key={errorType.value} value={errorType.value}>
+                      {errorType.text}
                     </option>
                   ))}
                 </select>
@@ -123,7 +123,7 @@ class AddErrorsTypeModal extends React.Component {
                   </i>
                 </button>
               </div>
-
+    
               <div className='left' style={{ marginTop: 15 }}>
                 <Button
                   type={'button'}
@@ -145,7 +145,7 @@ class AddErrorsTypeModal extends React.Component {
                   extraClass={'uk-modal-close'}
                   ref={r => (this.closeButton = r)}
                 />
-                <Button type={'submit'} text={'Save ErrorType'} style={'success'} small={true} waves={true} />
+                <Button type={'submit'} text={'Save Error Types'} style={'success'} small={true} waves={true} />
               </div>
             </form>
           </div>
@@ -154,20 +154,18 @@ class AddErrorsTypeModal extends React.Component {
     )
   }
 }
-
-AddErrorsTypeModal.propTypes = {
-  ticketId: PropTypes.string.isRequired,
-  currentErrorsType: PropTypes.array,
-  errorsTypeSettings: PropTypes.object.isRequired,
-  getErrorsTypeWithPage: PropTypes.func.isRequired,
-  socket: PropTypes.object.isRequired,
-  showModal: PropTypes.func.isRequired,
-  hideModal: PropTypes.func.isRequired
-}
-
-const mapStateToProps = state => ({
-  errorsTypeSettings: state.errorsTypeSettings,
-  socket: state.shared.socket
-})
-
-export default connect(mapStateToProps, { getErrorsTypeWithPage, showModal, hideModal })(AddErrorsTypeModal)
+    AddErrorTypeModal.propTypes = {
+      currentErrorTypes: PropTypes.array,
+      errorTypesSettings: PropTypes.object.isRequired,
+      getErrorTypesWithPage: PropTypes.func.isRequired,
+      socket: PropTypes.object.isRequired,
+      showModal: PropTypes.func.isRequired,
+      hideModal: PropTypes.func.isRequired
+    }
+    
+    const mapStateToProps = state => ({
+      errorTypesSettings: state.errorTypesSettings,
+      socket: state.shared.socket
+    })
+    
+    export default connect(mapStateToProps, { getErrorTypesWithPage, showModal, hideModal })(AddErrorTypeModal)

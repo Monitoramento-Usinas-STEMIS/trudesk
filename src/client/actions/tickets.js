@@ -24,6 +24,9 @@ import {
   CREATE_TAG,
   GET_TAGS_WITH_PAGE,
   TAGS_UPDATE_CURRENT_PAGE,
+  CREATE_ERROR_TYPE,
+  GET_ERROR_TYPES_WITH_PAGE,
+  ERROR_TYPES_UPDATE_CURRENT_PAGE,
   CREATE_TICKET,
   FETCH_TICKETS,
   UNLOAD_TICKETS,
@@ -84,6 +87,9 @@ export const deleteStatus = createAction(DELETE_STATUS.ACTION, ({ id, newStatusI
 export const getTagsWithPage = createAction(GET_TAGS_WITH_PAGE.ACTION, ({ limit, page }) => ({ limit, page }))
 export const tagsUpdateCurrentPage = createAction(TAGS_UPDATE_CURRENT_PAGE.ACTION, currentPage => ({ currentPage }))
 export const createTag = createAction(CREATE_TAG.ACTION, ({ name, currentPage }) => ({ name, currentPage }))
+export const getErrorTypesWithPage = createAction(GET_ERROR_TYPES_WITH_PAGE.ACTION, ({ limit, page }) => ({ limit, page }))
+export const errorTypesUpdateCurrentPage = createAction(ERROR_TYPES_UPDATE_CURRENT_PAGE.ACTION, currentPage => ({ currentPage }))
+export const createErrorType = createAction(CREATE_ERROR_TYPE.ACTION, ({ name, currentPage }) => ({ name, currentPage }))
 export const transferToThirdParty = createAction(TRANSFER_TO_THIRDPARTY.ACTION, ({ uid }) => ({ uid }))
 export const fetchTicketTypes = createAction(FETCH_TICKET_TYPES.ACTION)
 export const fetchTicketStatus = createAction(FETCH_STATUS.ACTION)
