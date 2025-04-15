@@ -27,7 +27,9 @@ import {
   DELETE_PRIORITY,
   UPDATE_PRIORITY,
   CREATE_TAG,
+  CREATE_ERROR_TYPE,
   GET_TAGS_WITH_PAGE,
+  GET_ERROR_TYPES_WITH_PAGE,
   CREATE_TICKET,
   FETCH_TICKETS,
   UNLOAD_TICKETS,
@@ -152,6 +154,18 @@ function * getTagsWithPage ({ payload }) {
   }
 }
 
+function * getErrorTypesWithPage ({ payload }) {
+  try {
+    const response = yield call(api.tickets.getErrorTypesWithPage, payload)
+    yield put({ type: GET_ERROR_TYPES_WITH_PAGE.SUCCESS, response })
+  } catch (error) {
+    if (!error.response) return Log.error(error)
+    const errorText = error.response.data.error
+    helpers.UI.showSnackbar(`Error: ${errorText}`, true)
+    yield put({ type: GET_ERROR_TYPES_WITH_PAGE.ERROR, error })
+  }
+}
+
 function * fetchPriorities ({ payload, meta }) {
   try {
     const response = yield call(api.tickets.fetchPriorities, payload)
@@ -264,6 +278,23 @@ function * createTag ({ payload }) {
   }
 }
 
+function * createErrorType ({ payload }) {
+  try {
+    const response = yield call(api.tickets.createErrorType, { name: payload.name })
+    yield put({ type: CREATE_ERROR_TYPE.SUCCESS, response })
+    yield put({ type: HIDE_MODAL.ACTION })
+    if (!isUndefined(payload.currentPage)) {
+      yield put({ type: GET_ERROR_TYPES_WITH_PAGE.ACTION, payload: { limit: 16, page: payload.currentPage } })
+    }
+    helpers.UI.showSnackbar(`Error Type ${payload.name} successfully created`)
+  } catch (error) {
+    if (!error.response) return Log.error(error)
+    const errorText = error.response.data.error
+    helpers.UI.showSnackbar(`Error: ${errorText}`, true)
+    yield put({ type: CREATE_ERROR_TYPE.ERROR, error })
+  }
+}
+
 function * transferToThirdParty ({ payload }) {
   try {
     const response = yield call(api.tickets.transferToThirdParty, payload)
@@ -329,7 +360,9 @@ export default function * watcher () {
   yield takeLatest(FETCH_STATUS.ACTION, fetchTicketStatus)
   yield takeLatest(DELETE_PRIORITY.ACTION, deletePriority)
   yield takeLatest(GET_TAGS_WITH_PAGE.ACTION, getTagsWithPage)
+  yield takeLatest(GET_ERROR_TYPES_WITH_PAGE.ACTION, getErrorTypesWithPage)
   yield takeLatest(CREATE_TAG.ACTION, createTag)
+  yield takeLatest(CREATE_ERROR_TYPE.ACTION, createErrorType)
   yield takeLatest(TRANSFER_TO_THIRDPARTY.ACTION, transferToThirdParty)
   yield takeLatest(FETCH_TICKET_TYPES.ACTION, fetchTicketTypes)
   yield takeLatest(DELETE_STATUS.ACTION, deleteStatus)

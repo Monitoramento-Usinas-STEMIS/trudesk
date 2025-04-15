@@ -15,34 +15,34 @@
 import { fromJS, List } from 'immutable'
 import { handleActions } from 'redux-actions'
 
-import { GET_ERRORS_TYPE_WITH_PAGE , ERRORS_TYPE_UPDATE_CURRENT_PAGE } from 'actions/types'
+import { GET_ERROR_TYPES_WITH_PAGE, ERROR_TYPES_UPDATE_CURRENT_PAGE } from 'actions/types'
 
 const initialState = {
   loading: true,
   totalCount: 0,
-  errorsType: List([]),
+  errorTypes: List([]),
   currentPage: 0
 }
 
-const errorsTypeReducer = handleActions(
+const errorTypesReducer = handleActions(
   {
-    [GET_ERRORS_TYPE_WITH_PAGE.SUCCESS]: (state, action) => {
+    [GET_ERROR_TYPES_WITH_PAGE.SUCCESS]: (state, action) => {
       return {
         ...state,
         loading: false,
         totalCount: action.response.count,
-        errorsType: fromJS(action.response.errorsType)
+        errorTypes: fromJS(action.response.errorTypes)
       }
     },
 
-    [GET_ERRORS_TYPE_WITH_PAGE.ERROR]: (state, action) => {
+    [GET_ERROR_TYPES_WITH_PAGE.ERROR]: (state, action) => {
       return {
         ...state,
         loading: false
-    }
-  },
+      }
+    },
 
-    [ERRORS_TYPE_UPDATE_CURRENT_PAGE]: (state, action) => {
+    [ERROR_TYPES_UPDATE_CURRENT_PAGE]: (state, action) => {
       return {
         ...state,
         currentPage: action.payload.currentPage
@@ -52,4 +52,4 @@ const errorsTypeReducer = handleActions(
   initialState
 )
 
-export default errorsTypeReducer
+export default errorTypesReducer

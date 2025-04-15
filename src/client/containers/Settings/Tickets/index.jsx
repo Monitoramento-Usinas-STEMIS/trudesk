@@ -23,7 +23,7 @@ import UIKit from 'uikit'
 import helpers from 'lib/helpers'
 
 import { updateSetting } from 'actions/settings'
-import { getTagsWithPage, tagsUpdateCurrentPage, deleteStatus } from 'actions/tickets'
+import { getTagsWithPage, tagsUpdateCurrentPage, deleteStatus, getErrorTypesWithPage, errorTypesUpdateCurrentPage } from 'actions/tickets'
 import { showModal } from 'actions/common'
 
 import EnableSwitch from 'components/Settings/EnableSwitch'
@@ -84,14 +84,32 @@ class TicketsSettings extends React.Component {
     }
   }
 
+  static toggleEditErrorType (e) {
+    const $target = $(e.target)
+    const $parent = $target.parents('.tag-wrapper')
+    const $v = $parent.find('.view-tag')
+    const $e = $parent.find('.edit-tag')
+    if ($v && $e) {
+      $v.toggleClass('hide')
+      $e.toggleClass('hide')
+    }
+  }
+
   componentDidMount () {
     this.getTicketTags(null, 0)
+    this.getTicketErrorTypes(null, 0)
     const $tagPagination = $('#tagPagination')
+    const $errorTypePagination = $('#errorTypePagination')
     this.tagsPagination = UIKit.pagination($tagPagination, {
       items: this.props.tagsSettings.totalCount ? this.props.tagsSettings.totalCount : 0,
       itemsOnPage: 16
     })
+    this.errorTypesPagination = UIKit.pagination($errorTypePagination, {
+      items: this.props.errorTypesSettings.totalCount ? this.props.errorTypesSettings.totalCount : 0,
+      itemsOnPage: 16
+    })
     $tagPagination.on('select.uk.pagination', this.getTicketTags)
+    $errorTypePagination.on('select.uk.pagination', this.getTicketErrorTypes)
   }
 
   componentDidUpdate (prevProps) {
@@ -102,6 +120,14 @@ class TicketsSettings extends React.Component {
       this.tagsPagination.render()
       if (this.tagsPagination.currentPage > this.tagsPagination.pages - 1)
         this.tagsPagination.selectPage(this.tagsPagination.pages - 1)
+    }
+    if (prevProps.errorTypesSettings.totalCount !== this.props.errorTypesSettings.totalCount) {
+      this.errorTypesPagination.pages = Math.ceil(this.props.errorTypesSettings.totalCount / 16)
+        ? Math.ceil(this.props.errorTypesSettings.totalCount / 16)
+        : 1
+      this.errorTypesPagination.render()
+      if (this.errorTypesPagination.currentPage > this.errorTypesPagination.pages - 1)
+        this.errorTypesPagination.selectPage(this.errorTypesPagination.pages - 1)
     }
   }
 
@@ -218,6 +244,28 @@ class TicketsSettings extends React.Component {
       })
   }
 
+  onSubmitUpdateErrorType (e, errorTypeId) {
+    e.preventDefault()
+    e.persist()
+    const name = e.target.name.value
+    if (name.length < 2) return helpers.UI.showSnackbar('Invalid Error Type Name', true)
+
+    axios
+      .put(`/api/v1/error-types/${errorTypeId}`, { name })
+      .then(res => {
+        TicketsSettings.toggleEditErrorType(e)
+        helpers.UI.showSnackbar(`Error Type: ${res.data.errorType.name} updated successfully`)
+        this.getTicketErrorTypes(null, this.errorTypesPagination.currentPage)
+      })
+      .catch(err => {
+        if (!err.response) return Log.error(err)
+
+        const errorText = err.response.data.error
+        Log.error(errorText, err.response)
+        helpers.UI.showSnackbar(`Error: ${errorText}`, true)
+      })
+  }
+
   onRemoveTagClicked (e, tag) {
     UIKit.modal.confirm(
       `Really delete tag <strong>${tag.get()}</strong><br />
@@ -245,6 +293,32 @@ class TicketsSettings extends React.Component {
     )
   }
 
+  onRemoveErrorTypeClicked (e, errorType) {
+    UIKit.modal.confirm(
+      `Really delete error type <strong>${errorType.get()}</strong><br />
+        <i style="font-size: 13px; color: #e53935">This will remove the Error Type from all associated tickets.</i>`,
+      () => {
+        axios
+          .delete(`/api/v1/error-types/${errorType.get('_id')}`)
+          .then(res => {
+            if (res.data.success) {
+              helpers.UI.showSnackbar(`Successfully removed error type: ${errorType.get('name')}`)
+
+              this.getTicketErrorTypes(null, this.errorTypesPagination.currentPage)
+            }
+          })
+          .catch(error => {
+            const errorText = error.response.data.error
+            helpers.UI.showSnackbar(`Error: ${errorText}`, true)
+            Log.error(errorText, error.response)
+          })
+      },
+      {
+        labels: { Ok: 'Yes', Cancel: 'No' },
+        confirmButtonClass: 'md-btn-danger'
+      }
+    )
+  }
   render () {
     const { active, viewdata } = this.props
     const mappedTypes = this.getTicketTypes().map(function (type) {
@@ -601,8 +675,8 @@ class TicketsSettings extends React.Component {
       <Grid extraClass={'zone ml-0'}>
         {this.props.errorTypesSettings.errorTypes.map(i => {
           return (
-            <GridItem width={'1-2'} key={i.get('_id')} extraClass={'error-type-wrapper br bb'}>
-              <Grid extraClass={'view-error-type'}>
+            <GridItem width={'1-2'} key={i.get('_id')} extraClass={'tag-wrapper br bb'}>
+              <Grid extraClass={'view-tag'}>
                 <GridItem width={'1-1'}>
                   <ZoneBox>
                     <Grid>
@@ -642,7 +716,7 @@ class TicketsSettings extends React.Component {
                   </ZoneBox>
                 </GridItem>
               </Grid>
-              <Grid extraClass={'edit-error-type z-box uk-clearfix nbt hide'} style={{ paddingTop: '5px' }}>
+              <Grid extraClass={'edit-tag z-box uk-clearfix nbt hide'} style={{ paddingTop: '5px' }}>
                 <GridItem width={'1-1'}>
                   <form onSubmit={e => this.onSubmitUpdateErrorType(e, i.get('_id'))}>
                     <Grid>

@@ -22,6 +22,7 @@ import settings from './settings'
 import dashboardState from './dashboardReducer'
 import ticketsState from './ticketsReducer'
 import tagsSettings from './tagsReducer'
+import errorTypesSettings from './errorTypesReducer'
 import accountsState from './accountsReducer'
 import groupsState from './groupsReducer'
 import teamsState from './teamsReducer'
@@ -42,6 +43,7 @@ import messagesState from './messagesReducer'
 //     teamsState: teamsState(state.teamsState, action),
 //     departmentsState: departmentsState(state.departmentsState, action),
 //     tagsSettings: tagsSettings(state.tagsSettings, action),
+//     errorTypesSettings: errorTypesSettings(state.errorTypesSettings, action),
 //     settings: settings(state.settings, action)
 //   }
 // }
@@ -61,6 +63,7 @@ const IndexReducer = combineReducers({
   noticesState,
   settings,
   tagsSettings,
+  errorTypesSettings,
   messagesState
 })
 

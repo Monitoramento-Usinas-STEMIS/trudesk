@@ -87,7 +87,7 @@ const ModalRoot = ({ modalType, modalProps }) => {
   }
 
   const SpecificModal = MODAL_COMPONENTS[modalType]
-  return <SpecificModal {...modalProps} />
+  return <SpecificModal errorType={modalProps.errorType} {...modalProps} />
 }
 
 ModalRoot.propTypes = {
