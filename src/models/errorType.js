@@ -15,7 +15,7 @@
 var mongoose = require('mongoose')
 var utils = require('../helpers/utils')
 
-var COLLECTION = 'errortypes'
+var COLLECTION = 'errorTypes'
 
 /**
  * ErrorType Schema

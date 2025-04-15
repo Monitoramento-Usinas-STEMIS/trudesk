@@ -20,7 +20,7 @@ import { makeObservable, observable, when } from 'mobx'
 import { head, orderBy } from 'lodash'
 import axios from 'axios'
 import Log from '../../logger'
-import { createTicket, fetchTicketTypes, getTagsWithPage } from 'actions/tickets'
+import { createTicket, fetchTicketTypes, getTagsWithPage , getErrorTypesWithPage} from 'actions/tickets'
 import { fetchGroups } from 'actions/groups'
 import { fetchAccountsCreateTicket } from 'actions/accounts'
 
@@ -34,6 +34,7 @@ import SingleSelect from 'components/SingleSelect'
 import SpinLoader from 'components/SpinLoader'
 import Button from 'components/Button'
 import EasyMDE from 'components/EasyMDE'
+
 
 @observer
 class CreateTicketModal extends React.Component {
@@ -55,6 +56,7 @@ class CreateTicketModal extends React.Component {
   componentDidMount () {
     this.props.fetchTicketTypes()
     this.props.getTagsWithPage({ limit: -1 })
+    this.props.getErrorTypesWithPage({ limit: -1 })
     this.props.fetchGroups()
     this.props.fetchAccountsCreateTicket({ type: 'all', limit: 1000 })
     helpers.UI.inputs()
@@ -145,6 +147,7 @@ class CreateTicketModal extends React.Component {
     data.group = this.groupSelect.value
     data.type = this.state.selectedType
     data.tags = this.tagSelect.value
+    data.errorTypes = this.errorTypeSelect.value
     data.priority = this.selectedPriority
     data.issue = this.issueMde.easymde.value()
     data.usina = this.state.usina
@@ -187,6 +190,9 @@ class CreateTicketModal extends React.Component {
     })
     const mappedTicketTags = this.props.ticketTags.toArray().map(tag => {
       return { text: tag.get('name'), value: tag.get('_id') }
+    })
+    const mappedTicketErrorTypes = this.props.ticketErrorTypes.toArray().map(errorType => {
+      return { text: errorType.get('name'), value: errorType.get('_id') }
     })
     const isCustomer = !shared.sessionUser.role.isAdmin && !shared.sessionUser.role.isAgent;
 
@@ -257,6 +263,20 @@ class CreateTicketModal extends React.Component {
                   width={'100%'}
                   multiple={true}
                   ref={i => (this.tagSelect = i)}
+                />
+              </GridItem>
+            </Grid>
+          </div>
+          <div className='uk-margin-medium-bottom'>
+            <Grid>
+              <GridItem width={'1-1'}>
+                <label className={'uk-form-label'}>Error Types</label>
+                <SingleSelect
+                  showTextbox={false}
+                  items={mappedTicketErrorTypes}
+                  width={'100%'}
+                  multiple={true}
+                  ref={i => (this.errorTypeSelect = i)}
                 />
               </GridItem>
             </Grid>
@@ -346,11 +366,13 @@ CreateTicketModal.propTypes = {
   ticketTypes: PropTypes.object.isRequired,
   priorities: PropTypes.object.isRequired,
   ticketTags: PropTypes.object.isRequired,
+  ticketErrorTypes: PropTypes.object.isRequired,
   accounts: PropTypes.object.isRequired,
   groups: PropTypes.object.isRequired,
   createTicket: PropTypes.func.isRequired,
   fetchTicketTypes: PropTypes.func.isRequired,
   getTagsWithPage: PropTypes.func.isRequired,
+  getErrorTypesWithPage: PropTypes.func.isRequired,
   fetchGroups: PropTypes.func.isRequired,
   fetchAccountsCreateTicket: PropTypes.func.isRequired
 }
@@ -362,6 +384,7 @@ const mapStateToProps = state => ({
   ticketTypes: state.ticketsState.types,
   priorities: state.ticketsState.priorities,
   ticketTags: state.tagsSettings.tags,
+  ticketErrorTypes: state.errorTypesSettings.errorTypes,
   groups: state.groupsState.groups,
   accounts: state.accountsState.accountsCreateTicket
 })
@@ -370,6 +393,7 @@ export default connect(mapStateToProps, {
   createTicket,
   fetchTicketTypes,
   getTagsWithPage,
+  getErrorTypesWithPage,
   fetchGroups,
   fetchAccountsCreateTicket
 })(CreateTicketModal)
