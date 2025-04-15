@@ -66,8 +66,11 @@ module.exports = function (middleware, router, controllers) {
   router.post('/api/v1/tickets/addcomment', apiv1, canUser('comments:create'), apiCtrl.tickets.postComment)
   router.post('/api/v1/tickets/addnote', apiv1, canUser('tickets:notes'), apiCtrl.tickets.postInternalNote)
   router.get('/api/v1/tickets/tags', apiv1, apiCtrl.tickets.getTags)
+  router.get('/api/v1/tickets/errorTypes', apiv1, apiCtrl.tickets.getErrorTypes)
   router.get('/api/v1/tickets/count/tags', apiv1, apiCtrl.tickets.getTagCount)
+  router.get('/api/v1/tickets/count/errorTypes', apiv1, apiCtrl.tickets.getErrorTypeCount)
   router.get('/api/v1/tickets/count/tags/:timespan', apiv1, apiCtrl.tickets.getTagCount)
+  router.get('/api/v1/tickets/count/errorTypes/:timespan', apiv1, apiCtrl.tickets.getErrorTypeCount)
   router.get('/api/v1/tickets/count/days', apiv1, apiCtrl.tickets.getTicketStats)
   router.get('/api/v1/tickets/count/days/:timespan', apiv1, apiCtrl.tickets.getTicketStats)
   router.get('/api/v1/tickets/count/topgroups', apiv1, apiCtrl.tickets.getTopTicketGroups)
@@ -111,6 +114,21 @@ module.exports = function (middleware, router, controllers) {
   router.get('/api/v1/tags/limit', apiv1, apiCtrl.tags.getTagsWithLimit)
   router.put('/api/v1/tags/:id', apiv1, isAgentOrAdmin, apiCtrl.tags.updateTag)
   router.delete('/api/v1/tags/:id', apiv1, isAgentOrAdmin, apiCtrl.tags.deleteTag)
+
+  // Error Types
+  router.get('/api/v1/count/errorTypes', middleware.api, function (req, res) {
+    const errorTypeSchema = require('../../../models/errorType')
+    errorTypeSchema.countDocuments({}, function (err, count) {
+      if (err) return res.status(500).json({ success: false, error: err })
+
+      return res.json({ success: true, count: count })
+    })
+  })
+
+  router.post('/api/v1/errorTypes/create', apiv1, apiCtrl.errorTypes.createErrorType)
+  router.get('/api/v1/errorTypes/limit', apiv1, apiCtrl.errorTypes.getErrorTypesWithLimit)
+  router.put('/api/v1/errorTypes/:id', apiv1, isAgentOrAdmin, apiCtrl.errorTypes.updateErrorType)
+  router.delete('/api/v1/errorTypes/:id', apiv1, isAgentOrAdmin, apiCtrl.errorTypes.deleteErrorType)
 
   // Public Tickets
   const checkCaptcha = middleware.checkCaptcha

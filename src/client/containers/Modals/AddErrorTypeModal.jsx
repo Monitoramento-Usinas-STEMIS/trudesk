@@ -15,7 +15,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
-import { getErrorTypesWithPage } from 'actions/errorTypes'
+import { getErrorTypesWithPage } from 'actions/tickets'
 import { showModal, hideModal } from 'actions/common'
 
 import BaseModal from 'containers/Modals/BaseModal'
@@ -53,7 +53,7 @@ class AddErrorTypeModal extends React.Component {
     let selectedErrorTypes = $(e.target.errorTypes).val()
     if (!selectedErrorTypes) selectedErrorTypes = []
     axios
-      .put(`/api/v1/error-types`, {
+      .put(`/api/v1/errorTypes`, {
         errorTypes: selectedErrorTypes
       })
       .then(() => {
@@ -68,7 +68,7 @@ class AddErrorTypeModal extends React.Component {
 
   onClearClicked () {
     axios
-      .put(`/api/v1/error-types`, {
+      .put(`/api/v1/errorTypes`, {
         errorTypes: []
       })
       .then(() => {

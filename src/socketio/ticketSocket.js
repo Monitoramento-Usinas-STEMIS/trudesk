@@ -35,6 +35,7 @@ function register (socket) {
   events.onUpdateAssigneeList(socket)
   events.onSetAssignee(socket)
   events.onUpdateTicketTags(socket)
+  events.onUpdateTicketErrorTypes(socket)
   events.onClearAssignee(socket)
   events.onSetTicketType(socket)
   events.onSetTicketPriority(socket)
@@ -232,6 +233,21 @@ events.onUpdateTicketTags = socket => {
       const ticket = await ticketSchema.findOne({ _id: ticketId }).populate('tags')
 
       utils.sendToAllConnectedClients(io, socketEvents.TICKETS_UI_TAGS_UPDATE, ticket)
+    } catch (e) {
+      // Blank
+    }
+  })
+}
+
+events.onUpdateTicketErrorTypes = socket => {
+  socket.on(socketEvents.TICKETS_UI_ERROR_TYPES_UPDATE, async data => {
+    const ticketId = data.ticketId
+    if (_.isUndefined(ticketId)) return true
+
+    try {
+      const ticket = await ticketSchema.findOne({ _id: ticketId }).populate('errorTypes')
+
+      utils.sendToAllConnectedClients(io, socketEvents.TICKETS_UI_ERROR_TYPES_UPDATE, ticket)
     } catch (e) {
       // Blank
     }

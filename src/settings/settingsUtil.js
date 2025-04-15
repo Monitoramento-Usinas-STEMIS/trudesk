@@ -147,6 +147,10 @@ util.getSettings = async callback => {
         const tagSchema = require('../models/tag')
         const tagCount = await tagSchema.getTagCount()
         content.data.tags = { count: tagCount }
+        
+        const errorTypeSchema = require('../models/errorType')
+        const errorTypeCount = await errorTypeSchema.getErrorTypeCount()
+        content.data.errorTypes = { count: errorTypeCount }
 
         const roles = await roleSchema.getRoles()
         let roleOrder = await roleOrderSchema.getOrder()

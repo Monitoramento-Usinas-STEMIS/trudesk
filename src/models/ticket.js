@@ -31,6 +31,7 @@ const attachmentSchema = require('./attachment')
 const historySchema = require('./history')
 const statusSchema = require('./ticketStatus')
 require('./tag')
+require('./errorType')
 require('./ticketpriority')
 require('./tickettype')
 
@@ -59,6 +60,7 @@ const COLLECTION = 'tickets'
  * @property {Number} status ```Required``` [default: 0] Ticket Status. (See {@link Ticket#setStatus})
  * @property {Number} priority ```Required```
  * @property {Array} tags An array of Tags.
+ * @property {Array} errorTypes An array of ErrorTypes.
  * @property {String} subject ```Required``` The subject of the ticket. (Overview)
  * @property {String} usina 
  * @property {String} issue ```Required``` Detailed information about the ticket problem/task
@@ -106,6 +108,7 @@ const ticketSchema = mongoose.Schema({
     required: true
   },
   tags: [{ type: mongoose.Schema.Types.ObjectId, ref: 'tags', autopopulate: true }],
+  errorTypes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'errorTypes', autopopulate: true }],
   subject: { type: String, required: true },
   usina: { type: String, required: true },
   issue: { type: String, required: true },
@@ -161,7 +164,7 @@ ticketSchema.post('save', async function (doc, next) {
           path: 'owner assignee comments.owner notes.owner subscribers history.owner',
           select: '_id username fullname email role image title'
         },
-        { path: 'type tags' },
+        { path: 'type tags errorTypes' },
         {
           path: 'group',
           model: groupSchema,
@@ -733,7 +736,7 @@ ticketSchema.statics.getAll = function (callback) {
     .model(COLLECTION)
     .find({ deleted: false })
     .populate('owner assignee', '-password -__v -preferences -iOSDeviceTokens -tOTPKey')
-    .populate('type tags status group')
+    .populate('type tags errorTypes status group')
     .sort({ status: 1 })
     .lean()
 
@@ -798,7 +801,7 @@ ticketSchema.statics.getAllByStatus = function (status, callback) {
       'owner assignee comments.owner notes.owner subscribers history.owner',
       'username fullname email role image title'
     )
-    .populate('type tags status group')
+    .populate('type tags errorTypes status group')
     .sort({ status: 1 })
     .lean()
 
@@ -832,7 +835,7 @@ ticketSchema.statics.getTickets = function (grpIds, callback) {
       'owner assignee comments.owner notes.owner subscribers history.owner',
       'username fullname email role image title'
     )
-    .populate('type tags status group')
+    .populate('type tags errorTypes status group')
     .sort({ status: 1 })
 
   return q.exec(callback)
@@ -910,7 +913,7 @@ function buildQueryWithObject (SELF, grpId, object, count) {
         'username fullname email role image title'
       )
       .populate('assignee', 'username fullname email role image title')
-      .populate('type tags status group')
+      .populate('type tags errorTypes status group')
       .sort({ uid: -1 })
   }
 
@@ -937,6 +940,9 @@ function buildQueryWithObject (SELF, grpId, object, count) {
 
     // Tags Filter
     if (object.filter.tags) query.where({ tags: { $in: object.filter.tags } })
+
+    // ErrorTypes Filter
+    if (object.filter.errorTypes) query.where({ errorTypes: { $in: object.filter.errorTypes } })
 
     // Assignee Filter
     if (object.filter.assignee) query.where({ assignee: { $in: object.filter.assignee } })
@@ -1051,7 +1057,7 @@ ticketSchema.statics.getTicketsByStatus = function (grpId, status, callback) {
       'owner assignee comments.owner notes.owner subscribers history.owner',
       'username fullname email role image title'
     )
-    .populate('type tags status group')
+    .populate('type tags errorTypes status group')
     .sort({ uid: -1 })
 
   return q.exec(callback)
@@ -1078,7 +1084,7 @@ ticketSchema.statics.getTicketByUid = function (uid, callback) {
       'owner assignee comments.owner notes.owner subscribers history.owner',
       'username fullname email role image title'
     )
-    .populate('type tags status group')
+    .populate('type tags errorTypes status group')
 
   return q.exec(callback)
 }
@@ -1112,7 +1118,7 @@ ticketSchema.statics.getTicketById = async function (id, callback) {
           'owner assignee comments.owner notes.owner subscribers history.owner',
           'username fullname email role image title'
         )
-        .populate('type tags status')
+        .populate('type tags stderrorTypesatus')
         .populate({
           path: 'group',
           model: groupSchema,
@@ -1165,7 +1171,7 @@ ticketSchema.statics.getTicketsByRequester = function (userId, callback) {
       'owner assignee comments.owner notes.owner subscribers history.owner',
       'username fullname email role image title'
     )
-    .populate('type tags status')
+    .populate('type tags errorTypes status')
     .populate({
       path: 'group',
       model: groupSchema,
@@ -1208,7 +1214,7 @@ ticketSchema.statics.getTicketsWithSearchString = function (grps, search, callba
             'owner assignee comments.owner notes.owner subscribers history.owner',
             'username fullname email role image title'
           )
-          .populate('type tags status group')
+          .populate('type tags errorTypes status group')
           .limit(100)
 
         q.exec(function (err, results) {
@@ -1230,7 +1236,7 @@ ticketSchema.statics.getTicketsWithSearchString = function (grps, search, callba
             'owner assignee comments.owner notes.owner subscribers history.owner',
             'username fullname email role image title'
           )
-          .populate('type tags status group')
+          .populate('type tags errorTypes status group')
           .limit(100)
 
         q.exec(function (err, results) {
@@ -1252,7 +1258,7 @@ ticketSchema.statics.getTicketsWithSearchString = function (grps, search, callba
             'owner assignee comments.owner notes.owner subscribers history.owner',
             'username fullname email role image title'
           )
-          .populate('type tags status group')
+          .populate('type tags errorTypes status group')
           .limit(100)
 
         q.exec(function (err, results) {
@@ -1465,6 +1471,46 @@ ticketSchema.statics.getAllTicketsByTag = function (tagId, callback) {
 }
 
 /**
+ * Gets tickets via errorType id
+ * @memberof Ticket
+ * @static
+ * @method getTicketsByErrorType
+ *
+ * @param {Array} grpId Group Array of User
+ * @param {string} errorTypeId ErrorType Id
+ * @param {function} callback MongoDB Query Callback
+ */
+ticketSchema.statics.getTicketsByErrorType = function (grpId, errorTypeId, callback) {
+  if (_.isUndefined(grpId)) return callback('Invalid Group Ids - TicketSchema.GetTicketsByErrorType()', null)
+  if (_.isUndefined(errorTypeId)) return callback('Invalid ErrorType Id - TicketSchema.GetTicketsByErrorType()', null)
+
+  const self = this
+
+  const q = self.model(COLLECTION).find({ group: { $in: grpId }, errorTypes: errorTypeId, deleted: false })
+
+  return q.exec(callback)
+}
+
+/**
+ * Gets all tickets via errorType id
+ * @memberof Ticket
+ * @static
+ * @method getAllTicketsByErrorType
+ *
+ * @param {string} errorTypeId ErrorType Id
+ * @param {function} callback MongoDB Query Callback
+ */
+ticketSchema.statics.getAllTicketsByErrorType = function (errorTypeId, callback) {
+  if (_.isUndefined(errorTypeId)) return callback('Invalid ErrorType Id - TicketSchema.GetAllTicketsByErrorType()', null)
+
+  const self = this
+
+  const q = self.model(COLLECTION).find({ errorTypes: errorTypeId, deleted: false })
+
+  return q.exec(callback)
+}
+
+/**
  * Gets tickets via type id
  * @memberof Ticket
  * @static
@@ -1533,7 +1579,7 @@ ticketSchema.statics.getAssigned = function (userId, callback) {
         'owner assignee comments.owner notes.owner subscribers history.owner',
         'username fullname email role image title'
       )
-      .populate('type tags status group')
+      .populate('type tags errorTypes status group')
 
     return q.exec(callback)
   })
@@ -1652,6 +1698,16 @@ ticketSchema.statics.getTagCount = function (tagId, callback) {
   const self = this
 
   const q = self.model(COLLECTION).countDocuments({ tags: tagId, deleted: false })
+
+  return q.exec(callback)
+}
+
+ticketSchema.statics.getErrorTypeCount = function (errorTypeId, callback) {
+  if (_.isUndefined(errorTypeId)) return callback('Invalid ErrorType Id - TicketSchema.GetErrorTypeCount()', null)
+
+  const self = this
+
+  const q = self.model(COLLECTION).countDocuments({ errorTypes: errorTypeId, deleted: false })
 
   return q.exec(callback)
 }

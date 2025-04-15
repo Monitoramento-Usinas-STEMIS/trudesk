@@ -15,6 +15,7 @@
 // Sub APIs
 const apiTicketsV1 = require('./api/v1/tickets')
 const apiTagsV1 = require('./api/v1/tags')
+const apiErrorTypesV1 = require('./api/v1/errorTypes')
 const apiNoticesV1 = require('./api/v1/notices')
 const apiUsersV1 = require('./api/v1/users')
 const apiMessagesV1 = require('./api/v1/messages')
@@ -33,6 +34,7 @@ apiController.v1 = {}
 apiController.v1.common = require('./api/v1/common')
 apiController.v1.tickets = apiTicketsV1
 apiController.v1.tags = apiTagsV1
+apiController.v1.errorTypes = apiErrorTypesV1
 apiController.v1.notices = apiNoticesV1
 apiController.v1.users = apiUsersV1
 apiController.v1.messages = apiMessagesV1

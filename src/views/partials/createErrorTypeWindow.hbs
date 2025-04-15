@@ -1,0 +1,20 @@
+<div class="uk-modal" id="createErrorTypeModal" ng-controller="commonCtrl">
+    <div class="uk-modal-dialog">
+        <form class="uk-form-stacked" id="createErrorTypeForm" ng-submit="createErrorType('{{page}}', $event)">
+            <div class="">
+                <h2 class="nomargin mb-5">Create a Error Type</h2>
+                <p class="uk-text-small uk-text-muted">Error Types categorize tickets, making it easy to identify issues</p>
+
+                <label for="typeName">Error Type Name</label>
+                <input type="text" class="md-input" id="errorTypeName" name="errorTypeName"
+                       data-validation="length"
+                       data-validation-length="min2"
+                       data-validation-error-msg="Please enter a valid error type name. Error type name must contain at least 2 characters." />
+            </div>
+            <div class="uk-modal-footer uk-text-right">
+                <button type="button" class="md-btn md-btn-flat uk-modal-close">Close</button>
+                <button type="submit" class="md-btn md-btn-flat md-btn-flat-success" id="submitCreateErrorTypeBtn">Create</button>
+            </div>
+        </form>
+    </div>
+</div>

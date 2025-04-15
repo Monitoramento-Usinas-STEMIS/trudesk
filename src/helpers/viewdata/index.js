@@ -679,6 +679,21 @@ viewController.getTags = function (request, callback) {
   })
 }
 
+viewController.getErrorTypes = function (request, callback) {
+  const errorTypeSchema = require('../../models/errorType')
+
+  errorTypeSchema.getErrorTypes(function (err, data) {
+    if (err) {
+      winston.debug(err)
+      return callback(err)
+    }
+
+    // data = _.sortBy(data, 'name');
+
+    return callback(null, data)
+  })
+}
+
 viewController.getOverdueSetting = function (request, callback) {
   const settingSchema = require('../../models/setting')
   settingSchema.getSettingByName('showOverdueTickets:enable', function (err, data) {

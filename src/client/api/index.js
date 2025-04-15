@@ -191,8 +191,22 @@ api.tickets.getTagsWithPage = ({ limit, page }) => {
   })
 }
 
+api.tickets.getErrorTypesWithPage = ({ limit, page }) => {
+  limit = limit ? limit : 10
+  page = page ? page : 0
+  return axios.get(`/api/v1/errorTypes/limit?limit=${limit}&page=${page}`).then(res => {
+    return res.data
+  })
+}
+
 api.tickets.createTag = ({ name }) => {
   return axios.post(`/api/v1/tags/create`, { tag: name }).then(res => {
+    return res.data
+  })
+}
+
+api.tickets.createErrorType = ({ name }) => {
+  return axios.post(`/api/v1/errorTypes/create`, { errorType: name }).then(res => {
     return res.data
   })
 }

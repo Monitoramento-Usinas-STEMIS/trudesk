@@ -44,6 +44,9 @@ exported.TICKETS_DUEDATE_SET = '$trudesk:tickets:duedate:set'
 exported.TICKETS_UI_TAGS_UPDATE = '$trudesk:tickets:ui:tags:update'
 exported.TICKETS_TAGS_SET = '$trudesk:tickets:tags:set'
 
+exported.TICKETS_UI_ERROR_TYPES_UPDATE = '$trudesk:tickets:ui:errorTypes:update'
+exported.TICKETS_ERROR_TYPES_SET = '$trudesk:tickets:errorTypes:set'
+
 exported.TICKETS_ASSIGNEE_LOAD = '$trudesk:tickets:assignee:load'
 exported.TICKETS_ASSIGNEE_SET = '$trudesk:tickets:assignee:set'
 exported.TICKETS_ASSIGNEE_CLEAR = '$trudesk:tickets:assignee:clear'

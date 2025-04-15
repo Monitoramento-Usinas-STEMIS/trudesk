@@ -457,6 +457,21 @@ function normalizeTags (callback) {
   })
 }
 
+
+function normalizeErrorTypes (callback) {
+  var errorTypeSchema = require('../models/errorType')
+  errorTypeSchema.find({}, function (err, errorTypes) {
+    if (err) return callback(err)
+    async.each(
+      errorTypes,
+      function (errorType, next) {
+        errorType.save(next)
+      },
+      callback
+    )
+  })
+}
+
 function checkPriorities (callback) {
   var ticketSchema = require('../models/ticket')
   var migrateP1 = false
@@ -774,6 +789,9 @@ settingsDefaults.init = function (callback) {
       },
       function (done) {
         return normalizeTags(done)
+      },
+      function (done) {
+        return normalizeErrorTypes(done)
       },
       function (done) {
         return mailTemplates(done)

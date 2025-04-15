@@ -86,9 +86,9 @@ class TicketsSettings extends React.Component {
 
   static toggleEditErrorType (e) {
     const $target = $(e.target)
-    const $parent = $target.parents('.tag-wrapper')
-    const $v = $parent.find('.view-tag')
-    const $e = $parent.find('.edit-tag')
+    const $parent = $target.parents('.error-type-wrapper')
+    const $v = $parent.find('.view-error-type')
+    const $e = $parent.find('.edit-error-type')
     if ($v && $e) {
       $v.toggleClass('hide')
       $e.toggleClass('hide')
@@ -251,7 +251,7 @@ class TicketsSettings extends React.Component {
     if (name.length < 2) return helpers.UI.showSnackbar('Invalid Error Type Name', true)
 
     axios
-      .put(`/api/v1/error-types/${errorTypeId}`, { name })
+      .put(`/api/v1/errorTypes/${errorTypeId}`, { name })
       .then(res => {
         TicketsSettings.toggleEditErrorType(e)
         helpers.UI.showSnackbar(`Error Type: ${res.data.errorType.name} updated successfully`)
@@ -299,7 +299,7 @@ class TicketsSettings extends React.Component {
         <i style="font-size: 13px; color: #e53935">This will remove the Error Type from all associated tickets.</i>`,
       () => {
         axios
-          .delete(`/api/v1/error-types/${errorType.get('_id')}`)
+          .delete(`/api/v1/errorTypes/${errorType.get('_id')}`)
           .then(res => {
             if (res.data.success) {
               helpers.UI.showSnackbar(`Successfully removed error type: ${errorType.get('name')}`)
@@ -675,8 +675,8 @@ class TicketsSettings extends React.Component {
       <Grid extraClass={'zone ml-0'}>
         {this.props.errorTypesSettings.errorTypes.map(i => {
           return (
-            <GridItem width={'1-2'} key={i.get('_id')} extraClass={'tag-wrapper br bb'}>
-              <Grid extraClass={'view-tag'}>
+            <GridItem width={'1-2'} key={i.get('_id')} extraClass={'error-type-wrapper br bb'}>
+              <Grid extraClass={'view-error-type'}>
                 <GridItem width={'1-1'}>
                   <ZoneBox>
                     <Grid>
@@ -716,7 +716,7 @@ class TicketsSettings extends React.Component {
                   </ZoneBox>
                 </GridItem>
               </Grid>
-              <Grid extraClass={'edit-tag z-box uk-clearfix nbt hide'} style={{ paddingTop: '5px' }}>
+              <Grid extraClass={'edit-error-type z-box uk-clearfix nbt hide'} style={{ paddingTop: '5px' }}>
                 <GridItem width={'1-1'}>
                   <form onSubmit={e => this.onSubmitUpdateErrorType(e, i.get('_id'))}>
                     <Grid>
