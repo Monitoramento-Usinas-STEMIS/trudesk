@@ -700,7 +700,7 @@ class TicketsSettings extends React.Component {
                             flat={true}
                             waves={true}
                             small={true}
-                            onClick={e => this.toggleEditErrorType(e)}
+                            onClick={e => TicketsSettings.toggleEditErrorType(e)}
                           />
                           <Button
                             text={'remove'}
@@ -730,7 +730,7 @@ class TicketsSettings extends React.Component {
                             flat={true}
                             waves={true}
                             small={true}
-                            onClick={e => this.toggleEditErrorType(e)}
+                            onClick={e => TicketsSettings.toggleEditErrorType(e)}
                           />
                           <Button
                             type={'submit'}

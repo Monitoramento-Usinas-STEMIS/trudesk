@@ -167,6 +167,7 @@ class CreateTicketModal extends React.Component {
     //   .toArray()
   }
 
+
   render () {
     const { shared, viewdata } = this.props
     const allowAgentUserTickets =

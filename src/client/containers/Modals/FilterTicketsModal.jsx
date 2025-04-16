@@ -100,6 +100,9 @@ class FilterTicketsModal extends React.Component {
   }
 
   render () {
+    const { shared } = this.props
+
+    const isCustomer = !shared.sessionUser.role.isAdmin && !shared.sessionUser.role.isAgent;
     const statuses = this.props.ticketStatuses.map(s => ({ text: s.get('name'), value: s.get('_id') })).toArray()
 
     const tags = this.props.ticketTags
@@ -186,14 +189,16 @@ class FilterTicketsModal extends React.Component {
               <SingleSelect items={tags} showTextbox={true} multiple={true} ref={r => (this.tagsSelect = r)} />
             </div>
           </div>
-          <div className='uk-grid uk-grid-collapse uk-margin-small-bottom'>
-            <div className='uk-width-1-1'>
-              <label htmlFor='filterStatus' className='uk-form-label' style={{ paddingBottom: 0, marginBottom: 0 }}>
-                Ticket Error Types
-              </label>
-              <SingleSelect items={errorTypes} showTextbox={true} multiple={true} ref={r => (this.errorTypesSelect = r)} />
+          {!isCustomer && (
+            <div className='uk-grid uk-grid-collapse uk-margin-small-bottom'>
+              <div className='uk-width-1-1'>
+                <label htmlFor='filterStatus' className='uk-form-label' style={{ paddingBottom: 0, marginBottom: 0 }}>
+                  Ticket Error Types
+                </label>
+                <SingleSelect items={errorTypes} showTextbox={true} multiple={true} ref={r => (this.errorTypesSelect = r)} />
+              </div>
             </div>
-          </div>
+          )}
           <div className='uk-grid uk-grid-collapse uk-margin-small-bottom'>
             <div className='uk-width-1-1'>
               <label htmlFor='filterStatus' className='uk-form-label' style={{ paddingBottom: 0, marginBottom: 0 }}>
@@ -235,6 +240,7 @@ class FilterTicketsModal extends React.Component {
 
 FilterTicketsModal.propTypes = {
   viewdata: PropTypes.object.isRequired,
+  shared: PropTypes.object.isRequired,
   groupsState: PropTypes.object.isRequired,
   accountsState: PropTypes.object.isRequired,
   hideModal: PropTypes.func.isRequired,
@@ -252,6 +258,7 @@ FilterTicketsModal.propTypes = {
 }
 
 const mapStateToProps = state => ({
+  shared: state.shared,
   viewdata: state.common.viewdata,
   groupsState: state.groupsState,
   accountsState: state.accountsState,
