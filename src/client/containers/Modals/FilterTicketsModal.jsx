@@ -18,7 +18,7 @@ import { connect } from 'react-redux'
 import { hideModal } from 'actions/common'
 import { fetchGroups, unloadGroups } from 'actions/groups'
 import { fetchAccounts, unloadAccounts } from 'actions/accounts'
-import { getTagsWithPage, fetchTicketTypes, fetchTicketStatus } from 'actions/tickets'
+import { getTagsWithPage, getErrorTypesWithPage, fetchTicketTypes, fetchTicketStatus } from 'actions/tickets'
 
 import BaseModal from 'containers/Modals/BaseModal'
 import SingleSelect from 'components/SingleSelect'
@@ -36,6 +36,7 @@ class FilterTicketsModal extends React.Component {
     this.props.fetchGroups()
     this.props.fetchAccounts({ page: 0, limit: -1, type: 'agents', showDeleted: false })
     this.props.getTagsWithPage({ limit: -1 })
+    this.props.getErrorTypesWithPage({ limit: -1 })
     this.props.fetchTicketTypes()
     this.props.fetchTicketStatus()
   }
@@ -57,6 +58,7 @@ class FilterTicketsModal extends React.Component {
     const usina = e.target.usina.value
     const statuses = this.statusSelect.value
     const tags = this.tagsSelect.value
+    const errorTypes = this.errorTypesSelect.value
     const types = this.typesSelect.value
     const groups = this.groupSelect.value
     const assignees = this.assigneeSelect.value
@@ -81,6 +83,10 @@ class FilterTicketsModal extends React.Component {
       queryString += `&tag=${i}`
     })
 
+    each(errorTypes, i => {
+      queryString += `&et=${i}`
+    })
+
     each(groups, i => {
       queryString += `&gp=${i}`
     })
@@ -97,6 +103,12 @@ class FilterTicketsModal extends React.Component {
     const statuses = this.props.ticketStatuses.map(s => ({ text: s.get('name'), value: s.get('_id') })).toArray()
 
     const tags = this.props.ticketTags
+      .map(t => {
+        return { text: t.get('name'), value: t.get('_id') }
+      })
+      .toArray()
+
+    const errorTypes = this.props.ticketErrorTypes
       .map(t => {
         return { text: t.get('name'), value: t.get('_id') }
       })
@@ -177,6 +189,14 @@ class FilterTicketsModal extends React.Component {
           <div className='uk-grid uk-grid-collapse uk-margin-small-bottom'>
             <div className='uk-width-1-1'>
               <label htmlFor='filterStatus' className='uk-form-label' style={{ paddingBottom: 0, marginBottom: 0 }}>
+                Ticket Error Types
+              </label>
+              <SingleSelect items={errorTypes} showTextbox={true} multiple={true} ref={r => (this.errorTypesSelect = r)} />
+            </div>
+          </div>
+          <div className='uk-grid uk-grid-collapse uk-margin-small-bottom'>
+            <div className='uk-width-1-1'>
+              <label htmlFor='filterStatus' className='uk-form-label' style={{ paddingBottom: 0, marginBottom: 0 }}>
                 Ticket Type
               </label>
               <SingleSelect items={types} showTextbox={false} multiple={true} ref={r => (this.typesSelect = r)} />
@@ -224,6 +244,7 @@ FilterTicketsModal.propTypes = {
   unloadAccounts: PropTypes.func.isRequired,
   getTagsWithPage: PropTypes.func.isRequired,
   ticketTags: PropTypes.object.isRequired,
+  errorTypes: PropTypes.object.isRequired,
   fetchTicketTypes: PropTypes.func.isRequired,
   ticketTypes: PropTypes.object.isRequired,
   fetchTicketStatus: PropTypes.func.isRequired,
@@ -235,6 +256,7 @@ const mapStateToProps = state => ({
   groupsState: state.groupsState,
   accountsState: state.accountsState,
   ticketTags: state.tagsSettings.tags,
+  ticketErrorTypes: state.errorTypesSettings.errorTypes,
   ticketTypes: state.ticketsState.types,
   ticketStatuses: state.ticketsState.ticketStatuses
 })
@@ -246,6 +268,7 @@ export default connect(mapStateToProps, {
   fetchAccounts,
   unloadAccounts,
   getTagsWithPage,
+  getErrorTypesWithPage,
   fetchTicketTypes,
   fetchTicketStatus
 })(FilterTicketsModal)

@@ -267,20 +267,22 @@ class CreateTicketModal extends React.Component {
               </GridItem>
             </Grid>
           </div>
-          <div className='uk-margin-medium-bottom'>
-            <Grid>
-              <GridItem width={'1-1'}>
-                <label className={'uk-form-label'}>Error Types</label>
-                <SingleSelect
-                  showTextbox={false}
-                  items={mappedTicketErrorTypes}
-                  width={'100%'}
-                  multiple={true}
-                  ref={i => (this.errorTypeSelect = i)}
-                />
-              </GridItem>
-            </Grid>
-          </div>
+          {!isCustomer && (
+            <div className='uk-margin-medium-bottom'>
+              <Grid>
+                <GridItem width={'1-1'}>
+                  <label className={'uk-form-label'}>Error Types</label>
+                  <SingleSelect
+                    showTextbox={false}
+                    items={mappedTicketErrorTypes}
+                    width={'100%'}
+                    multiple={true}
+                    ref={i => (this.errorTypeSelect = i)}
+                  />
+                </GridItem>
+              </Grid>
+            </div>
+          )}
           <div className='uk-clearfix uk-margin-medium-bottom'>
             <label className={'uk-form-label'}>Type</label>
             {this.props.ticketTypes.toArray().map(type => (

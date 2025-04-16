@@ -231,6 +231,7 @@ ticketsController.filter = function (req, res, next) {
   let groups = queryString.gp
   let types = queryString.tt
   let tags = queryString.tag
+  let errorTypes = queryString.et
   let assignee = queryString.au
 
   const rawNoPage = req.originalUrl.replace(/[?&]page=[^&#]*(#.*)?$/, '$1').replace(/([?&])page=[^&]*&/, '$1')
@@ -245,6 +246,8 @@ ticketsController.filter = function (req, res, next) {
   if (!_.isUndefined(types) && !_.isArray(types)) types = [types]
   if (!_.isUndefined(tags)) tags = xss(tags)
   if (!_.isUndefined(tags) && !_.isArray(tags)) tags = [tags]
+  if (!_.isUndefined(errorTypes)) errorTypes = xss(errorTypes)
+  if (!_.isUndefined(errorTypes) && !_.isArray(errorTypes)) errorTypes = [errorTypes]
   if (!_.isUndefined(assignee)) assignee = xss(assignee)
   if (!_.isUndefined(assignee) && !_.isArray(assignee)) assignee = [assignee]
 
@@ -261,6 +264,7 @@ ticketsController.filter = function (req, res, next) {
     priority: priority,
     groups: groups,
     tags: tags,
+    errorTypes: errorTypes,
     types: types,
     assignee: assignee,
     raw: rawNoPage
