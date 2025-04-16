@@ -23,6 +23,7 @@ import {
   TICKETS_UI_DUEDATE_UPDATE,
   TICKETS_DUEDATE_SET,
   TICKETS_UI_TAGS_UPDATE,
+  TICKETS_UI_ERROR_TYPES_UPDATE,
   TICKETS_COMMENT_NOTE_REMOVE,
   TICKETS_COMMENT_NOTE_SET,
   TICKETS_UI_USINA_UPDATE,
@@ -128,6 +129,7 @@ class SingleTicketContainer extends React.Component {
     this.props.socket.on(TICKETS_UI_GROUP_UPDATE, this.onUpdateTicketGroup)
     this.props.socket.on(TICKETS_UI_DUEDATE_UPDATE, this.onUpdateTicketDueDate)
     this.props.socket.on(TICKETS_UI_TAGS_UPDATE, this.onUpdateTicketTags)
+    this.props.socket.on(TICKETS_UI_ERROR_TYPES_UPDATE, this.onUpdateTicketErrorTypes)
     this.props.socket.on(TICKETS_UI_USINA_UPDATE, this.onUpdateTicketUsina)
 
     fetchTicket(this)
@@ -195,6 +197,10 @@ class SingleTicketContainer extends React.Component {
 
   onUpdateTicketTags (data) {
     if (this.ticket._id === data._id) this.ticket.tags = data.tags
+  }
+
+  onUpdateTicketErrorTypes (data) {
+    if (this.ticket._id === data._id) this.ticket.errorTypes = data.errorTypes
   }
 
   onUpdateTicketUsina (data) {
@@ -542,9 +548,43 @@ class SingleTicketContainer extends React.Component {
                               ))}
                           </div>
                         </div>
+                        {!isCustomer && (
+                          <div className='uk-width-1-1 nopadding'>
+                            <span>
+                              Error Type
+                              {hasTicketUpdate && (
+                                <Fragment>
+                                  <span> - </span>
+                                  <div id='editErrorTypes' className={'uk-display-inline'}>
+                                    <a
+                                      role={'button'}
+                                      style={{ fontSize: 11 }}
+                                      className='no-ajaxy'
+                                      onClick={() => {
+                                        this.props.showModal('ADD_ERROR_TYPES_MODAL', {
+                                          ticketId: this.ticket._id,
+                                          currentErrorTypes: this.ticket.errorTypes.map(errorType => errorType._id)
+                                        })
+                                      }}
+                                    >
+                                      Edit Error Types
+                                    </a>
+                                  </div>
+                                </Fragment>
+                              )}
+                            </span>
+                            <div className='tag-list uk-clearfix'>
+                              {this.ticket.errorTypes &&
+                                this.ticket.errorTypes.map(errorType => (
+                                  <div key={errorType._id} className='item'>
+                                    {errorType.name}
+                                  </div>
+                                ))}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
-
                     {helpers.canUser('agent:*', true) && (
                       <div className='uk-width-1-1 padding-left-right-15'>
                         <div className='tru-card ticket-details pr-0 pb-0' style={{ height: 250 }}>
