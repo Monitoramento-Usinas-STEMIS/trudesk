@@ -25,9 +25,9 @@ import axios from 'axios'
 import $ from 'jquery'
 import helpers from 'lib/helpers'
 
-import { ERROR_TYPES_UI_UPDATE } from 'serverSocket/socketEventConsts'
+import { TICKETS_UI_ERROR_TYPES_UPDATE } from 'serverSocket/socketEventConsts'
 
-class AddErrorTypeModal extends React.Component {
+class AddErrorTypesModal extends React.Component {
   componentDidMount () {
     this.props.getErrorTypesWithPage({ limit: -1, page: 0 })
   }
@@ -57,7 +57,7 @@ class AddErrorTypeModal extends React.Component {
         errorTypes: selectedErrorTypes
       })
       .then(() => {
-        this.props.socket.emit(ERROR_TYPES_UI_UPDATE)
+        this.props.socket.emit(TICKETS_UI_ERROR_TYPES_UPDATE)
         this.closeButton.click()
       })
       .catch(error => {
@@ -75,7 +75,7 @@ class AddErrorTypeModal extends React.Component {
         $(this.select)
           .val('')
           .trigger('chosen:updated')
-        this.props.socket.emit(ERROR_TYPES_UI_UPDATE)
+        this.props.socket.emit(TICKETS_UI_ERROR_TYPES_UPDATE)
       })
       .catch(error => {
         Log.error(error)
@@ -154,7 +154,7 @@ class AddErrorTypeModal extends React.Component {
     )
   }
 }
-    AddErrorTypeModal.propTypes = {
+    AddErrorTypesModal.propTypes = {
       currentErrorTypes: PropTypes.array,
       errorTypesSettings: PropTypes.object.isRequired,
       getErrorTypesWithPage: PropTypes.func.isRequired,
@@ -168,4 +168,4 @@ class AddErrorTypeModal extends React.Component {
       socket: state.shared.socket
     })
     
-    export default connect(mapStateToProps, { getErrorTypesWithPage, showModal, hideModal })(AddErrorTypeModal)
+    export default connect(mapStateToProps, { getErrorTypesWithPage, showModal, hideModal })(AddErrorTypesModal)

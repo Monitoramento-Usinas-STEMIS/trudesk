@@ -1118,7 +1118,7 @@ ticketSchema.statics.getTicketById = async function (id, callback) {
           'owner assignee comments.owner notes.owner subscribers history.owner',
           'username fullname email role image title'
         )
-        .populate('type tags stderrorTypesatus')
+        .populate('type tags errorTypes status')
         .populate({
           path: 'group',
           model: groupSchema,
