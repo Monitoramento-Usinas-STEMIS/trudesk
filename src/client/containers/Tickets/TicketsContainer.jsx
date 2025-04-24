@@ -72,6 +72,7 @@ class TicketsContainer extends React.Component {
     this.props.fetchTicketStatus()
   }
 
+
   componentDidUpdate () {
     if (this.timeline) {
       this.timeline.pause()

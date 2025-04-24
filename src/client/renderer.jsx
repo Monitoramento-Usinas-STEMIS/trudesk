@@ -30,6 +30,7 @@ import ProfileContainer from 'containers/Profile'
 import MessagesContainer from 'containers/Messages'
 import ReportsContainer from 'containers/Reports'
 import AboutContainer from 'containers/About'
+import WarrantyTicketsContainer from 'containers/Tickets/WarrantyTicketsContainer'
 
 export default function (store) {
   if (document.getElementById('dashboard-container')) {
@@ -55,6 +56,21 @@ export default function (store) {
     )
 
     ReactDOM.render(TicketsContainerWithProvider, document.getElementById('tickets-container'))
+  }
+
+  if (document.getElementById('warranty-tickets-container')) {
+    const view = document.getElementById('warranty-tickets-container').getAttribute('data-view')
+    const page = document.getElementById('warranty-tickets-container').getAttribute('data-page')
+    let filter = document.getElementById('warranty-tickets-container').getAttribute('data-filter')
+    filter = filter ? JSON.parse(filter) : {}
+
+    const WarrantyTicketsContainerWithProvider = (
+      <Provider store={store}>
+        <WarrantyTicketsContainer view={view} page={page} filter={filter} />
+      </Provider>
+    )
+
+    ReactDOM.render(WarrantyTicketsContainerWithProvider, document.getElementById('warranty-tickets-container'))
   }
 
   if (document.getElementById('single-ticket-container')) {

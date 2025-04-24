@@ -1,14 +1,3 @@
-/*
-      .                              .o8                     oooo
-   .o8                             "888                     `888
- .o888oo oooo d8b oooo  oooo   .oooo888   .ooooo.   .oooo.o  888  oooo
-   888   `888""8P `888  `888  d88' `888  d88' `88b d88(  "8  888 .8P'
-   888    888      888   888  888   888  888ooo888 `"Y88b.   888888.
-   888 .  888      888   888  888   888  888    .o o.  )88b  888 `88b.
-   "888" d888b     `V88V"V8P' `Y8bod88P" `Y8bod8P' 8""888P' o888o o888o
- ========================================================================
- **/
-
 const express = require('express')
 const router = express.Router()
 const controllers = require('../controllers')
@@ -203,7 +192,6 @@ function mainRoutes (router, middleware, controllers) {
   )
   router.get('/tickets/print/:uid', middleware.redirectToLogin, middleware.loadCommonData, controllers.tickets.print)
   router.get('/tickets/:id', middleware.redirectToLogin, middleware.loadCommonData, controllers.tickets.single)
-  // router.post('/tickets/postcomment', middleware.redirectToLogin, controllers.tickets.postcomment);
   router.post(
     '/tickets/uploadattachment',
     middleware.redirectToLogin,
@@ -211,6 +199,120 @@ function mainRoutes (router, middleware, controllers) {
     controllers.tickets.uploadAttachment
   )
   router.post('/tickets/uploadmdeimage', middleware.redirectToLogin, controllers.tickets.uploadImageMDE)
+
+  // Warranty Tickets
+  router.get(
+    '/warranty',
+    middleware.redirectToLogin,
+    middleware.loadCommonData,
+    controllers.tickets.getWarrantyActive,
+    controllers.tickets.processor
+  )
+  router.get(
+    '/warranty/filter',
+    middleware.redirectToLogin,
+    middleware.loadCommonData,
+    controllers.tickets.warrantyFilter,
+    controllers.tickets.processor
+  )
+  router.get(
+    '/warranty/active',
+    middleware.redirectToLogin,
+    middleware.loadCommonData,
+    controllers.tickets.getWarrantyActive,
+    controllers.tickets.processor
+  )
+  router.get(
+    '/warranty/active/page/:page',
+    middleware.redirectToLogin,
+    middleware.loadCommonData,
+    controllers.tickets.getWarrantyActive,
+    controllers.tickets.processor
+  )
+  router.get(
+    '/warranty/new',
+    middleware.redirectToLogin,
+    middleware.loadCommonData,
+    controllers.tickets.getWarrantyByStatus,
+    controllers.tickets.processor
+  )
+  router.get(
+    '/warranty/new/page/:page',
+    middleware.redirectToLogin,
+    middleware.loadCommonData,
+    controllers.tickets.getWarrantyByStatus,
+    controllers.tickets.processor
+  )
+  router.get(
+    '/warranty/open',
+    middleware.redirectToLogin,
+    middleware.loadCommonData,
+    controllers.tickets.getWarrantyByStatus,
+    controllers.tickets.processor
+  )
+  router.get(
+    '/warranty/open/page/:page',
+    middleware.redirectToLogin,
+    middleware.loadCommonData,
+    controllers.tickets.getWarrantyByStatus,
+    controllers.tickets.processor
+  )
+  router.get(
+    '/warranty/pending',
+    middleware.redirectToLogin,
+    middleware.loadCommonData,
+    controllers.tickets.getWarrantyByStatus,
+    controllers.tickets.processor
+  )
+  router.get(
+    '/warranty/pending/page/:page',
+    middleware.redirectToLogin,
+    middleware.loadCommonData,
+    controllers.tickets.getWarrantyByStatus,
+    controllers.tickets.processor
+  )
+  router.get(
+    '/warranty/closed',
+    middleware.redirectToLogin,
+    middleware.loadCommonData,
+    controllers.tickets.getWarrantyByStatus,
+    controllers.tickets.processor
+  )
+  router.get(
+    '/warranty/closed/page/:page',
+    middleware.redirectToLogin,
+    middleware.loadCommonData,
+    controllers.tickets.getWarrantyByStatus,
+    controllers.tickets.processor
+  )
+  router.get(
+    '/warranty/assigned',
+    middleware.redirectToLogin,
+    middleware.loadCommonData,
+    controllers.tickets.getWarrantyAssigned,
+    controllers.tickets.processor
+  )
+  router.get(
+    '/warranty/assigned/page/:page',
+    middleware.redirectToLogin,
+    middleware.loadCommonData,
+    controllers.tickets.getWarrantyAssigned,
+    controllers.tickets.processor
+  )
+  router.get(
+    '/warranty/unassigned',
+    middleware.redirectToLogin,
+    middleware.loadCommonData,
+    controllers.tickets.getWarrantyUnassigned,
+    controllers.tickets.processor
+  )
+  router.get(
+    '/warranty/unassigned/page/:page',
+    middleware.redirectToLogin,
+    middleware.loadCommonData,
+    controllers.tickets.getWarrantyUnassigned,
+    controllers.tickets.processor
+  )
 
   // Messages
   router.get('/messages', middleware.redirectToLogin, middleware.loadCommonData, controllers.messages.get)
@@ -244,10 +346,6 @@ function mainRoutes (router, middleware, controllers) {
   router.get('/accounts/agents', middleware.redirectToLogin, middleware.loadCommonData, controllers.accounts.getAgents)
   router.get('/accounts/admins', middleware.redirectToLogin, middleware.loadCommonData, controllers.accounts.getAdmins)
   router.post('/accounts/uploadimage', middleware.redirectToLogin, controllers.accounts.uploadImage)
-  // router.get('/accounts/import', middleware.redirectToLogin, middleware.loadCommonData, controllers.accounts.importPage)
-  // router.post('/accounts/import/csv/upload', middleware.redirectToLogin, controllers.accounts.uploadCSV)
-  // router.post('/accounts/import/json/upload', middleware.redirectToLogin, controllers.accounts.uploadJSON)
-  // router.post('/accounts/import/ldap/bind', middleware.redirectToLogin, controllers.accounts.bindLdap)
 
   // Groups
   router.get('/groups', middleware.redirectToLogin, middleware.loadCommonData, controllers.groups.get)
@@ -264,24 +362,13 @@ function mainRoutes (router, middleware, controllers) {
   router.get('/reports', middleware.redirectToLogin, middleware.loadCommonData, controllers.reports.overview)
   router.get('/reports/overview', middleware.redirectToLogin, middleware.loadCommonData, controllers.reports.overview)
   router.get('/reports/generate', middleware.redirectToLogin, middleware.loadCommonData, controllers.reports.generate)
-  // router.get(
-  //   '/reports/breakdown/group',
-  //   middleware.redirectToLogin,
-  //   middleware.loadCommonData,
-  //   controllers.reports.breakdownGroup
-  // )
-  // router.get(
-  //   '/reports/breakdown/user',
-  //   middleware.redirectToLogin,
-  //   middleware.loadCommonData,
-  //   controllers.reports.breakdownUser
-  // )
 
   // Notices
   router.get('/notices', middleware.redirectToLogin, middleware.loadCommonData, controllers.notices.get)
   router.get('/notices/create', middleware.redirectToLogin, middleware.loadCommonData, controllers.notices.create)
   router.get('/notices/:id', middleware.redirectToLogin, middleware.loadCommonData, controllers.notices.edit)
 
+  // Settings
   router.get('/settings', middleware.redirectToLogin, middleware.loadCommonData, controllers.settings.general)
   router.get('/settings/general', middleware.redirectToLogin, middleware.loadCommonData, controllers.settings.general)
   router.get('/settings/accounts', middleware.redirectToLogin, middleware.loadCommonData, controllers.settings.accounts)
@@ -353,9 +440,7 @@ function mainRoutes (router, middleware, controllers) {
   router.get('/plugins', middleware.redirectToLogin, middleware.loadCommonData, controllers.plugins.get)
 
   // API
-  // v1
   require('../controllers/api/v1/routes')(middleware, router, controllers)
-  // v2
   require('../controllers/api/v2/routes')(middleware, router, controllers)
 
   router.get('/api/v1/plugins/list/installed', middleware.api, function (req, res) {

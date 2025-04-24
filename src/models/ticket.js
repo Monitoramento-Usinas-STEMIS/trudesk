@@ -972,8 +972,12 @@ function buildQueryWithObject (SELF, grpId, object, count) {
       query.where({ date: { $gte: startDate, $lte: endDate } })
     }
   }
-
+  if (object.type) {
+    query.where({ type: { $in: object.type } });
+  }
   if (object.owner) query.where('owner', object.owner)
+
+    
   if (object.assignedSelf) query.where('assignee', object.user)
   if (object.unassigned) query.where({ assignee: { $exists: false } })
 

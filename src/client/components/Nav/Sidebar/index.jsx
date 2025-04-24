@@ -30,11 +30,6 @@ class Sidebar extends React.Component {
   }
 
   componentDidMount () {
-    // Helpers.UI.getPlugins((err, result) => {
-    //   if (!err && result.plugins) {
-    //     this.setState({ plugins: result.plugins })
-    //   }
-    // })
     const sidebarRoute = document.getElementById('__sidebar_route').innerText
     const sidebarSubRoute = document.getElementById('__sidebar_sub_route').innerText
 
@@ -131,6 +126,38 @@ class Sidebar extends React.Component {
                 </Submenu>
               </SidebarItem>
             )}
+            {sessionUser && Helpers.canUser('tickets:view') && (
+              <SidebarItem
+                text='Warranty Tickets'
+                icon='assignment'
+                href='/warranty'
+                class='navWarrantyTickets no-ajaxy'
+                hasSubmenu={true}
+                subMenuTarget='warranty'
+                active={activeItem === 'warranty'}
+              >
+                <Submenu id='warranty'>
+                  <SubmenuItem
+                    text='Active'
+                    icon='timer'
+                    href='/warranty/active'
+                    active={activeSubItem === 'warranty-active'}
+                  />
+                  <SubmenuItem
+                    text='Assigned'
+                    icon='assignment_ind'
+                    href='/warranty/assigned'
+                    active={activeSubItem === 'warranty-assigned'}
+                  />
+                  <SubmenuItem
+                    text='Unassigned'
+                    icon='person_add_disabled'
+                    href='/warranty/unassigned'
+                    active={activeSubItem === 'warranty-unassigned'}
+                  />
+                </Submenu>
+              </SidebarItem>
+            )}
             <SidebarItem
               text='Messages'
               icon='chat'
@@ -141,7 +168,7 @@ class Sidebar extends React.Component {
             {sessionUser && Helpers.canUser('accounts:view') && (
               <SidebarItem
                 text='Accounts'
-                icon='&#xE7FD;'
+                icon=''
                 href='/accounts'
                 class='navAccounts'
                 active={activeItem === 'accounts'}
@@ -214,25 +241,9 @@ class Sidebar extends React.Component {
                     href='/reports/generate'
                     active={activeSubItem === 'reports-generate'}
                   />
-                  {/*<NavSeparator />*/}
-                  {/*<SubmenuItem*/}
-                  {/*  text='Group Breakdown'*/}
-                  {/*  icon='supervisor_account'*/}
-                  {/*  href='/reports/breakdown/group'*/}
-                  {/*  active={activeSubItem === 'reports-breakdown-group'}*/}
-                  {/*/>*/}
-                  {/*<SubmenuItem*/}
-                  {/*  text='User Breakdown'*/}
-                  {/*  icon='perm_identity'*/}
-                  {/*  href='/reports/breakdown/user'*/}
-                  {/*  active={activeSubItem === 'reports-breakdown-user'}*/}
-                  {/*/>*/}
                 </Submenu>
               </SidebarItem>
             )}
-
-            {/*{this.renderPlugins()}*/}
-
             {sessionUser && Helpers.canUser('notices:view') && (
               <SidebarItem
                 text='Notices'
@@ -242,7 +253,6 @@ class Sidebar extends React.Component {
                 active={activeItem === 'notices'}
               />
             )}
-
             {sessionUser && Helpers.canUser('settings:edit') && (
               <SidebarItem
                 text='Settings'
