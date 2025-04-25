@@ -55,7 +55,7 @@ class WarrantyTicketsContainer extends React.Component {
         this.props.socket.on('$trudesk:client:ticket:updated', this.onTicketUpdated);
         this.props.socket.on('$trudesk:client:ticket:deleted', this.onTicketDeleted);
 
-        this.props.fetchTickets({ limit: 50, page: this.props.page, type: this.props.view, filter: this.props.filter})
+        this.props.fetchTickets({ limit: 50, page: this.props.page, type: this.props.view, filter: this.props.filter, isWarranty: this.props.isWarranty || true})
         this.props.fetchTicketStatus()
     }
 

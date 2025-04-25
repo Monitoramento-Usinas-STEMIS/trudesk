@@ -41,7 +41,9 @@ import {
   DELETE_STATUS
 } from 'actions/types'
 
-export const fetchTickets = createAction(FETCH_TICKETS.ACTION)
+export const fetchTickets = createAction(FETCH_TICKETS.ACTION, payload => ({
+  ...payload,
+}), () => ({ thunk: true }));
 export const createTicket = createAction(CREATE_TICKET.ACTION)
 export const ticketUpdated = createAction(TICKET_UPDATED.ACTION)
 export const deleteTicket = createAction(DELETE_TICKET.ACTION)

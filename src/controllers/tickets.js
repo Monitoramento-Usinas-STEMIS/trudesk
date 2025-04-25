@@ -1,5 +1,5 @@
 const ticketSchema = require('../models/ticket');
-const ticketTypeSchema = require('../models/tickettype'); // Added to fetch ticket types
+const ticketTypeSchema = require('../models/tickettype');
 const async = require('async');
 const path = require('path');
 const _ = require('lodash');
@@ -12,7 +12,6 @@ const fs = require('fs-extra');
 
 const ticketsController = {};
 
-
 async function getWarrantyTypeId() {
   try {
     const warrantyType = await ticketTypeSchema.findOne({ name: 'Garantia' }).select('_id');
@@ -22,7 +21,6 @@ async function getWarrantyTypeId() {
     return null;
   }
 }
-
 
 async function getNonWarrantyTypeIds() {
   try {
@@ -79,10 +77,8 @@ ticketsController.getByStatus = async function (req, res, next) {
     processor.object = {
       limit: 50,
       page: page,
-      status: [],
-      filter: {
-        types: nonWarrantyTypeIds // Exclude Garantia tickets
-      }
+      status: [], 
+      isWarranty: false
     };
 
     const fullUrl = url.format({
@@ -136,10 +132,8 @@ ticketsController.getActive = async function (req, res, next) {
     processor.object = {
       limit: 50,
       page: page,
-      status: { isResolved: false },
-      filter: {
-        types: nonWarrantyTypeIds 
-      }
+      status: { isResolved: false }, 
+      isWarranty: false
     };
 
     req.processor = processor;
@@ -168,9 +162,7 @@ ticketsController.getAssigned = async function (req, res, next) {
       status: { isResolved: false },
       assignedSelf: true,
       user: req.user._id,
-      filter: {
-        types: nonWarrantyTypeIds 
-      }
+      isWarranty: false
     };
 
     req.processor = processor;
@@ -198,10 +190,8 @@ ticketsController.getUnassigned = async function (req, res, next) {
       page: page,
       status: [0, 1, 2],
       unassigned: true,
-      user: req.user._id,
-      filter: {
-        types: nonWarrantyTypeIds 
-      }
+      user: req.user._id, 
+      isWarranty: false
     };
 
     req.processor = processor;
@@ -264,7 +254,7 @@ ticketsController.filter = async function (req, res, next) {
       groups: groups,
       tags: tags,
       errorTypes: errorTypes,
-      types: types ? types : nonWarrantyTypeIds, 
+      types: types ? types : nonWarrantyTypeIds, // Usa tipos não-Garantia por padrão
       assignee: assignee,
       raw: rawNoPage
     };
@@ -280,7 +270,8 @@ ticketsController.filter = async function (req, res, next) {
       page: page,
       status: filter.status,
       user: req.user._id,
-      filter: filter
+      filter: filter,
+      isWarranty: false
     };
 
     req.processor = processor;
@@ -305,7 +296,7 @@ ticketsController.processor = function (req, res) {
   content.data.common = req.viewdata;
   content.data.page = processor.object.page;
   content.data.filter = processor.object.filter;
-
+  content.data.isWarranty = processor.object.isWarranty 
   return res.render(processor.renderpage, content);
 };
 
@@ -706,7 +697,15 @@ ticketsController.uploadAttachment = function (req, res) {
       return file.resume();
     }
 
-    ifintellectually
+    if (badExts.includes(ext)) {
+      error = {
+        status: 400,
+        message: 'Invalid File Type'
+      };
+
+      return file.resume();
+    }
+
     if (!fs.existsSync(savePath)) fs.ensureDirSync(savePath);
 
     object.filePath = path.join(savePath, 'attachment_' + sanitizedFilename);
@@ -716,7 +715,7 @@ ticketsController.uploadAttachment = function (req, res) {
     if (fs.existsSync(object.filePath)) {
       const Chance = require('chance');
       const chance = new Chance();
-      sanitizedFilename = chance.hash({ length: 15 }) + '-' + sanitizedFilename;
+      sanitizedFilename = chance.hash({ length: 15 }) + ext;
       object.filePath = path.join(savePath, 'attachment_' + sanitizedFilename);
       object.filename = sanitizedFilename;
     }
@@ -827,9 +826,7 @@ ticketsController.getWarrantyByStatus = async function (req, res, next) {
       limit: 50,
       page: page,
       status: [],
-      filter: {
-        types: [warrantyTypeId] 
-      }
+      isWarranty: true
     };
 
     const fullUrl = url.format({
@@ -888,9 +885,8 @@ ticketsController.getWarrantyActive = async function (req, res, next) {
       limit: 50,
       page: page,
       status: { isResolved: false },
-      filter: {
-        types: [warrantyTypeId] 
-      }
+      type: [warrantyTypeId], 
+      isWarranty: true
     };
 
     req.processor = processor;
@@ -912,7 +908,8 @@ ticketsController.getWarrantyAssigned = async function (req, res, next) {
     }
 
     const processor = {};
-    processor.title =  processor.nav = 'warranty';
+    processor.title = 'Warranty Tickets';
+    processor.nav = 'warranty';
     processor.subnav = 'warranty-assigned';
     processor.renderpage = 'warranty';
     processor.pagetype = 'assigned';
@@ -922,9 +919,7 @@ ticketsController.getWarrantyAssigned = async function (req, res, next) {
       status: { isResolved: false },
       assignedSelf: true,
       user: req.user._id,
-      filter: {
-        types: [warrantyTypeId] 
-      }
+      isWarranty: true
     };
 
     req.processor = processor;
@@ -957,9 +952,7 @@ ticketsController.getWarrantyUnassigned = async function (req, res, next) {
       status: [0, 1, 2],
       unassigned: true,
       user: req.user._id,
-      filter: {
-        types: [warrantyTypeId] 
-      }
+      isWarranty: true
     };
 
     req.processor = processor;
@@ -1026,7 +1019,7 @@ ticketsController.warrantyFilter = async function (req, res, next) {
       groups: groups,
       tags: tags,
       errorTypes: errorTypes,
-      types: types ? types : [warrantyTypeId],
+      types: types ? types : [warrantyTypeId], 
       assignee: assignee,
       raw: rawNoPage
     };
@@ -1042,7 +1035,8 @@ ticketsController.warrantyFilter = async function (req, res, next) {
       page: page,
       status: filter.status,
       user: req.user._id,
-      filter: filter
+      filter: filter,
+      isWarranty: true
     };
 
     req.processor = processor;

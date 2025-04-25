@@ -50,9 +50,11 @@ api.tickets.getWithPage = payload => {
   const limit = payload.limit ? payload.limit : 50
   const page = payload.page ? payload.page : 0
   const type = payload.type ? payload.type : 'all'
+  const isWarranty = payload.isWarranty ? payload.isWarranty : false
   const filter = payload.filter ? encodeURIComponent(JSON.stringify(payload.filter, null, 2)) : undefined
   const fullFilter = filter ? `&filter=${filter}` : undefined
-  return axios.get(`/api/v2/tickets?type=${type}&page=${page}&limit=${limit}${fullFilter}`).then(res => {
+  
+  return axios.get(`/api/v2/tickets?type=${type}&page=${page}&limit=${limit}&isWarranty=${isWarranty}${fullFilter}`).then(res => {
     return res.data
   })
 }

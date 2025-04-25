@@ -18,7 +18,6 @@ const winston = require('../logger')
 const _ = require('lodash')
 const moment = require('moment')
 const sanitizeHtml = require('sanitize-html')
-// const redisCache          = require('../cache/rediscache');
 const xss = require('xss')
 const utils = require('../helpers/utils')
 
@@ -101,7 +100,6 @@ const ticketSchema = mongoose.Schema({
     ref: 'statuses',
     index: true
   },
-
   priority: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'priorities',
@@ -125,7 +123,6 @@ ticketSchema.index({ deleted: -1, group: 1, status: 1 })
 
 const autoPopulate = function (next) {
   this.populate('priority')
-
   return next()
 }
 
@@ -973,10 +970,9 @@ function buildQueryWithObject (SELF, grpId, object, count) {
     }
   }
   if (object.type) {
-    query.where({ type: { $in: object.type } });
+    query.where({ type: { $in: object.type } }) // Adiciona filtro por tipo
   }
   if (object.owner) query.where('owner', object.owner)
-
     
   if (object.assignedSelf) query.where('assignee', object.user)
   if (object.unassigned) query.where({ assignee: { $exists: false } })
@@ -1381,57 +1377,6 @@ ticketSchema.statics.getOverdue = function (grpId, callback) {
       return callback(null, tickets)
     }
   )
-
-  // const q = self.model(COLLECTION).find({group: {$in: grpId}, status: {$in: [0,1]}, deleted: false})
-  //     .$where(function() {
-  //         return this.priority.overdueIn === undefined;
-  //         const now = new Date();
-  //         const timeout = null;
-  //         if (this.updated) {
-  //             timeout = new Date(this.updated);
-  //             timeout.setMinutes(timeout.getMinutes() + this.priority.overdueIn);
-  //         } else {
-  //             timeout = new Date(this.date);
-  //             timeout.setMinutes(timeout.getMinutes() + this.priority.overdueIn);
-  //         }
-  //         return now > timeout;
-  //     }).select('_id uid subject updated');
-  //
-  // q.lean().exec(function(err, results) {
-  //     if (err) return callback(err, null);
-  //     if (cache) cache.set('tickets:overdue:' + grpHash, results, 600); //10min
-  //
-  //     return callback(null, results);
-  // });
-
-  // TODO: Turn on when REDIS is impl
-  // This will be pres through server reload
-  // redisCache.getCache('$trudesk:tickets:overdue' + grpHash, function(err, value) {
-  //     if (err) return callback(err, null);
-  //     if (value) {
-  //         console.log('served from redis');
-  //         return callback(null, JSON.parse(value.data));
-  //     } else {
-  //         const q = self.model(COLLECTION).find({group: {$in: grpId}, status: 1, deleted: false})
-  //             .$where(function() {
-  //                 const now = new Date();
-  //                 const updated = new Date(this.updated);
-  //                 const timeout = new Date(updated);
-  //                 timeout.setDate(timeout.getDate() + 2);
-  //                 return now > timeout;
-  //             }).select('_id uid subject updated');
-  //
-  //         return q.lean().exec(function(err, results) {
-  //             if (err) return callback(err, null);
-  //             if (cache) {
-  //                 cache.set('tickets:overdue:' + grpHash, results, 600);
-  //             }
-  //             redisCache.setCache('tickets:' + grpHash, results, function(err) {
-  //                 return callback(err, results);
-  //             }, 600);
-  //         });
-  //     }
-  // });
 }
 
 /**

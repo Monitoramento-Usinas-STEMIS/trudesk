@@ -31,6 +31,7 @@ ticketsV2.create = function (req, res) {
 ticketsV2.get = async (req, res) => {
     const query = req.query;
     const type = query.type || 'all';
+    const isWarranty = query.isWarranty === 'true'; 
 
     let limit = 50;
     let page = 0;
@@ -60,6 +61,31 @@ ticketsV2.get = async (req, res) => {
         const mappedGroups = groups.map(g => g._id);
 
         const statuses = await ticketStatusSchema.find({ isResolved: false });
+
+        const warrantyType = await Models.TicketType.findOne({ name: 'Garantia' });
+        
+        if (!warrantyType && isWarranty) {
+            logger.warn('Warranty type "Garantia" not found');
+            return apiUtils.sendApiError(res, 500, 'Warranty type not configured');
+        }
+
+        const warrantyTypeId = warrantyType ? warrantyType._id : null;
+
+        const nonWarrantyTypes = await Models.TicketType.find({ 
+            _id: { $ne: warrantyTypeId } 
+        });
+        
+        const nonWarrantyTypeIds = nonWarrantyTypes.map(type => type._id);
+
+        if (isWarranty) {
+            if (!warrantyTypeId) {
+                logger.warn('Warranty type "Garantia" not found');
+                return apiUtils.sendApiError(res, 500, 'Warranty type not configured');
+            }
+            queryObject.type = [warrantyTypeId];
+        } else {
+            queryObject.type = nonWarrantyTypeIds;
+        }
 
         switch (type.toLowerCase()) {
             case 'active':
@@ -96,11 +122,6 @@ ticketsV2.get = async (req, res) => {
         }
 
         if (!permissions.canThis(req.user.role, 'tickets:viewall', false)) queryObject.owner = req.user._id;
-
-        // Adicionar filtro por tipo (type) se queryObject.filter.types estiver presente
-        if (queryObject.filter && queryObject.filter.types) {
-            queryObject.type = queryObject.filter.types.map(id => mongoose.Types.ObjectId(id));
-        }
 
         const tickets = await Models.Ticket.getTicketsWithObject(mappedGroups, queryObject);
         const totalCount = await Models.Ticket.getCountWithObject(mappedGroups, queryObject);
