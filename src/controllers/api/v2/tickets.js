@@ -77,6 +77,10 @@ ticketsV2.get = async (req, res) => {
         
         const nonWarrantyTypeIds = nonWarrantyTypes.map(type => type._id);
 
+        console.log("Warranty", warrantyTypeId)
+
+        console.log("NonWarranty Tickets", nonWarrantyTypeIds)
+
         if (isWarranty) {
             if (!warrantyTypeId) {
                 logger.warn('Warranty type "Garantia" not found');
