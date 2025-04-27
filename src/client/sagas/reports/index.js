@@ -29,20 +29,31 @@ function downloadReport (response, filename) {
   link.remove()
 }
 
-function * generateReport ({ payload, meta }) {
+function* generateReport({ payload, meta }) {
   try {
-    const response = yield call(api.reports.generate, payload)
-    yield put({ type: GENERATE_REPORT.SUCCESS, response, meta })
-    downloadReport(response, payload.filename)
+    const response = yield call(api.reports.generate, payload);
+    yield put({ type: GENERATE_REPORT.SUCCESS, response, meta });
+    downloadReport(response, payload.filename);
   } catch (error) {
-    const errorText = error.response ? error.response.data.error : error
-    if (error.response && error.response.status !== (401 || 403)) {
-      Log.error(errorText, error)
-      console.log(errorText)
-      helpers.UI.showSnackbar(`Error: ${errorText}`, true)
+    // More robust error handling
+    let errorText = 'Unknown error occurred';
+    
+    // Safely check for error.response.data.error
+    if (error.response && error.response.data && error.response.data.error) {
+      errorText = error.response.data.error;
+    } else if (error.message) {
+      // Fallback to error.message if available
+      errorText = error.message;
     }
-
-    yield put({ type: GENERATE_REPORT.ERROR, error })
+    
+    // Only show error notifications for non-auth errors
+    if (!(error.response && (error.response.status === 401 || error.response.status === 403))) {
+      Log.error(errorText, error);
+      console.log(errorText);
+      helpers.UI.showSnackbar(`Error: ${errorText}`, true);
+    }
+    
+    yield put({ type: GENERATE_REPORT.ERROR, error: errorText });
   }
 }
 
