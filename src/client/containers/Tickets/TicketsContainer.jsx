@@ -274,7 +274,7 @@ class TicketsContainer extends React.Component {
                   fontAwesomeIcon={'fa-filter'}
                   onButtonClick={e => {
                     e.preventDefault()
-                    this.props.showModal('FILTER_TICKET')
+                    this.props.showModal('FILTER_TICKET', { isWarranty: false })
                   }}
                 />
                 <DropdownTrigger pos={'bottom-right'} offset={5} extraClass={'uk-float-left'}>

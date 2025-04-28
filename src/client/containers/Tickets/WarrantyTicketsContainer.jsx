@@ -263,7 +263,7 @@ class WarrantyTicketsContainer extends React.Component {
                                     fontAwesomeIcon={'fa-filter'}
                                     onButtonClick={e => {
                                         e.preventDefault()
-                                        this.props.showModal('FILTER_TICKET')
+                                        this.props.showModal('FILTER_TICKET', { isWarranty: true })
                                     }}
                                 />
                                 <DropdownTrigger pos={'bottom-right'} offset={5} extraClass={'uk-float-left'}>
@@ -448,8 +448,10 @@ WarrantyTicketsContainer.propTypes = {
     common: PropTypes.object.isRequired,
     filter: PropTypes.object.isRequired,
     ticketStatuses: PropTypes.object.isRequired,
-    fetchTicketStatus: PropTypes.func.isRequired
+    fetchTicketStatus: PropTypes.func.isRequired,
+    isWarranty: PropTypes.bool.isRequired
 }
+
 
 WarrantyTicketsContainer.defaultProps = {
     view: 'active',

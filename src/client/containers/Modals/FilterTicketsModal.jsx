@@ -50,7 +50,7 @@ class FilterTicketsModal extends React.Component {
     this.props.unloadAccounts()
   }
 
-  onSubmit (e) {
+  onSubmit(e) {
     e.preventDefault()
     const startDate = e.target.filterDate_Start.value
     const endDate = e.target.filterDate_End.value
@@ -66,38 +66,38 @@ class FilterTicketsModal extends React.Component {
     let queryString = '?f=1'
     if (startDate) queryString += `&ds=${startDate}`
     if (endDate) queryString += `&de=${endDate}`
-
     if (subject) queryString += `&fs=${subject}`
-
     if (usina) queryString += `&un=${usina}`
 
     each(statuses, i => {
-      queryString += `&st=${i}`
+        queryString += `&st=${i}`
     })
 
     each(types, i => {
-      queryString += `&tt=${i}`
+        queryString += `&tt=${i}`
     })
 
     each(tags, i => {
-      queryString += `&tag=${i}`
+        queryString += `&tag=${i}`
     })
 
     each(errorTypes, i => {
-      queryString += `&et=${i}`
+        queryString += `&et=${i}`
     })
 
     each(groups, i => {
-      queryString += `&gp=${i}`
+        queryString += `&gp=${i}`
     })
 
     each(assignees, i => {
-      queryString += `&au=${i}`
+        queryString += `&au=${i}`
     })
 
-    History.pushState(null, null, `/tickets/filter/${queryString}&r=${Math.floor(Math.random() * (99999 - 1 + 1)) + 1}`)
+    // Verifica se o contexto é Warranty ou Tickets
+    const basePath = this.props.isWarranty ? '/warranty/filter/' : '/tickets/filter/'
+    History.pushState(null, null, `${basePath}${queryString}&r=${Math.floor(Math.random() * (99999 - 1 + 1)) + 1}`)
     this.props.hideModal()
-  }
+}
 
   render () {
     const { shared } = this.props
@@ -137,7 +137,7 @@ class FilterTicketsModal extends React.Component {
 
     return (
       <BaseModal options={{ bgclose: false }}>
-        <h2 style={{ marginBottom: 20 }}>Ticket Filter</h2>
+        <h2 style={{ marginBottom: 20 }}>Filter</h2>
         <form className={'uk-form-stacked'} onSubmit={e => this.onSubmit(e)}>
           <div className='uk-margin-medium-bottom'>
             <label>Subject</label>
@@ -254,8 +254,10 @@ FilterTicketsModal.propTypes = {
   fetchTicketTypes: PropTypes.func.isRequired,
   ticketTypes: PropTypes.object.isRequired,
   fetchTicketStatus: PropTypes.func.isRequired,
-  ticketStatuses: PropTypes.object.isRequired
+  ticketStatuses: PropTypes.object.isRequired,
+  isWarranty: PropTypes.bool.isRequired
 }
+
 
 const mapStateToProps = state => ({
   shared: state.shared,
