@@ -42,12 +42,12 @@ class CreateAccountModal extends React.Component {
   selectedRole = ''
   @observable isAgentRole = false
 
-  constructor (props) {
+  constructor(props) {
     super(props)
     makeObservable(this)
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.props.fetchGroups({ type: 'all' })
     this.props.fetchTeams()
     this.props.fetchRoles()
@@ -56,15 +56,15 @@ class CreateAccountModal extends React.Component {
     helpers.formvalidator()
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     helpers.UI.reRenderInputs()
   }
 
-  onInputChanged (e, name) {
+  onInputChanged(e, name) {
     this[name] = e.target.value
   }
 
-  onRoleSelectChange (e) {
+  onRoleSelectChange(e) {
     this.selectedRole = e.target.value
 
     const roleObject = this.props.roles.find(role => {
@@ -77,13 +77,13 @@ class CreateAccountModal extends React.Component {
     else this.roleSelectErrorMessage.classList.add('hide')
   }
 
-  onGroupSelectChange () {
+  onGroupSelectChange() {
     const selectedGroups = this.groupSelect.getSelected()
     if (!selectedGroups || selectedGroups.length < 1) this.groupSelectErrorMessage.classList.remove('hide')
     else this.groupSelectErrorMessage.classList.add('hide')
   }
 
-  onFormSubmit (e) {
+  onFormSubmit(e) {
     e.preventDefault()
     const $form = $(e.target)
 
@@ -121,24 +121,38 @@ class CreateAccountModal extends React.Component {
     this.props.createAccount(payload)
   }
 
-  render () {
+  render() {
+    const currentUserRoleId = window.trudeskSessionService.getUser().role; // Obter o papel do usuário atual
+    const roleOrder = window.trudeskSessionService.getRoleOrder().order; // Obter a hierarquia de papéis
+  
+    // Encontrar o índice do papel do usuário atual na hierarquia
+    const currentUserRoleIndex = roleOrder.findIndex(roleId => roleId.toString() === currentUserRoleId.toString());
+  
+    // Filtrar roles com base na hierarquia
     const roles = this.props.roles
-      .map(role => {
-        return { text: role.get('name'), value: role.get('_id') }
+      .filter(role => {
+        const roleIndex = roleOrder.findIndex(roleId => roleId.toString() === role.get('_id').toString());
+        return (
+          roleIndex > currentUserRoleIndex || // Mostrar apenas roles abaixo na hierarquia
+          role.get('isAdmin') // Sempre mostrar roles de administrador
+        );
       })
-      .toArray()
-
+      .map(role => {
+        return { text: role.get('name'), value: role.get('_id') };
+      })
+      .toArray();
+  
     const groups = this.props.groups
       .map(group => {
-        return { text: group.get('name'), value: group.get('_id') }
+        return { text: group.get('name'), value: group.get('_id') };
       })
-      .toArray()
-
+      .toArray();
+  
     const teams = this.props.teams
       .map(team => {
-        return { text: team.get('name'), value: team.get('_id') }
+        return { text: team.get('name'), value: team.get('_id') };
       })
-      .toArray()
+      .toArray();
 
     return (
       <BaseModal parentExtraClass={'pt-0'} extraClass={'p-0 pb-25'}>
@@ -219,19 +233,9 @@ class CreateAccountModal extends React.Component {
               </div>
             </div>
             <div className='uk-margin-medium-bottom'>
-              <label className='uk-form-label'>Email</label>
-              <input
-                type='email'
-                className={'md-input'}
-                value={this.email}
-                onChange={e => this.onInputChanged(e, 'email')}
-                data-validation='email'
-              />
-            </div>
-            <div className='uk-margin-medium-bottom'>
               <label className={'uk-form-label'}>Role</label>
               <SingleSelect
-                items={roles}
+                items={roles} // Usar as roles filtradas
                 width={'100'}
                 showTextbox={false}
                 onSelectChange={e => this.onRoleSelectChange(e)}

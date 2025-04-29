@@ -53,21 +53,29 @@ class CreateTicketModal extends React.Component {
     };
   }
 
-  componentDidMount () {
-    this.props.fetchTicketTypes()
-    this.props.getTagsWithPage({ limit: -1 })
-    this.props.getErrorTypesWithPage({ limit: -1 })
-    this.props.fetchGroups()
-    this.props.fetchAccountsCreateTicket({ type: 'all', limit: 1000 })
-    helpers.UI.inputs()
-    helpers.formvalidator()
+  componentDidMount() {
+    this.props.fetchTicketTypes();
+    this.props.getTagsWithPage({ limit: -1 });
+    this.props.getErrorTypesWithPage({ limit: -1 });
+    this.props.fetchGroups();
+    this.props.fetchAccountsCreateTicket({ type: 'all', limit: 1000 });
+    helpers.UI.inputs();
+    helpers.formvalidator();
+  
+    setTimeout(() => {
+      if (this.issueMde && this.issueMde.easymde) {
+        const cmInstance = this.issueMde.easymde.codemirror;
+        cmInstance.setOption('placeholder', 'Example: NCU01 - TCU 8 - IVI - PANAMÁ GOIAS II - TCU com alarme Low battery');
+      }
+    }, 500);
+  
     this.defaultTicketTypeWatcher = when(
       () => this.props.viewdata.get('defaultTicketType'),
       () => {
-        this.priorities = orderBy(this.props.viewdata.toJS().defaultTicketType.priorities, ['migrationNum'])
-        this.selectedPriority = head(this.priorities) ? head(this.priorities)._id : ''
+        this.priorities = orderBy(this.props.viewdata.toJS().defaultTicketType.priorities, ['migrationNum']);
+        this.selectedPriority = head(this.priorities) ? head(this.priorities)._id : '';
       }
-    )
+    );
   }
   onTypeRadioChange = (e) => {
     const selectedType = e.target.value
