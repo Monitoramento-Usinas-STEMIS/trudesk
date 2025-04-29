@@ -19,6 +19,7 @@ const Chance = require('chance')
 const apiUtil = require('../apiUtils')
 const User = require('../../../models/user')
 const Group = require('../../../models/group')
+const Role = require('../../../models/role');
 const Team = require('../../../models/team')
 const Department = require('../../../models/department')
 const passwordComplexity = require('../../../settings/passwordComplexity')
@@ -53,24 +54,54 @@ accountsApi.sessionUser = async (req, res) => {
 }
 
 accountsApi.create = async function (req, res) {
-  const postData = req.body
-  if (!postData) return apiUtil.sendApiError_InvalidPostData(res)
+  const postData = req.body;
+  if (!postData) return apiUtil.sendApiError_InvalidPostData(res);
 
-  let savedId = null
-  const chance = new Chance()
+  let savedId = null;
+  const chance = new Chance();
 
   try {
-    if (!postData.password || !postData.passwordConfirm) throw new Error('Password length is too short.')
+    if (!postData.password || !postData.passwordConfirm) throw new Error('Password length is too short.');
 
     // SETTINGS
-    const SettingsUtil = require('../../../settings/settingsUtil')
-    const settingsContent = await SettingsUtil.getSettings()
-    const settings = settingsContent.data.settings
-    const passwordComplexityEnabled = settings.accountsPasswordComplexity.value
+    const SettingsUtil = require('../../../settings/settingsUtil');
+    const settingsContent = await SettingsUtil.getSettings();
+    const settings = settingsContent.data.settings;
+    const passwordComplexityEnabled = settings.accountsPasswordComplexity.value;
 
     if (passwordComplexityEnabled && !passwordComplexity.validate(postData.password))
-      throw new Error('Password does not meet requirements')
+      throw new Error('Password does not meet requirements');
 
+    // Obter a hierarquia de papéis
+    const roleOrder = global.roleOrder.order.map(roleId => roleId.toString()); // Converter IDs para strings
+    console.log('Role Order:', roleOrder);
+
+    // Buscar a role do usuário atual no banco de dados
+    const currentUser = await User.findOne({ _id: req.user._id }).populate('role');
+    if (!currentUser || !currentUser.role) {
+      return apiUtil.sendApiError(res, 400, 'Invalid User Role.');
+    }
+
+    const currentUserRoleId = currentUser.role._id.toString(); // Garantir que o ID do papel do usuário atual seja uma string
+    const targetRoleId = postData.role.toString(); // Garantir que o ID do papel de destino seja uma string
+
+    const currentUserRoleIndex = roleOrder.indexOf(currentUserRoleId);
+    const targetRoleIndex = roleOrder.indexOf(targetRoleId);
+
+    console.log('Current User Role Index:', currentUserRoleIndex);
+    console.log('Target Role Index:', targetRoleIndex);
+
+    if (currentUserRoleIndex === -1 || targetRoleIndex === -1) {
+      return apiUtil.sendApiError(res, 400, 'Invalid Role.');
+    }
+
+    // Permitir que apenas administradores criem qualquer papel
+    const isAdmin = currentUser.role.isAdmin; // Verificar se o usuário atual é administrador
+    if (!isAdmin && currentUserRoleIndex >= targetRoleIndex) {
+      return apiUtil.sendApiError(res, 403, 'You cannot create accounts with roles equal to or higher than your own.');
+    }
+
+    // Criar o usuário
     let user = await User.create({
       username: postData.username,
       email: postData.email,
@@ -79,54 +110,54 @@ accountsApi.create = async function (req, res) {
       title: postData.title,
       role: postData.role,
       accessToken: chance.hash()
-    })
+    });
 
-    savedId = user._id
+    savedId = user._id;
 
-    const userPopulated = await user.populate('role')
+    const userPopulated = await user.populate('role');
 
-    let groups = []
+    let groups = [];
     if (postData.groups) {
-      groups = await Group.getGroups(postData.groups)
+      groups = await Group.getGroups(postData.groups);
       for (const group of groups) {
-        await group.addMember(savedId)
-        await group.save()
+        await group.addMember(savedId);
+        await group.save();
       }
     }
 
-    let teams = []
+    let teams = [];
     if (postData.teams) {
-      const dbTeams = await Team.getTeamsByIds(postData.teams)
+      const dbTeams = await Team.getTeamsByIds(postData.teams);
       for (const team of dbTeams) {
-        await team.addMember(savedId)
-        await team.save()
+        await team.addMember(savedId);
+        await team.save();
       }
 
-      teams = dbTeams
+      teams = dbTeams;
     }
 
-    const departments = await Department.getUserDepartments(savedId)
-    user = userPopulated.toJSON()
+    const departments = await Department.getUserDepartments(savedId);
+    user = userPopulated.toJSON();
     user.groups = groups.map(g => {
-      return { _id: g._id, name: g.name }
-    })
+      return { _id: g._id, name: g.name };
+    });
 
     if ((user.role.isAgent || user.role.isAdmin) && teams.length > 0) {
       user.teams = teams.map(t => {
-        return { _id: t._id, name: t.name }
-      })
+        return { _id: t._id, name: t.name };
+      });
 
       user.departments = departments.map(d => {
-        return { _id: d._id, name: d.name }
-      })
+        return { _id: d._id, name: d.name };
+      });
     }
 
-    return apiUtil.sendApiSuccess(res, { account: user })
+    return apiUtil.sendApiSuccess(res, { account: user });
   } catch (e) {
-    winston.warn(e)
-    return apiUtil.sendApiError(res, 500, e.message)
+    winston.warn(e);
+    return apiUtil.sendApiError(res, 500, e.message);
   }
-}
+};
 
 accountsApi.get = function (req, res) {
   const query = req.query
