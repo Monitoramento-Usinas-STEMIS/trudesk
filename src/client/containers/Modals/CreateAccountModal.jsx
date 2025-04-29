@@ -13,6 +13,7 @@
  */
 
 import React from 'react'
+import api from 'api';
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { observer } from 'mobx-react'
@@ -48,12 +49,24 @@ class CreateAccountModal extends React.Component {
   }
 
   componentDidMount() {
-    this.props.fetchGroups({ type: 'all' })
-    this.props.fetchTeams()
-    this.props.fetchRoles()
-
-    helpers.UI.inputs()
-    helpers.formvalidator()
+    this.props.fetchGroups({ type: 'all' });
+    this.props.fetchTeams();
+  
+    // Buscar roles filtradas
+    api.common.fetchFilteredRoles().then(response => {
+      if (response.success) {
+        this.filteredRoles = response.roles.map(role => ({
+          text: role.name,
+          value: role._id,
+        }));
+        this.forceUpdate(); // Forçar re-renderização para atualizar o dropdown
+      } else {
+        console.error('Failed to fetch filtered roles:', response.error);
+      }
+    });
+  
+    helpers.UI.inputs();
+    helpers.formvalidator();
   }
 
   componentDidUpdate() {
@@ -124,10 +137,10 @@ class CreateAccountModal extends React.Component {
   render() {
     const currentUserRoleId = window.trudeskSessionService.getUser().role; // Obter o papel do usuário atual
     const roleOrder = window.trudeskSessionService.getRoleOrder().order; // Obter a hierarquia de papéis
-  
+
     // Encontrar o índice do papel do usuário atual na hierarquia
     const currentUserRoleIndex = roleOrder.findIndex(roleId => roleId.toString() === currentUserRoleId.toString());
-  
+
     // Filtrar roles com base na hierarquia
     const roles = this.props.roles
       .filter(role => {
@@ -141,13 +154,13 @@ class CreateAccountModal extends React.Component {
         return { text: role.get('name'), value: role.get('_id') };
       })
       .toArray();
-  
+
     const groups = this.props.groups
       .map(group => {
         return { text: group.get('name'), value: group.get('_id') };
       })
       .toArray();
-  
+
     const teams = this.props.teams
       .map(team => {
         return { text: team.get('name'), value: team.get('_id') };
@@ -233,9 +246,19 @@ class CreateAccountModal extends React.Component {
               </div>
             </div>
             <div className='uk-margin-medium-bottom'>
+              <label className='uk-form-label'>Email</label>
+              <input
+                type='email'
+                className={'md-input'}
+                value={this.email}
+                onChange={e => this.onInputChanged(e, 'email')}
+                data-validation='email'
+              />
+            </div>
+            <div className='uk-margin-medium-bottom'>
               <label className={'uk-form-label'}>Role</label>
               <SingleSelect
-                items={roles} // Usar as roles filtradas
+                items={this.filteredRoles || []} // Usar as roles filtradas
                 width={'100'}
                 showTextbox={false}
                 onSelectChange={e => this.onRoleSelectChange(e)}
@@ -271,7 +294,7 @@ class CreateAccountModal extends React.Component {
               <div>
                 <div className='uk-margin-medium-bottom'>
                   <label className='uk-form-label'>Teams</label>
-                  <MultiSelect items={teams} onChange={() => {}} ref={r => (this.teamSelect = r)} />
+                  <MultiSelect items={teams} onChange={() => { }} ref={r => (this.teamSelect = r)} />
                 </div>
               </div>
             )}

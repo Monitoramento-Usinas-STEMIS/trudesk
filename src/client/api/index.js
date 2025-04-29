@@ -484,9 +484,16 @@ api.common.getSessionUser = () => {
 }
 api.common.fetchRoles = () => {
   return axios.get('/api/v1/roles').then(res => {
-    return res.data
-  })
-}
+    return res.data;
+  });
+};
+
+api.common.fetchFilteredRoles = () => {
+  return axios.get('/api/v1/roles/filtered').then(res => {
+    return res.data;
+  });
+};
+
 api.common.fetchViewData = () => {
   return axios.get('/api/v2/viewdata').then(res => {
     return res.data

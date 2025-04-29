@@ -34,10 +34,11 @@ module.exports = function (middleware, router, controllers) {
   router.get('/api/v1/privacypolicy', apiCtrl.common.privacyPolicy)
 
   // Roles
-  router.get('/api/v1/roles', apiv1, apiCtrl.roles.get)
-  router.post('/api/v1/roles', apiv1, isAdmin, apiCtrl.roles.create)
-  router.put('/api/v1/roles/:id', apiv1, isAdmin, apiCtrl.roles.update)
-  router.delete('/api/v1/roles/:id', apiv1, isAdmin, apiCtrl.roles.delete)
+router.get('/api/v1/roles', apiv1, apiCtrl.roles.get);
+router.get('/api/v1/roles/filtered', apiv1, apiCtrl.roles.getFilteredRoles); // Nova rota para roles filtradas
+router.post('/api/v1/roles', apiv1, isAdmin, apiCtrl.roles.create);
+router.put('/api/v1/roles/:id', apiv1, isAdmin, apiCtrl.roles.update);
+router.delete('/api/v1/roles/:id', apiv1, isAdmin, apiCtrl.roles.delete);
 
   // Tickets
   router.get('/api/v1/tickets', apiv1, canUser('tickets:view'), apiCtrl.tickets.get)
