@@ -62,12 +62,10 @@ class CreateTicketModal extends React.Component {
     helpers.UI.inputs();
     helpers.formvalidator();
   
-    setTimeout(() => {
-      if (this.issueMde && this.issueMde.easymde) {
-        const cmInstance = this.issueMde.easymde.codemirror;
-        cmInstance.setOption('placeholder', 'Example: NCU01 - TCU 8 - IVI - PANAMÁ GOIAS II - TCU com alarme Low battery');
-      }
-    }, 500);
+    if (this.issueMde && this.issueMde.easymde) {
+      const cmInstance = this.issueMde.easymde.codemirror;
+      cmInstance.setOption('placeholder', 'Example: NCU01 - TCU 8 - IVI - PANAMÁ GOIAS II - TCU com alarme Low battery');
+    }
   
     this.defaultTicketTypeWatcher = when(
       () => this.props.viewdata.get('defaultTicketType'),
