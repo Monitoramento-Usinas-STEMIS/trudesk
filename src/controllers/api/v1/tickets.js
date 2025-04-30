@@ -23,14 +23,14 @@ var sanitizeHtml = require('sanitize-html')
 
 var apiTickets = {}
 
-function buildGraphData (arr, days, callback) {
+function buildGraphData(arr, days, callback) {
   var graphData = []
   var today = moment()
     .hour(23)
     .minute(59)
     .second(59)
   var timespanArray = []
-  for (var i = days; i--; ) {
+  for (var i = days; i--;) {
     timespanArray.push(i)
   }
 
@@ -43,10 +43,10 @@ function buildGraphData (arr, days, callback) {
       return (
         v.date <= d.toDate() &&
         v.date >=
-          d
-            .clone()
-            .subtract(1, 'd')
-            .toDate()
+        d
+          .clone()
+          .subtract(1, 'd')
+          .toDate()
       )
     })
 
@@ -62,7 +62,7 @@ function buildGraphData (arr, days, callback) {
   return graphData
 }
 
-function buildAvgResponse (ticketArray, callback) {
+function buildAvgResponse(ticketArray, callback) {
   var cbObj = {}
   var $ticketAvg = []
   _.each(ticketArray, function (ticket) {
@@ -411,15 +411,27 @@ apiTickets.create = function (req, res) {
   response.success = true
 
   var postData = req.body
-  if (!_.isObject(postData) || !postData.subject || !postData.issue)
+  if (!_.isObject(postData) || !postData.subject || !postData.issue) {
     return res.status(400).json({ success: false, error: 'Invalid Post Data' })
+  }
 
   var socketId = _.isUndefined(postData.socketId) ? '' : postData.socketId
 
+  // Garantir que tags seja um array
   if (_.isUndefined(postData.tags) || _.isNull(postData.tags)) {
     postData.tags = []
   } else if (!_.isArray(postData.tags)) {
     postData.tags = [postData.tags]
+  }
+
+  // Garantir que errorTypes seja um array
+  if (_.isUndefined(postData.errorTypes) || _.isNull(postData.errorTypes)) {
+    postData.errorTypes = []
+  }
+
+  // Garantir que priority seja opcional
+  if (_.isUndefined(postData.priority) || _.isNull(postData.priority)) {
+    postData.priority = null // Ou defina um valor padrão, se necessário
   }
 
   async.waterfall(
@@ -448,21 +460,23 @@ apiTickets.create = function (req, res) {
 
         ticket.status = status._id
 
+        // Definir o proprietário do ticket
         if (!_.isUndefined(postData.owner)) {
           ticket.owner = postData.owner
         } else {
           ticket.owner = req.user._id
         }
 
+        // Sanitizar campos
         ticket.subject = sanitizeHtml(ticket.subject).trim()
-
-        ticket.usina = sanitizeHtml(ticket.usina).trim()
+        ticket.usina = sanitizeHtml(ticket.usina || '').trim()
 
         var marked = require('marked')
         var tIssue = ticket.issue
         tIssue = tIssue.replace(/(\r\n|\n\r|\r|\n)/g, '<br>')
         tIssue = sanitizeHtml(tIssue).trim()
         ticket.issue = xss(marked.parse(tIssue))
+
         ticket.history = [HistoryItem]
         ticket.subscribers = [user._id]
 
@@ -621,13 +635,13 @@ apiTickets.createPublicTicket = function (req, res) {
           return next('Failed: Invalid Default Ticket Type.')
         })
       },
-      function(defaultTicketType, group, savedUser, next) {
+      function (defaultTicketType, group, savedUser, next) {
         const TicketTypeSchema = require('../../../models/tickettype')
         TicketTypeSchema.getType(defaultTicketType)
           .then(type => next(null, type, group, savedUser))
           .catch(next)
       },
-      function(ticketType, group, savedUser, next) {
+      function (ticketType, group, savedUser, next) {
         settingSchema.getSettingByName('ticket:status:default')
           .then(defaultTicketStatus => {
             if (!defaultTicketStatus) {
@@ -637,13 +651,13 @@ apiTickets.createPublicTicket = function (req, res) {
           })
           .catch(next)
       },
-      function(defaultTicketStatus, ticketType, group, savedUser, next) {
+      function (defaultTicketStatus, ticketType, group, savedUser, next) {
         const TicketStatusSchema = require('../../../models/ticketStatus')
         TicketStatusSchema.getStatusById(defaultTicketStatus)
           .then(status => next(null, status, ticketType, group, savedUser))
           .catch(next)
       },
-      function(ticketStatus, ticketType, group, savedUser, next) {
+      function (ticketStatus, ticketType, group, savedUser, next) {
         // Create Ticket
         const TicketSchema = require('../../../models/ticket')
         const HistoryItem = {
@@ -670,7 +684,7 @@ apiTickets.createPublicTicket = function (req, res) {
         ticket.issue = marked.parse(tIssue)
         ticket.issue = xss(ticket.issue)
 
-        ticket.save(function(err, t) {
+        ticket.save(function (err, t) {
           if (err) return next(err)
 
           emitter.emit('ticket:created', {
@@ -1632,7 +1646,7 @@ apiTickets.getTicketStats = function (req, res) {
   // return res.send(obj);
 }
 
-function parseTicketStats (role, tickets, callback) {
+function parseTicketStats(role, tickets, callback) {
   if (_.isEmpty(tickets)) return callback({ tickets: tickets, tags: {} })
   var t = []
   var tags = {}

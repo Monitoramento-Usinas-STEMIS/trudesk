@@ -72,31 +72,24 @@ accountsApi.create = async function (req, res) {
     if (passwordComplexityEnabled && !passwordComplexity.validate(postData.password))
       throw new Error('Password does not meet requirements');
 
-    // Obter a hierarquia de papéis
-    const roleOrder = global.roleOrder.order.map(roleId => roleId.toString()); // Converter IDs para strings
-    console.log('Role Order:', roleOrder);
+    const roleOrder = global.roleOrder.order.map(roleId => roleId.toString()); 
 
-    // Buscar a role do usuário atual no banco de dados
     const currentUser = await User.findOne({ _id: req.user._id }).populate('role');
     if (!currentUser || !currentUser.role) {
       return apiUtil.sendApiError(res, 400, 'Invalid User Role.');
     }
 
-    const currentUserRoleId = currentUser.role._id.toString(); // Garantir que o ID do papel do usuário atual seja uma string
-    const targetRoleId = postData.role.toString(); // Garantir que o ID do papel de destino seja uma string
+    const currentUserRoleId = currentUser.role._id.toString(); 
+    const targetRoleId = postData.role.toString(); 
 
     const currentUserRoleIndex = roleOrder.indexOf(currentUserRoleId);
     const targetRoleIndex = roleOrder.indexOf(targetRoleId);
-
-    console.log('Current User Role Index:', currentUserRoleIndex);
-    console.log('Target Role Index:', targetRoleIndex);
 
     if (currentUserRoleIndex === -1 || targetRoleIndex === -1) {
       return apiUtil.sendApiError(res, 400, 'Invalid Role.');
     }
 
-    // Permitir que apenas administradores criem qualquer papel
-    const isAdmin = currentUser.role.isAdmin; // Verificar se o usuário atual é administrador
+    const isAdmin = currentUser.role.isAdmin; 
     if (!isAdmin && currentUserRoleIndex >= targetRoleIndex) {
       return apiUtil.sendApiError(res, 403, 'You cannot create accounts with roles equal to or higher than your own.');
     }

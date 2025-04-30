@@ -20,7 +20,7 @@ import { makeObservable, observable, when } from 'mobx'
 import { head, orderBy } from 'lodash'
 import axios from 'axios'
 import Log from '../../logger'
-import { createTicket, fetchTicketTypes, getTagsWithPage , getErrorTypesWithPage} from 'actions/tickets'
+import { createTicket, fetchTicketTypes, getTagsWithPage, getErrorTypesWithPage } from 'actions/tickets'
 import { fetchGroups } from 'actions/groups'
 import { fetchAccountsCreateTicket } from 'actions/accounts'
 
@@ -35,7 +35,6 @@ import SpinLoader from 'components/SpinLoader'
 import Button from 'components/Button'
 import EasyMDE from 'components/EasyMDE'
 
-
 @observer
 class CreateTicketModal extends React.Component {
   @observable priorities = []
@@ -45,50 +44,51 @@ class CreateTicketModal extends React.Component {
   issueText = ''
 
   constructor(props) {
-    super(props);
-    makeObservable(this);
+    super(props)
+    makeObservable(this)
     this.state = {
       usina: '',
       selectedType: this.props.viewdata.get('defaultTicketType').get('_id') || ''
-    };
+    }
   }
 
   componentDidMount() {
-    this.props.fetchTicketTypes();
-    this.props.getTagsWithPage({ limit: -1 });
-    this.props.getErrorTypesWithPage({ limit: -1 });
-    this.props.fetchGroups();
-    this.props.fetchAccountsCreateTicket({ type: 'all', limit: 1000 });
-    helpers.UI.inputs();
-    helpers.formvalidator();
-  
+    this.props.fetchTicketTypes()
+    this.props.getTagsWithPage({ limit: -1 })
+    this.props.getErrorTypesWithPage({ limit: -1 })
+    this.props.fetchGroups()
+    this.props.fetchAccountsCreateTicket({ type: 'all', limit: 1000 })
+    helpers.UI.inputs()
+    helpers.formvalidator()
+
     if (this.issueMde && this.issueMde.easymde) {
-      const cmInstance = this.issueMde.easymde.codemirror;
-      cmInstance.setOption('placeholder', 'Example: NCU01 - TCU 8 - IVI - PANAMÁ GOIAS II - TCU com alarme Low battery');
+      const cmInstance = this.issueMde.easymde.codemirror
+      cmInstance.setOption('placeholder', 'Example: NCU01 - TCU 8 - IVI - PANAMÁ GOIAS II - TCU com alarme Low battery')
     }
-  
+
     this.defaultTicketTypeWatcher = when(
       () => this.props.viewdata.get('defaultTicketType'),
       () => {
-        this.priorities = orderBy(this.props.viewdata.toJS().defaultTicketType.priorities, ['migrationNum']);
-        this.selectedPriority = head(this.priorities) ? head(this.priorities)._id : '';
+        this.priorities = orderBy(this.props.viewdata.toJS().defaultTicketType.priorities, ['migrationNum'])
+        this.selectedPriority = head(this.priorities) ? head(this.priorities)._id : ''
       }
-    );
+    )
   }
-  onTypeRadioChange = (e) => {
-    const selectedType = e.target.value
-    this.setState({ selectedType })
-    this.onTicketTypeSelectChange({ target: { value: selectedType } }) // reaproveita a lógica existente
-  }
-  componentDidUpdate () {}
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     if (this.defaultTicketTypeWatcher) this.defaultTicketTypeWatcher()
   }
 
-  onTicketTypeSelectChange (e) {
-    this.priorityWrapper.classList.add('hide')
-    this.priorityLoader.classList.remove('hide')
+  onTypeRadioChange = e => {
+    const selectedType = e.target.value
+    this.setState({ selectedType })
+    this.onTicketTypeSelectChange({ target: { value: selectedType } })
+  }
+
+  onTicketTypeSelectChange(e) {
+    if (this.priorityWrapper) this.priorityWrapper.classList.add('hide')
+    if (this.priorityLoader) this.priorityLoader.classList.remove('hide')
+
     axios
       .get(`/api/v1/tickets/type/${e.target.value}`)
       .then(res => {
@@ -100,23 +100,23 @@ class CreateTicketModal extends React.Component {
             : ''
 
           setTimeout(() => {
-            this.priorityLoader.classList.add('hide')
-            this.priorityWrapper.classList.remove('hide')
+            if (this.priorityLoader) this.priorityLoader.classList.add('hide')
+            if (this.priorityWrapper) this.priorityWrapper.classList.remove('hide')
           }, 500)
         }
       })
       .catch(error => {
-        this.priorityLoader.classList.add('hide')
+        if (this.priorityLoader) this.priorityLoader.classList.add('hide')
         Log.error(error)
         helpers.UI.showSnackbar(`Error: ${error.response.data.error}`)
       })
   }
 
-  onPriorityRadioChange (e) {
+  onPriorityRadioChange(e) {
     this.selectedPriority = e.target.value
   }
 
-  onFormSubmit (e) {
+  onFormSubmit(e) {
     e.preventDefault()
     const $form = $(e.target)
 
@@ -147,14 +147,14 @@ class CreateTicketModal extends React.Component {
 
     if (!$form.isValid(null, null, false)) return true
 
-    if (allowAgentUserTickets) data.owner = this.ownerSelect.value
+    if (allowAgentUserTickets) data.owner = this.ownerSelect?.value
 
     data.subject = e.target.subject.value
-    data.group = this.groupSelect.value
+    data.group = this.groupSelect?.value
     data.type = this.state.selectedType
-    data.tags = this.tagSelect.value
-    data.errorTypes = this.errorTypeSelect.value
-    data.priority = this.selectedPriority
+    data.tags = this.tagSelect?.value || []
+    data.errorTypes = this.errorTypeSelect?.value || []
+    data.priority = this.selectedPriority || null
     data.issue = this.issueMde.easymde.value()
     data.usina = this.state.usina
     data.socketid = this.props.socket.io.engine.id
@@ -162,19 +162,7 @@ class CreateTicketModal extends React.Component {
     this.props.createTicket(data)
   }
 
-  onGroupSelectChange (e) {
-    // this.groupAccounts = this.props.groups
-    //   .filter(grp => grp.get('_id') === e.target.value)
-    //   .first()
-    //   .get('members')
-    //   .map(a => {
-    //     return { text: a.get('fullname'), value: a.get('_id') }
-    //   })
-    //   .toArray()
-  }
-
-
-  render () {
+  render() {
     const { shared, viewdata } = this.props
     const allowAgentUserTickets =
       viewdata.get('ticketSettings').get('allowAgentUserTickets') &&
@@ -201,7 +189,7 @@ class CreateTicketModal extends React.Component {
     const mappedTicketErrorTypes = this.props.ticketErrorTypes.toArray().map(errorType => {
       return { text: errorType.get('name'), value: errorType.get('_id') }
     })
-    const isCustomer = !shared.sessionUser.role.isAdmin && !shared.sessionUser.role.isAgent;
+    const isCustomer = !shared.sessionUser.role.isAdmin && !shared.sessionUser.role.isAgent
 
     return (
       <BaseModal {...this.props} options={{ bgclose: false }}>
@@ -212,7 +200,7 @@ class CreateTicketModal extends React.Component {
               type='text'
               name={'subject'}
               className={'md-input'}
-              placeholder='Example: TCU with problem' 
+              placeholder='Example: TCU with problem'
               data-validation='length'
               data-validation-length={`min${viewdata.get('ticketSettings').get('minSubject')}`}
               data-validation-error-msg={`Please enter a valid Subject. Subject must contain at least ${viewdata
@@ -226,11 +214,11 @@ class CreateTicketModal extends React.Component {
               type='text'
               name={'usina'}
               className={'md-input'}
-              placeholder='Example: Avelar 32' 
+              placeholder='Example: Avelar 32'
               onChange={e => this.setState({ usina: e.target.value })}
               value={this.state.usina || ''}
-              data-validation='required' 
-              data-validation-error-msg='This field is mandatory.' 
+              data-validation='required'
+              data-validation-error-msg='This field is mandatory.'
             />
           </div>
           <div className='uk-margin-medium-bottom'>
@@ -354,7 +342,6 @@ class CreateTicketModal extends React.Component {
             </div>
             <span style={{ marginTop: '6px', display: 'inline-block', fontSize: '11px' }} className={'uk-text-muted'}>
               Please try to be as specific as possible. Please include any details you think may be relevant, such as
-              {/* eslint-disable-next-line react/no-unescaped-entities */}
               troubleshooting steps you've taken.
             </span>
           </div>

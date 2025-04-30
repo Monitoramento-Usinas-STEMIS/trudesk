@@ -22,11 +22,8 @@ var rolesV1 = {}
 
 rolesV1.getFilteredRoles = async function (req, res) {
   try {
-    const userRoleId = req.user.role._id.toString(); // Garantir que o ID seja uma string
-    const roleOrder = global.roleOrder.order.map(roleId => roleId.toString()); // Converter todos os IDs para strings
-
-    console.log('Role Order:', roleOrder);
-    console.log('User Role ID:', userRoleId);
+    const userRoleId = req.user.role._id.toString(); 
+    const roleOrder = global.roleOrder.order.map(roleId => roleId.toString());
 
     const currentUserRoleIndex = roleOrder.indexOf(userRoleId);
 
@@ -35,13 +32,13 @@ rolesV1.getFilteredRoles = async function (req, res) {
     }
 
     const roleSchema = require('../../../models/role');
-    const roles = await roleSchema.find({}); // Buscar todas as roles
+    const roles = await roleSchema.find({}); 
 
     const filteredRoles = roles.filter(role => {
       const roleIndex = roleOrder.indexOf(role._id.toString());
-      if (roleIndex === -1) return false; // Ignorar roles que não estão na ordem
-      if (req.user.role.isAdmin) return true; // Admins veem todas as roles
-      return roleIndex > currentUserRoleIndex; // Apenas roles abaixo na hierarquia
+      if (roleIndex === -1) return false; 
+      if (req.user.role.isAdmin) return true; 
+      return roleIndex > currentUserRoleIndex; 
     });
 
     return res.json({ success: true, roles: filteredRoles });
