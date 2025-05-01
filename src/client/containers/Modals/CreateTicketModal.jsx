@@ -63,7 +63,7 @@ class CreateTicketModal extends React.Component {
 
     if (this.issueMde && this.issueMde.easymde) {
       const cmInstance = this.issueMde.easymde.codemirror
-      cmInstance.setOption('placeholder', 'Example: NCU01 - TCU 8 - IVI - PANAMÁ GOIAS II - TCU com alarme Low battery')
+      cmInstance.setOption('placeholder', 'Exemplo: TCU 02 com alarme de "PERDA DE COMUNICAÇÃO')
     }
 
     this.defaultTicketTypeWatcher = when(
@@ -200,7 +200,7 @@ class CreateTicketModal extends React.Component {
               type='text'
               name={'subject'}
               className={'md-input'}
-              placeholder='Example: TCU with problem'
+              placeholder='Exemplo: NCU01 - TCU 8 - SERIAL NUMBER -  ALARME DE BATERIA'
               data-validation='length'
               data-validation-length={`min${viewdata.get('ticketSettings').get('minSubject')}`}
               data-validation-error-msg={`Please enter a valid Subject. Subject must contain at least ${viewdata

@@ -202,14 +202,6 @@ class FilterTicketsModal extends React.Component {
           <div className='uk-grid uk-grid-collapse uk-margin-small-bottom'>
             <div className='uk-width-1-1'>
               <label htmlFor='filterStatus' className='uk-form-label' style={{ paddingBottom: 0, marginBottom: 0 }}>
-                Ticket Type
-              </label>
-              <SingleSelect items={types} showTextbox={false} multiple={true} ref={r => (this.typesSelect = r)} />
-            </div>
-          </div>
-          <div className='uk-grid uk-grid-collapse uk-margin-small-bottom'>
-            <div className='uk-width-1-1'>
-              <label htmlFor='filterStatus' className='uk-form-label' style={{ paddingBottom: 0, marginBottom: 0 }}>
                 Assignee
               </label>
               <SingleSelect
