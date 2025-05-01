@@ -111,32 +111,51 @@ class AccountsContainer extends React.Component {
     }
   }
 
-  render () {
+  render() {
     const items =
       this.props.accountsState.accounts &&
       this.props.accountsState.accounts.map(user => {
         const userImage = user.get('image') || 'defaultProfile.jpg'
-        let actionMenu = [<DropdownItem key={0} text={'Edit'} onClick={e => this.onEditAccountClicked(e, user)} />]
-        if (user.get('deleted'))
-          actionMenu.push(<DropdownItem key={2} text={'Enable'} onClick={e => this.onEnableAccountClicked(e, user)} />)
-        else
-          actionMenu.push(
-            <DropdownItem
-              key={1}
-              text={'Delete'}
-              extraClass={'uk-text-danger'}
-              onClick={e => this.onDeleteAccountClicked(e, user)}
-            />
-          )
+  
+        // Verificar permissões do usuário
+        const canEditAccount = helpers.canUser('accounts:update', true) // Substitua pela lógica de verificação de permissão
+        const canDeleteAccount = helpers.canUser('accounts:delete', true) // Substitua pela lógica de verificação de permissão
+  
+        // Construir o menu de ações com base nas permissões
+        let actionMenu = []
+        if (canEditAccount) {
+          actionMenu.push(<DropdownItem key={0} text={'Edit'} onClick={e => this.onEditAccountClicked(e, user)} />)
+        }
+        if (canDeleteAccount) {
+          if (user.get('deleted')) {
+            actionMenu.push(
+              <DropdownItem key={2} text={'Enable'} onClick={e => this.onEnableAccountClicked(e, user)} />
+            )
+          } else {
+            actionMenu.push(
+              <DropdownItem
+                key={1}
+                text={'Delete'}
+                extraClass={'uk-text-danger'}
+                onClick={e => this.onDeleteAccountClicked(e, user)}
+              />
+            )
+          }
+        }
+  
+        // Não renderizar os 3 pontinhos se o usuário não tiver permissões
+        const showMenu = actionMenu.length > 0
+  
         const isAdmin = user.getIn(['role', 'isAdmin']) || false
         const isAgent = user.getIn(['role', 'isAgent']) || false
         const customer = !isAdmin && !isAgent
         const isDeleted = user.get('deleted') || false
+  
         return (
           <GridItem key={user.get('_id')} width={'1-5'} xLargeWidth={'1-6'} extraClass={'mb-25'}>
             <TruCard
               loaderActive={user.get('loading')}
-              menu={actionMenu}
+              menu={showMenu ? actionMenu : null} // Renderizar o menu apenas se houver permissões
               extraHeadClass={
                 (isAdmin ? 'tru-card-head-admin' : '') +
                 (!isAdmin && isAgent ? 'tru-card-head-agent' : '') +
@@ -217,20 +236,13 @@ class AccountsContainer extends React.Component {
           </GridItem>
         )
       })
-
+  
     return (
       <div>
         <PageTitle
           title={this.props.title}
           rightComponent={
             <div className={'uk-grid uk-grid-collapse'}>
-              {/*<div className={'uk-width-3-4 pr-10'}>*/}
-              {/*  <div className='md-input-wrapper' style={{ marginTop: '10px' }}>*/}
-              {/*    <label className={'uk-form-label'}>Find Account</label>*/}
-              {/*    <input type='text' className={'md-input uk-margin-remove'} onKeyUp={e => this.onSearchKeyUp(e)} />*/}
-              {/*    <div className='md-input-bar' />*/}
-              {/*  </div>*/}
-              {/*</div>*/}
               <div className={'uk-width-1-4 mt-15 pr-20 uk-clearfix'}>
                 <ButtonGroup classNames={'uk-clearfix uk-float-right'}>
                   <Button
@@ -242,22 +254,6 @@ class AccountsContainer extends React.Component {
                     extraClass={'hover-accent'}
                     onClick={() => this.props.showModal('CREATE_ACCOUNT')}
                   />
-                  {/*{helpers.canUser('accounts:import', true) && (*/}
-                  {/*  <DropdownTrigger mode={'click'} pos={'bottom-right'} offset={5} extraClass={'uk-float-right'}>*/}
-                  {/*    <Button*/}
-                  {/*      text={''}*/}
-                  {/*      hasDropdown={true}*/}
-                  {/*      small={true}*/}
-                  {/*      waves={false}*/}
-                  {/*      styleOverride={{ padding: '0 5px 0 0' }}*/}
-                  {/*      extraClass={'pr-5 no-border-radius nbl bg-accent md-color-white hover-accent'}*/}
-                  {/*    />*/}
-                  {/*    <Dropdown small={true}>*/}
-                  {/*      <DropdownHeader text={'Account Actions'} />*/}
-                  {/*      <DropdownItem text={'Import'} href={'/accounts/import'} />*/}
-                  {/*    </Dropdown>*/}
-                  {/*  </DropdownTrigger>*/}
-                  {/*)}*/}
                 </ButtonGroup>
               </div>
             </div>
