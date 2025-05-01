@@ -49,21 +49,21 @@ class CreateAccountModal extends React.Component {
   }
 
   componentDidMount() {
-    this.props.fetchGroups({ type: 'all' });
+    this.props.fetchGroups();
     this.props.fetchTeams();
-  
+
     api.common.fetchFilteredRoles().then(response => {
       if (response.success) {
         this.filteredRoles = response.roles.map(role => ({
           text: role.name,
           value: role._id,
         }));
-        this.forceUpdate(); 
+        this.forceUpdate();
       } else {
         console.error('Failed to fetch filtered roles:', response.error);
       }
     });
-  
+
     helpers.UI.inputs();
     helpers.formvalidator();
   }
@@ -134,8 +134,8 @@ class CreateAccountModal extends React.Component {
   }
 
   render() {
-    const currentUserRoleId = window.trudeskSessionService.getUser().role; 
-    const roleOrder = window.trudeskSessionService.getRoleOrder().order; 
+    const currentUserRoleId = window.trudeskSessionService.getUser().role;
+    const roleOrder = window.trudeskSessionService.getRoleOrder().order;
 
 
     const currentUserRoleIndex = roleOrder.findIndex(roleId => roleId.toString() === currentUserRoleId.toString());
@@ -145,7 +145,7 @@ class CreateAccountModal extends React.Component {
         const roleIndex = roleOrder.findIndex(roleId => roleId.toString() === role.get('_id').toString());
         return (
           roleIndex > currentUserRoleIndex ||
-          role.get('isAdmin') 
+          role.get('isAdmin')
         );
       })
       .map(role => {
@@ -153,11 +153,11 @@ class CreateAccountModal extends React.Component {
       })
       .toArray();
 
-    const groups = this.props.groups
-      .map(group => {
-        return { text: group.get('name'), value: group.get('_id') };
+    const mappedGroups = this.props.groups
+      .map(grp => {
+        return { text: grp.get('name'), value: grp.get('_id') }
       })
-      .toArray();
+      .toArray()
 
     const teams = this.props.teams
       .map(team => {
@@ -256,7 +256,7 @@ class CreateAccountModal extends React.Component {
             <div className='uk-margin-medium-bottom'>
               <label className={'uk-form-label'}>Role</label>
               <SingleSelect
-                items={this.filteredRoles || []} 
+                items={this.filteredRoles || []}
                 width={'100'}
                 showTextbox={false}
                 onSelectChange={e => this.onRoleSelectChange(e)}
@@ -274,7 +274,7 @@ class CreateAccountModal extends React.Component {
                 <div className='uk-margin-medium-bottom'>
                   <label className='uk-form-label'>Enterprises</label>
                   <MultiSelect
-                    items={groups}
+                    items={mappedGroups || []}
                     onChange={e => this.onGroupSelectChange(e)}
                     ref={r => (this.groupSelect = r)}
                   />
