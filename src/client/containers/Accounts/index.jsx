@@ -116,12 +116,10 @@ class AccountsContainer extends React.Component {
       this.props.accountsState.accounts &&
       this.props.accountsState.accounts.map(user => {
         const userImage = user.get('image') || 'defaultProfile.jpg'
+
+        const canEditAccount = helpers.canUser('accounts:update', true) 
+        const canDeleteAccount = helpers.canUser('accounts:delete', true) 
   
-        // Verificar permissões do usuário
-        const canEditAccount = helpers.canUser('accounts:update', true) // Substitua pela lógica de verificação de permissão
-        const canDeleteAccount = helpers.canUser('accounts:delete', true) // Substitua pela lógica de verificação de permissão
-  
-        // Construir o menu de ações com base nas permissões
         let actionMenu = []
         if (canEditAccount) {
           actionMenu.push(<DropdownItem key={0} text={'Edit'} onClick={e => this.onEditAccountClicked(e, user)} />)
@@ -143,7 +141,7 @@ class AccountsContainer extends React.Component {
           }
         }
   
-        // Não renderizar os 3 pontinhos se o usuário não tiver permissões
+
         const showMenu = actionMenu.length > 0
   
         const isAdmin = user.getIn(['role', 'isAdmin']) || false
@@ -155,7 +153,7 @@ class AccountsContainer extends React.Component {
           <GridItem key={user.get('_id')} width={'1-5'} xLargeWidth={'1-6'} extraClass={'mb-25'}>
             <TruCard
               loaderActive={user.get('loading')}
-              menu={showMenu ? actionMenu : null} // Renderizar o menu apenas se houver permissões
+              menu={showMenu ? actionMenu : null} 
               extraHeadClass={
                 (isAdmin ? 'tru-card-head-admin' : '') +
                 (!isAdmin && isAgent ? 'tru-card-head-agent' : '') +

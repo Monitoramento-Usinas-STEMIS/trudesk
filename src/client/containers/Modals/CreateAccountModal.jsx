@@ -52,14 +52,13 @@ class CreateAccountModal extends React.Component {
     this.props.fetchGroups({ type: 'all' });
     this.props.fetchTeams();
   
-    // Buscar roles filtradas
     api.common.fetchFilteredRoles().then(response => {
       if (response.success) {
         this.filteredRoles = response.roles.map(role => ({
           text: role.name,
           value: role._id,
         }));
-        this.forceUpdate(); // Forçar re-renderização para atualizar o dropdown
+        this.forceUpdate(); 
       } else {
         console.error('Failed to fetch filtered roles:', response.error);
       }
@@ -135,19 +134,18 @@ class CreateAccountModal extends React.Component {
   }
 
   render() {
-    const currentUserRoleId = window.trudeskSessionService.getUser().role; // Obter o papel do usuário atual
-    const roleOrder = window.trudeskSessionService.getRoleOrder().order; // Obter a hierarquia de papéis
+    const currentUserRoleId = window.trudeskSessionService.getUser().role; 
+    const roleOrder = window.trudeskSessionService.getRoleOrder().order; 
 
-    // Encontrar o índice do papel do usuário atual na hierarquia
+
     const currentUserRoleIndex = roleOrder.findIndex(roleId => roleId.toString() === currentUserRoleId.toString());
 
-    // Filtrar roles com base na hierarquia
     const roles = this.props.roles
       .filter(role => {
         const roleIndex = roleOrder.findIndex(roleId => roleId.toString() === role.get('_id').toString());
         return (
-          roleIndex > currentUserRoleIndex || // Mostrar apenas roles abaixo na hierarquia
-          role.get('isAdmin') // Sempre mostrar roles de administrador
+          roleIndex > currentUserRoleIndex ||
+          role.get('isAdmin') 
         );
       })
       .map(role => {
@@ -258,7 +256,7 @@ class CreateAccountModal extends React.Component {
             <div className='uk-margin-medium-bottom'>
               <label className={'uk-form-label'}>Role</label>
               <SingleSelect
-                items={this.filteredRoles || []} // Usar as roles filtradas
+                items={this.filteredRoles || []} 
                 width={'100'}
                 showTextbox={false}
                 onSelectChange={e => this.onRoleSelectChange(e)}
