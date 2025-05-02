@@ -304,7 +304,7 @@ class TicketsContainer extends React.Component {
                     <input
                       type='text'
                       id='tickets_Search'
-                      placeholder={'Search'}
+                      placeholder={'Pesquisar'}
                       className={'ticket-top-search'}
                       value={this.searchTerm}
                       onChange={e => this.onSearchTermChanged(e)}
@@ -327,22 +327,22 @@ class TicketsContainer extends React.Component {
             striped={true}
             headers={[
               <TableHeader key={0} width={45} height={50} component={selectAllCheckbox} />,
-              <TableHeader key={1} width={60} text={'Status'} />,
+              <TableHeader key={1} width={60} text={'Estado'} />,
               <TableHeader key={2} width={65} text={'#'} />,
-              <TableHeader key={3} width={'23%'} text={'Subject'} />,
-              <TableHeader key={4} width={110} text={'Created'} />,
-              <TableHeader key={5} width={125} text={'Requester'} />,
-              <TableHeader key={6} width={175} text={'Customer'} />,
-              <TableHeader key={7} text={'Assignee'} />,
+              <TableHeader key={3} width={'23%'} text={'Assunto'} />,
+              <TableHeader key={4} width={110} text={'Criado'} />,
+              <TableHeader key={5} width={125} text={'Criador'} />,
+              <TableHeader key={6} width={175} text={'Empresa'} />,
+              <TableHeader key={7} text={'Assinado'} />,
               <TableHeader key={8} width={'15%'} text={'Usina'} />,
-              <TableHeader key={9} width={110} text={'Due Date'} />,
-              <TableHeader key={10} text={'Updated'} />
+              <TableHeader key={9} width={110} text={'Vencimento'} />,
+              <TableHeader key={10} text={'Atualizado'} />
             ]}
           >
             {!this.props.loading && this.props.tickets.size < 1 && (
               <TableRow clickable={false}>
                 <TableCell colSpan={10}>
-                  <h5 style={{ margin: 10 }}>No Tickets Found</h5>
+                  <h5 style={{ margin: 10 }}>Nenhum Ticket Encontrado</h5>
                 </TableCell>
               </TableRow>
             )}

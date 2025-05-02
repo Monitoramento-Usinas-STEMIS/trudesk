@@ -195,7 +195,7 @@ class CreateTicketModal extends React.Component {
       <BaseModal {...this.props} options={{ bgclose: false }}>
         <form className={'uk-form-stacked'} onSubmit={e => this.onFormSubmit(e)}>
           <div className='uk-margin-medium-bottom'>
-            <label className={'uk-form-label-usina'}>Subject</label>
+            <label className={'uk-form-label-usina'}>Assunto</label>
             <input
               type='text'
               name={'subject'}
@@ -214,18 +214,18 @@ class CreateTicketModal extends React.Component {
               type='text'
               name={'usina'}
               className={'md-input'}
-              placeholder='Example: Avelar 32'
+              placeholder='Exemplo: Avelar 32'
               onChange={e => this.setState({ usina: e.target.value })}
               value={this.state.usina || ''}
               data-validation='required'
-              data-validation-error-msg='This field is mandatory.'
+              data-validation-error-msg='Esse campo é obrigatório.'
             />
           </div>
           <div className='uk-margin-medium-bottom'>
             <Grid>
               {allowAgentUserTickets && (
                 <GridItem width={'1-3'}>
-                  <label className={'uk-form-label'}>Owner</label>
+                  <label className={'uk-form-label'}>Criador</label>
                   <SingleSelect
                     showTextbox={true}
                     items={mappedAccounts}
@@ -236,7 +236,7 @@ class CreateTicketModal extends React.Component {
                 </GridItem>
               )}
               <GridItem width={allowAgentUserTickets ? '2-3' : '1-1'}>
-                <label className={'uk-form-label'}>Enterprise</label>
+                <label className={'uk-form-label'}>Empresa</label>
                 <SingleSelect
                   showTextbox={false}
                   items={mappedGroups}
@@ -251,7 +251,7 @@ class CreateTicketModal extends React.Component {
           <div className='uk-margin-medium-bottom'>
             <Grid>
               <GridItem width={'1-1'}>
-                <label className={'uk-form-label'}>Equipments</label>
+                <label className={'uk-form-label'}>Equipamentos</label>
                 <SingleSelect
                   showTextbox={false}
                   items={mappedTicketTags}
@@ -266,7 +266,7 @@ class CreateTicketModal extends React.Component {
             <div className='uk-margin-medium-bottom'>
               <Grid>
                 <GridItem width={'1-1'}>
-                  <label className={'uk-form-label'}>Error Types</label>
+                  <label className={'uk-form-label'}>Erros</label>
                   <SingleSelect
                     showTextbox={false}
                     items={mappedTicketErrorTypes}
@@ -279,7 +279,7 @@ class CreateTicketModal extends React.Component {
             </div>
           )}
           <div className='uk-clearfix uk-margin-medium-bottom'>
-            <label className={'uk-form-label'}>Type</label>
+            <label className={'uk-form-label'}>Tipo</label>
             {this.props.ticketTypes.toArray().map(type => (
               <div key={type.get('_id')} className='uk-float-left' style={{ marginRight: '10px' }}>
                 <span className='icheck-inline'>
@@ -302,7 +302,7 @@ class CreateTicketModal extends React.Component {
           </div>
           {!isCustomer && (
             <div className='uk-margin-medium-bottom'>
-              <label className={'uk-form-label'}>Priority</label>
+              <label className={'uk-form-label'}>Prioridade</label>
               <div ref={i => (this.priorityLoader = i)} className={'hide'}>
                 <SpinLoader active={true} />
               </div>
@@ -330,7 +330,7 @@ class CreateTicketModal extends React.Component {
             </div>
           )}
           <div className='uk-margin-medium-bottom'>
-            <span>Description</span>
+            <span>Descrição</span>
             <div className='error-border-wrap uk-clearfix'>
               <EasyMDE
                 ref={i => (this.issueMde = i)}
@@ -341,8 +341,9 @@ class CreateTicketModal extends React.Component {
               />
             </div>
             <span style={{ marginTop: '6px', display: 'inline-block', fontSize: '11px' }} className={'uk-text-muted'}>
-              Please try to be as specific as possible. Please include any details you think may be relevant, such as
-              troubleshooting steps you've taken.
+
+              "Por favor, tente ser o mais específico possível.
+              Inclua qualquer detalhe que você achar relevante, como as etapas de solução de problemas que você já realizou."
             </span>
           </div>
           <div className='uk-modal-footer uk-text-right'>
