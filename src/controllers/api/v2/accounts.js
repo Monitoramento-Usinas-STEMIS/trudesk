@@ -152,125 +152,158 @@ accountsApi.create = async function (req, res) {
   }
 };
 
-accountsApi.get = function (req, res) {
-  const query = req.query
-  const type = query.type || 'customers'
-  const limit = query.limit ? Number(query.limit) : 25
-  const page = query.page ? Number(query.page) : 0
+accountsApi.get = async function (req, res) {
+  const query = req.query;
+  const type = query.type || 'customers';
+  const limit = query.limit ? Number(query.limit) : 25;
+  const page = query.page ? Number(query.page) : 0;
 
   const obj = {
     limit: limit === -1 ? 999999 : limit,
     page: page,
-    showDeleted: query.showDeleted && query.showDeleted === 'true'
+    showDeleted: query.showDeleted && query.showDeleted === 'true',
+  };
+
+  try {
+    const currentUser = await User.findOne({ _id: req.user._id }).populate('role');
+    if (!currentUser) return apiUtil.sendApiError(res, 401, 'Invalid User');
+
+    const isAdmin = currentUser.role.isAdmin || false;
+    const isAgent = currentUser.role.isAgent || false;
+
+    if (isAdmin || isAgent) {
+      switch (type) {
+        case 'all':
+          User.getUserWithObject(obj, function (err, accounts) {
+            if (err) return apiUtil.sendApiError(res, 500, err.message);
+
+            return apiUtil.sendApiSuccess(res, { accounts: accounts, count: accounts.length });
+          });
+          break;
+        case 'customers':
+          User.getCustomers(obj, function (err, accounts) {
+            if (err) return apiUtil.sendApiError(res, 500, err.message);
+
+            const resAccounts = [];
+
+            async.eachSeries(
+              accounts,
+              function (account, next) {
+                Group.getAllGroupsOfUser(account._id, function (err, groups) {
+                  if (err) return next(err);
+                  const a = account.toObject();
+                  a.groups = groups.map(function (group) {
+                    return { name: group.name, _id: group._id };
+                  });
+                  resAccounts.push(a);
+                  next();
+                });
+              },
+              function (err) {
+                if (err) return apiUtil.sendApiError(res, 500, err.message);
+
+                return apiUtil.sendApiSuccess(res, { accounts: resAccounts, count: resAccounts.length });
+              }
+            );
+          });
+          break;
+        case 'agents':
+          User.getAgents(obj, function (err, accounts) {
+            if (err) return apiUtil.sendApiError(res, 500, err.message);
+
+            const resAccounts = [];
+            async.eachSeries(
+              accounts,
+              function (account, next) {
+                const a = account.toObject();
+                Department.getUserDepartments(account._id, function (err, departments) {
+                  if (err) return next(err);
+
+                  a.departments = departments.map(function (department) {
+                    return { name: department.name, _id: department._id };
+                  });
+
+                  Team.getTeamsOfUser(account._id, function (err, teams) {
+                    if (err) return next(err);
+                    a.teams = teams.map(function (team) {
+                      return { name: team.name, _id: team._id };
+                    });
+                    resAccounts.push(a);
+                    next();
+                  });
+                });
+              },
+              function (err) {
+                if (err) return apiUtil.sendApiError(res, 500, err.message);
+
+                return apiUtil.sendApiSuccess(res, { accounts: resAccounts, count: resAccounts.length });
+              }
+            );
+          });
+          break;
+        case 'admins':
+          User.getAdmins(obj, function (err, accounts) {
+            if (err) return apiUtil.sendApiError(res, 500, err.message);
+
+            const resAccounts = [];
+            async.eachSeries(
+              accounts,
+              function (account, next) {
+                const a = account.toObject();
+                Department.getUserDepartments(account._id, function (err, departments) {
+                  if (err) return next(err);
+
+                  a.departments = departments.map(function (department) {
+                    return { name: department.name, _id: department._id };
+                  });
+
+                  Team.getTeamsOfUser(account._id, function (err, teams) {
+                    if (err) return next(err);
+                    a.teams = teams.map(function (team) {
+                      return { name: team.name, _id: team._id };
+                    });
+                    resAccounts.push(a);
+                    next();
+                  });
+                });
+              },
+              function (err) {
+                if (err) return apiUtil.sendApiError(res, 500, err.message);
+
+                return apiUtil.sendApiSuccess(res, { accounts: resAccounts, count: resAccounts.length });
+              }
+            );
+          });
+          break;
+        default:
+          return apiUtil.sendApiError_InvalidPostData(res);
+      }
+    } else {
+      const userGroups = await Group.getAllGroupsOfUser(currentUser._id);
+
+      if (!userGroups || userGroups.length === 0) {
+        return apiUtil.sendApiSuccess(res, { accounts: [], count: 0 });
+      }
+
+      const groupMemberIds = userGroups.flatMap(group => group.members.map(member => member._id.toString()));
+
+      const accounts = await User.find({ _id: { $in: groupMemberIds } })
+        .limit(obj.limit)
+        .skip(page * obj.limit)
+        .lean();
+
+      const accountsWithGroups = accounts.map(account => {
+        const groups = userGroups.filter(group => group.members.some(member => member._id.toString() === account._id.toString()));
+        return { ...account, groups: groups.map(group => ({ _id: group._id, name: group.name })) };
+      });
+
+      return apiUtil.sendApiSuccess(res, { accounts: accountsWithGroups, count: accountsWithGroups.length });
+    }
+  } catch (err) {
+    winston.error(err);
+    return apiUtil.sendApiError(res, 500, 'An error occurred while fetching accounts.');
   }
-
-  switch (type) {
-    case 'all':
-      User.getUserWithObject(obj, function (err, accounts) {
-        if (err) return apiUtil.sendApiError(res, 500, err.message)
-
-        return apiUtil.sendApiSuccess(res, { accounts: accounts, count: accounts.length })
-      })
-      break
-    case 'customers':
-      User.getCustomers(obj, function (err, accounts) {
-        if (err) return apiUtil.sendApiError(res, 500, err.message)
-
-        const resAccounts = []
-
-        async.eachSeries(
-          accounts,
-          function (account, next) {
-            Group.getAllGroupsOfUser(account._id, function (err, groups) {
-              if (err) return next(err)
-              const a = account.toObject()
-              a.groups = groups.map(function (group) {
-                return { name: group.name, _id: group._id }
-              })
-              resAccounts.push(a)
-              next()
-            })
-          },
-          function (err) {
-            if (err) return apiUtil.sendApiError(res, 500, err.message)
-
-            return apiUtil.sendApiSuccess(res, { accounts: resAccounts, count: resAccounts.length })
-          }
-        )
-      })
-      break
-    case 'agents':
-      User.getAgents(obj, function (err, accounts) {
-        if (err) return apiUtil.sendApiError(res, 500, err.message)
-
-        const resAccounts = []
-        async.eachSeries(
-          accounts,
-          function (account, next) {
-            const a = account.toObject()
-            Department.getUserDepartments(account._id, function (err, departments) {
-              if (err) return next(err)
-
-              a.departments = departments.map(function (department) {
-                return { name: department.name, _id: department._id }
-              })
-
-              Team.getTeamsOfUser(account._id, function (err, teams) {
-                if (err) return next(err)
-                a.teams = teams.map(function (team) {
-                  return { name: team.name, _id: team._id }
-                })
-                resAccounts.push(a)
-                next()
-              })
-            })
-          },
-          function (err) {
-            if (err) return apiUtil.sendApiError(res, 500, err.message)
-
-            return apiUtil.sendApiSuccess(res, { accounts: resAccounts, count: resAccounts.length })
-          }
-        )
-      })
-      break
-    case 'admins':
-      User.getAdmins(obj, function (err, accounts) {
-        if (err) return apiUtil.sendApiError(res, 500, err.message)
-
-        var resAccounts = []
-        async.eachSeries(
-          accounts,
-          function (account, next) {
-            var a = account.toObject()
-            Department.getUserDepartments(account._id, function (err, departments) {
-              if (err) return next(err)
-
-              a.departments = departments.map(function (department) {
-                return { name: department.name, _id: department._id }
-              })
-
-              Team.getTeamsOfUser(account._id, function (err, teams) {
-                if (err) return next(err)
-                a.teams = teams.map(function (team) {
-                  return { name: team.name, _id: team._id }
-                })
-                resAccounts.push(a)
-                next()
-              })
-            })
-          },
-          function (err) {
-            if (err) return apiUtil.sendApiError(res, 500, err.message)
-
-            return apiUtil.sendApiSuccess(res, { accounts: resAccounts, count: resAccounts.length })
-          }
-        )
-      })
-      break
-    default:
-      return apiUtil.sendApiError_InvalidPostData(res)
-  }
-}
+};
 
 accountsApi.update = async function (req, res) {
   const username = req.params.username

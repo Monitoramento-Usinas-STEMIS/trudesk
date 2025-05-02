@@ -123,7 +123,7 @@ class EasyMDE extends React.Component {
     const attachFileDiv = $('<div></div>')
     attachFileDiv
       .addClass('attachFileDesc')
-      .html('<p>Attach images by dragging & dropping or pasting from clipboard.</p>')
+      .html('<p>Anexe imagens arrastando e soltando ou colando da área de transferência.</p>')
     $el.siblings('.CodeMirror').addClass('hasFileDesc')
     $el
       .siblings('.editor-statusbar')
