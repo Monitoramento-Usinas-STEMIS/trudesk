@@ -136,6 +136,7 @@ class ProfileContainer extends React.Component {
 
         fullname: this.fullname,
         title: this.title,
+        email: this.email,
         workNumber: this.workNumber,
         mobileNumber: this.mobileNumber,
         companyName: this.companyName,
@@ -246,14 +247,6 @@ class ProfileContainer extends React.Component {
   }
 
   render() {
-    // return (
-    //   <div>
-    //     <PageTitle title={'Dashboard'} />
-    //     <PageContent>
-    //       <RGrid />
-    //     </PageContent>
-    //   </div>
-    // )
     if (!this.props.sessionUser) return <div />
 
     const InfoItem = ({ label, prop, paddingLeft, paddingRight, isRequired, onUpdate }) => {
@@ -337,6 +330,7 @@ class ProfileContainer extends React.Component {
                     disabled={this.editingProfile}
                     onClick={() => {
                       this.fullname = this.props.sessionUser.fullname
+                      this.email = this.props.sessionUser.email
                       this.editingProfile = !this.editingProfile
                     }}
                   />
@@ -368,26 +362,34 @@ class ProfileContainer extends React.Component {
                           onUpdate={val => (this.fullname = val)}
                         />
                         <InfoItem
+                          label={'Email'}
+                          prop={this.props.sessionUser.email}
+                          paddingLeft={30}
+                          paddingRight={30}
+                          isRequired={true}
+                          onUpdate={val => (this.email = val)}
+                        />
+                        <InfoItem
                           label={'Cargo'}
                           prop={this.props.sessionUser.title}
                           paddingLeft={30}
                           paddingRight={30}
                           onUpdate={val => (this.title = val)}
                         />
-                        <InfoItem
-                          label={'Nome da empresa'}
-                          prop={this.props.sessionUser.companyName}
-                          paddingRight={0}
-                          paddingLeft={30}
-                          onUpdate={val => (this.companyName = val)}
-                        />
                       </div>
                       <div style={{ display: 'flex', marginTop: 25 }}>
                         <InfoItem
-                          label={'Telefone Comercial'}
-                          prop={this.props.sessionUser.workNumber}
+                          label={'Nome da empresa'}
+                          prop={this.props.sessionUser.companyName}
                           paddingRight={30}
                           paddingLeft={0}
+                          onUpdate={val => (this.companyName = val)}
+                        />
+                        <InfoItem
+                          label={'Telefone Comercial'}
+                          prop={this.props.sessionUser.workNumber}
+                          paddingLeft={30}
+                          paddingRight={30}
                           onUpdate={val => (this.workNumber = val)}
                         />
                         <InfoItem
@@ -413,6 +415,7 @@ class ProfileContainer extends React.Component {
                           prop={this.props.sessionUser.linkedinUrl}
                           paddingLeft={30}
                           paddingRight={30}
+                          onUpdateK
                           onUpdate={val => (this.linkedinUrl = val)}
                         />
                         <InfoItem
@@ -610,7 +613,7 @@ class ProfileContainer extends React.Component {
                     </div>
                   </TruTabSection>
                   <TruTabSection sectionId={2} style={{ minHeight: 480 }}>
-                    <div style={{ maxWidth: 450, padding: '10px 25px' }}>
+                   	<div style={{ maxWidth: 450, padding: '10px 25px' }}>
                       <h4 style={{ marginBottom: 15 }}>Preferências de interface</h4>
                       <div className={'uk-clearfix uk-margin-large-bottom'}>
                         <label style={{ fontSize: '13px' }}>Timezone</label>
