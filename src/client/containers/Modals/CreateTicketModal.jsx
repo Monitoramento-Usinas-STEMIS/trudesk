@@ -63,7 +63,7 @@ class CreateTicketModal extends React.Component {
 
     if (this.issueMde && this.issueMde.easymde) {
       const cmInstance = this.issueMde.easymde.codemirror
-      cmInstance.setOption('placeholder', 'Exemplo: TCU 02 com alarme de "PERDA DE COMUNICAÇÃO')
+      cmInstance.setOption('placeholder', 'Exemplo: NCU01 - TCU 8 - SERIAL NUMBER -  ALARME DE BATERIA')
     }
 
     this.defaultTicketTypeWatcher = when(
@@ -133,7 +133,7 @@ class CreateTicketModal extends React.Component {
     if (this.issueText.length < minIssueLength) {
       $errorBorderWrap.css({ border: '1px solid #E74C3C' })
       const mdeError = $(
-        `<div class="mde-error uk-float-left uk-text-left">Please enter a valid issue. Issue must contain at least ${minIssueLength} characters</div>`
+        `<div class="mde-error uk-float-left uk-text-left">Por favor, insira um problema válido. O problema deve conter pelo menos ${minIssueLength} caracteres.</div>`
       )
       $mdeError = $issueTextbox.siblings('.editor-statusbar').find('.mde-error')
       if ($mdeError.length < 1) $issueTextbox.siblings('.editor-statusbar').prepend(mdeError)
@@ -200,7 +200,7 @@ class CreateTicketModal extends React.Component {
               type='text'
               name={'subject'}
               className={'md-input'}
-              placeholder='Exemplo: NCU01 - TCU 8 - SERIAL NUMBER -  ALARME DE BATERIA'
+              placeholder='Exemplo: TCU 02 com alarme de PERDA DE COMUNICAÇÃO'
               data-validation='length'
               data-validation-length={`min${viewdata.get('ticketSettings').get('minSubject')}`}
               data-validation-error-msg={`Please enter a valid Subject. Subject must contain at least ${viewdata
