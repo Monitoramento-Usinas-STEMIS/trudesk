@@ -357,7 +357,7 @@ class ProfileContainer extends React.Component {
                   </TruTabSelectors>
                   <TruTabSection sectionId={0} active={true} style={{ minHeight: 480 }}>
                     <div style={{ maxWidth: 900, padding: '10px 25px' }}>
-                      <h4 style={{ marginBottom: 15 }}>Work Information</h4>
+                      <h4 style={{ marginBottom: 15 }}>Informações de trabalho</h4>
                       <div style={{ display: 'flex' }}>
                         <InfoItem
                           label={'Nome'}
@@ -399,7 +399,7 @@ class ProfileContainer extends React.Component {
                         />
                       </div>
                       <Spacer top={25} bottom={25} showBorder={true} />
-                      <h4 style={{ marginBottom: 15 }}>Other Information</h4>
+                      <h4 style={{ marginBottom: 15 }}>Outras Informações</h4>
                       <div style={{ display: 'flex', marginTop: 25 }}>
                         <InfoItem
                           label={'Facebook Url'}
