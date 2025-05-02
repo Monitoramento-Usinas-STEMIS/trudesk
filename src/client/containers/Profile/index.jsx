@@ -56,18 +56,18 @@ class ProfileContainer extends React.Component {
   // Prefs
   @observable timezone = null
 
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     makeObservable(this)
   }
 
-  componentDidMount () {
+  componentDidMount() {
     // This will update the profile with the latest values
     this.props.setSessionUser()
   }
 
-  componentDidUpdate (prevProps, prevState, snapshot) {
+  componentDidUpdate(prevProps, prevState, snapshot) {
     // This should load initial state values
     if (prevProps.sessionUser !== this.props.sessionUser) {
       this.fullname = this.props.sessionUser.fullname
@@ -86,7 +86,7 @@ class ProfileContainer extends React.Component {
     }
   }
 
-  _validateEmail (email) {
+  _validateEmail(email) {
     if (!email) return false
     return email
       .toString()
@@ -96,7 +96,7 @@ class ProfileContainer extends React.Component {
       )
   }
 
-  _getTimezones () {
+  _getTimezones() {
     return moment.tz
       .names()
       .map(function (name) {
@@ -245,7 +245,7 @@ class ProfileContainer extends React.Component {
     this.props.showModal('PASSWORD_PROMPT', { user: this.props.sessionUser, onVerifyComplete })
   }
 
-  render () {
+  render() {
     // return (
     //   <div>
     //     <PageTitle title={'Dashboard'} />
@@ -285,7 +285,7 @@ class ProfileContainer extends React.Component {
 
     return (
       <>
-        <PageTitle title={'Profile'} />
+        <PageTitle title={'Perfil'} />
         <PageContent>
           <TruCard
             header={<div />}
@@ -329,7 +329,7 @@ class ProfileContainer extends React.Component {
                     </p>
                   </div>
                   <Button
-                    text={'Edit Profile'}
+                    text={'Editar Perfil'}
                     small={true}
                     waves={true}
                     style={'primary'}
@@ -351,16 +351,16 @@ class ProfileContainer extends React.Component {
               <div>
                 <TruTabWrapper style={{ padding: '0' }}>
                   <TruTabSelectors showTrack={true}>
-                    <TruTabSelector selectorId={0} label={'Profile'} active={true} />
-                    <TruTabSelector selectorId={1} label={'Security'} />
-                    <TruTabSelector selectorId={2} label={'Preferences'} />
+                    <TruTabSelector selectorId={0} label={'Perfil'} active={true} />
+                    <TruTabSelector selectorId={1} label={'Segurança'} />
+                    <TruTabSelector selectorId={2} label={'Preferências'} />
                   </TruTabSelectors>
                   <TruTabSection sectionId={0} active={true} style={{ minHeight: 480 }}>
                     <div style={{ maxWidth: 900, padding: '10px 25px' }}>
                       <h4 style={{ marginBottom: 15 }}>Work Information</h4>
                       <div style={{ display: 'flex' }}>
                         <InfoItem
-                          label={'Name'}
+                          label={'Nome'}
                           prop={this.props.sessionUser.fullname}
                           paddingLeft={0}
                           paddingRight={30}
@@ -368,14 +368,14 @@ class ProfileContainer extends React.Component {
                           onUpdate={val => (this.fullname = val)}
                         />
                         <InfoItem
-                          label={'Title'}
+                          label={'Cargo'}
                           prop={this.props.sessionUser.title}
                           paddingLeft={30}
                           paddingRight={30}
                           onUpdate={val => (this.title = val)}
                         />
                         <InfoItem
-                          label={'Company Name'}
+                          label={'Nome da empresa'}
                           prop={this.props.sessionUser.companyName}
                           paddingRight={0}
                           paddingLeft={30}
@@ -384,14 +384,14 @@ class ProfileContainer extends React.Component {
                       </div>
                       <div style={{ display: 'flex', marginTop: 25 }}>
                         <InfoItem
-                          label={'Work Number'}
+                          label={'Telefone Comercial'}
                           prop={this.props.sessionUser.workNumber}
                           paddingRight={30}
                           paddingLeft={0}
                           onUpdate={val => (this.workNumber = val)}
                         />
                         <InfoItem
-                          label={'Mobile Number'}
+                          label={'Número de celular'}
                           prop={this.props.sessionUser.mobileNumber}
                           paddingLeft={30}
                           paddingRight={0}
@@ -426,12 +426,12 @@ class ProfileContainer extends React.Component {
                       {this.editingProfile && (
                         <div className={'uk-display-flex uk-margin-large-top'}>
                           <Button
-                            text={'Save'}
+                            text={'Salvar'}
                             style={'primary'}
                             small={true}
                             onClick={e => this.onSaveProfileClicked(e)}
                           />
-                          <Button text={'Cancel'} small={true} onClick={() => (this.editingProfile = false)} />
+                          <Button text={'Cancelar'} small={true} onClick={() => (this.editingProfile = false)} />
                         </div>
                       )}
                     </div>
@@ -439,7 +439,7 @@ class ProfileContainer extends React.Component {
                   <TruTabSection sectionId={1} style={{ minHeight: 480 }}>
                     <div style={{ maxWidth: 600, padding: '25px 0' }}>
                       <TruAccordion
-                        headerContent={'Change Password'}
+                        headerContent={'Alterar senha'}
                         content={
                           <div>
                             <form onSubmit={e => this.onUpdatePasswordClicked(e)}>
@@ -451,27 +451,26 @@ class ProfileContainer extends React.Component {
                                   info
                                 </i>
                                 <p style={{ lineHeight: '18px' }}>
-                                  After changing your password, you will be logged out of all sessions.
-                                </p>
+                                  Após alterar sua senha, você será desconectado de todas as sessões.                                </p>
                               </div>
                               <div>
                                 <div className={'uk-margin-medium-bottom'}>
-                                  <label>Current Password</label>
+                                  <label>Senha atual</label>
                                   <Input type={'password'} onChange={v => (this.currentPassword = v)} />
                                 </div>
                                 <div className={'uk-margin-medium-bottom'}>
-                                  <label>New Password</label>
+                                  <label>Nova Senha</label>
                                   <Input type={'password'} onChange={v => (this.newPassword = v)} />
                                 </div>
                                 <div className={'uk-margin-medium-bottom'}>
-                                  <label>Confirm Password</label>
+                                  <label>Confirmar senha</label>
                                   <Input type={'password'} onChange={v => (this.confirmPassword = v)} />
                                 </div>
                               </div>
                               <div>
                                 <Button
                                   type={'submit'}
-                                  text={'Update Password'}
+                                  text={'Atualizar Senha'}
                                   style={'primary'}
                                   small={true}
                                   extraClass={'uk-width-1-1'}
@@ -492,15 +491,13 @@ class ProfileContainer extends React.Component {
                                   <div>
                                     <h4 style={{ fontWeight: 500 }}>Two-factor authentication is not enabled yet</h4>
                                     <p style={{ fontSize: '12px', fontWeight: 400 }}>
-                                      Enabling two-factor authentication adds an extra layer of security to your
-                                      accounts. Once enabled, you will be required to enter both your password and an
-                                      authentication code in order to sign into your account. After you successfully
-                                      enable two-factor authentication, you will not be able to login unless you enter
-                                      the correct authentication code.
+                                      Ativar a autenticação de dois fatores adiciona uma camada extra de segurança às suas contas.
+                                      Uma vez ativada, você precisará inserir tanto sua senha quanto um código de autenticação para fazer login na sua conta.
+                                      Após ativar com sucesso a autenticação de dois fatores, você não poderá acessar sua conta sem inserir o código de autenticação correto.
                                     </p>
                                     <div>
                                       <Button
-                                        text={'Enable'}
+                                        text={'Habilitar'}
                                         style={'primary'}
                                         small={true}
                                         waves={true}
@@ -514,8 +511,8 @@ class ProfileContainer extends React.Component {
                                     <div style={{ width: 400 }}>
                                       <div style={{ display: 'flex', marginTop: 15, flexDirection: 'column' }}>
                                         <p style={{ fontWeight: 500, marginBottom: 40 }}>
-                                          Scan the QR code below using any authenticator app such as Authy, Google
-                                          Authenticator, LastPass Authenticator, Microsoft Authenticator
+                                          Escaneie o código QR abaixo usando qualquer aplicativo autenticador, como Authy,
+                                          Google Authenticator, LastPass Authenticator ou Microsoft Authenticator.
                                         </p>
                                         <div style={{ alignSelf: 'center', marginBottom: 40 }}>
                                           <div>
@@ -537,15 +534,15 @@ class ProfileContainer extends React.Component {
                                                 this.l2ShowCantSeeQR = true
                                               }}
                                             >
-                                              Can&apos;t scan the QR code?
+                                              Não consegue escanear o QR Code?"
                                             </a>
                                           </div>
                                         </div>
                                         {this.l2ShowCantSeeQR && (
                                           <div style={{ alignSelf: 'center', marginBottom: 15 }}>
                                             <p style={{ fontSize: '13px' }}>
-                                              If you are unable to scan the QR code, open the authenticator app and
-                                              select the option that allows you to enter the below key manually.
+                                              Se você não conseguir escanear o QR Code, abra o aplicativo autenticador
+                                              e selecione a opção que permite inserir a chave abaixo manualmente.
                                             </p>
                                             <p style={{ textAlign: 'center' }}>
                                               <span
@@ -564,10 +561,10 @@ class ProfileContainer extends React.Component {
                                           </div>
                                         )}
                                         <p style={{ fontWeight: 500 }}>
-                                          After scanning the QR code, enter the 6-digit verification code below to
-                                          activate two-factor authentication on your account.
+                                          Após escanear o QR Code, insira o código de verificação de 6 dígitos
+                                          abaixo para ativar a autenticação de dois fatores na sua conta.
                                         </p>
-                                        <label>Verification Code</label>
+                                        <label>Código de Verificação</label>
                                         <Input type={'text'} onChange={val => (this.l2VerifyText = val)} />
                                         <div style={{ marginTop: 25 }}>
                                           <Button
@@ -590,16 +587,16 @@ class ProfileContainer extends React.Component {
                                 <h4 style={{ fontWeight: 500 }}>
                                   Two-factor authentication is{' '}
                                   <span className={'uk-text-success'} style={{ fontWeight: 600 }}>
-                                    enabled
+                                    habilitada
                                   </span>
                                 </h4>
                                 <p style={{ fontSize: '12px' }}>
-                                  By disabling two-factor authentication, your account will be protected with only your
-                                  password.
+                                  Ao desativar a autenticação de dois fatores, sua conta ficará protegida apenas com 
+                                  sua senha.
                                 </p>
                                 <div>
                                   <Button
-                                    text={'Disable'}
+                                    text={'Disabilitar'}
                                     style={'danger'}
                                     small={true}
                                     onClick={e => this.onDisableMFAClicked(e)}
@@ -614,7 +611,7 @@ class ProfileContainer extends React.Component {
                   </TruTabSection>
                   <TruTabSection sectionId={2} style={{ minHeight: 480 }}>
                     <div style={{ maxWidth: 450, padding: '10px 25px' }}>
-                      <h4 style={{ marginBottom: 15 }}>UI Preferences</h4>
+                      <h4 style={{ marginBottom: 15 }}>Preferências de interface</h4>
                       <div className={'uk-clearfix uk-margin-large-bottom'}>
                         <label style={{ fontSize: '13px' }}>Timezone</label>
                         <SingleSelect
@@ -625,7 +622,7 @@ class ProfileContainer extends React.Component {
                       </div>
                       <div>
                         <Button
-                          text={'Save Preferences'}
+                          text={'Salvar preferências'}
                           style={'primary'}
                           small={true}
                           type={'button'}
