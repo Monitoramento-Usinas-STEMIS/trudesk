@@ -255,7 +255,7 @@ class Sidebar extends React.Component {
             )}
             {sessionUser && Helpers.canUser('settings:edit') && (
               <SidebarItem
-                text='Settings'
+                text='Configurações'
                 icon='settings'
                 href='/settings/general'
                 class='navSettings no-ajaxy'
@@ -265,19 +265,19 @@ class Sidebar extends React.Component {
               >
                 <Submenu id='settings'>
                   <SubmenuItem
-                    text='General'
+                    text='Geral'
                     icon='tune'
                     href='/settings'
                     active={activeSubItem === 'settings-general'}
                   />
                   <SubmenuItem
-                    text='Accounts'
+                    text='Contas'
                     icon='tune'
                     href='/settings/accounts'
                     active={activeSubItem === 'settings-accounts'}
                   />
                   <SubmenuItem
-                    text='Appearance'
+                    text='Aparência'
                     icon='style'
                     href='/settings/appearance'
                     active={activeSubItem === 'settings-appearance'}
@@ -289,7 +289,7 @@ class Sidebar extends React.Component {
                     active={activeSubItem === 'settings-tickets'}
                   />
                   <SubmenuItem
-                    text='Permissions'
+                    text='Permissões'
                     icon='security'
                     href='/settings/permissions'
                     active={activeSubItem === 'settings-permissions'}
@@ -313,7 +313,7 @@ class Sidebar extends React.Component {
                     active={activeSubItem === 'settings-backup'}
                   />
                   <SubmenuItem
-                    text='Server'
+                    text='Servidor'
                     icon='dns'
                     href='/settings/server'
                     active={activeSubItem === 'settings-server'}
@@ -341,7 +341,7 @@ class Sidebar extends React.Component {
         </div>
         <div className='side-nav-bottom-panel'>
           <a id='expand-menu' className='no-ajaxy' href='#'>
-            <i className='material-icons'>menu</i>Collapse Menu
+            <i className='material-icons'>menu</i>Minimizar Menu
           </a>
         </div>
       </div>
