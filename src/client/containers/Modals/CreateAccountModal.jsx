@@ -176,8 +176,8 @@ class CreateAccountModal extends React.Component {
             </div>
             <div className='user-heading-content'>
               <h2>
-                <span className={'uk-text-truncate'}>Create Account</span>
-                <span className='sub-heading'>Please provide account details below</span>
+                <span className={'uk-text-truncate'}>Criar Conta</span>
+                <span className='sub-heading'>Por favor, forneça os detalhes da conta abaixo</span>
               </h2>
             </div>
           </div>
@@ -185,7 +185,7 @@ class CreateAccountModal extends React.Component {
         <div style={{ margin: '24px 24px 0 24px' }}>
           <form className='uk-form-stacked' onSubmit={e => this.onFormSubmit(e)}>
             <div className='uk-margin-medium-bottom'>
-              <label className='uk-form-label'>Username</label>
+              <label className='uk-form-label'>Nome de Usuário</label>
               <input
                 type='text'
                 className={'md-input'}
@@ -198,7 +198,7 @@ class CreateAccountModal extends React.Component {
             </div>
             <div className='uk-margin-medium-bottom uk-clearfix'>
               <div className='uk-float-left' style={{ width: '50%', paddingRight: '20px' }}>
-                <label className={'uk-form-label'}>Name</label>
+                <label className={'uk-form-label'}>Nome</label>
                 <input
                   type='text'
                   className={'md-input'}
@@ -210,7 +210,7 @@ class CreateAccountModal extends React.Component {
                 />
               </div>
               <div className='uk-float-left uk-width-1-2'>
-                <label className={'uk-form-label'}>Title</label>
+                <label className={'uk-form-label'}>Cargo</label>
                 <input
                   type='text'
                   className={'md-input'}
@@ -221,7 +221,7 @@ class CreateAccountModal extends React.Component {
             </div>
             <div className='uk-margin-medium-bottom uk-clearfix'>
               <div className='uk-float-left' style={{ width: '50%', paddingRight: '20px' }}>
-                <label className={'uk-form-label'}>Password</label>
+                <label className={'uk-form-label'}>Senha</label>
                 <input
                   type='password'
                   className={'md-input'}
@@ -231,7 +231,7 @@ class CreateAccountModal extends React.Component {
                 />
               </div>
               <div className='uk-float-left uk-width-1-2'>
-                <label className={'uk-form-label'}>Confirm Password</label>
+                <label className={'uk-form-label'}>Confirmar Senha</label>
                 <input
                   type='password'
                   className={'md-input'}
@@ -254,7 +254,7 @@ class CreateAccountModal extends React.Component {
               />
             </div>
             <div className='uk-margin-medium-bottom'>
-              <label className={'uk-form-label'}>Role</label>
+              <label className={'uk-form-label'}>Função</label>
               <SingleSelect
                 items={this.filteredRoles || []}
                 width={'100'}
@@ -266,13 +266,13 @@ class CreateAccountModal extends React.Component {
                 style={{ display: 'inline-block', marginTop: '10px', fontWeight: 'bold', color: '#d85030' }}
                 ref={r => (this.roleSelectErrorMessage = r)}
               >
-                Please select a role for this user
+                Por favor,selecione uma função para este usuário.
               </span>
             </div>
             {!this.isAgentRole && (
               <div>
                 <div className='uk-margin-medium-bottom'>
-                  <label className='uk-form-label'>Enterprises</label>
+                  <label className='uk-form-label'>Empresas</label>
                   <MultiSelect
                     items={mappedGroups || []}
                     onChange={e => this.onGroupSelectChange(e)}
@@ -283,7 +283,7 @@ class CreateAccountModal extends React.Component {
                     style={{ display: 'inline-block', marginTop: '3px', fontWeight: 'bold', color: '#d85030' }}
                     ref={r => (this.groupSelectErrorMessage = r)}
                   >
-                    Please select a Enterprise for this user.
+                    Por favor,selecione uma empresa para este usuário.
                   </span>
                 </div>
               </div>
@@ -291,7 +291,7 @@ class CreateAccountModal extends React.Component {
             {this.isAgentRole && (
               <div>
                 <div className='uk-margin-medium-bottom'>
-                  <label className='uk-form-label'>Teams</label>
+                  <label className='uk-form-label'>Equipes</label>
                   <MultiSelect items={teams} onChange={() => { }} ref={r => (this.teamSelect = r)} />
                 </div>
               </div>

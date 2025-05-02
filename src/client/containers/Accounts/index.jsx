@@ -182,7 +182,7 @@ class AccountsContainer extends React.Component {
                 <ul className='tru-list'>
                   <li>
                     <div className='tru-list-content'>
-                      <span className='tru-list-heading'>Role</span>
+                      <span className='tru-list-heading'>Função</span>
                       <span className='uk-text-small uk-text-muted'>{user.getIn(['role', 'name'])}</span>
                     </div>
                   </li>
@@ -197,7 +197,7 @@ class AccountsContainer extends React.Component {
                   <li>
                     {customer && user.get('groups') && (
                       <div className='tru-list-content'>
-                        <span className='tru-list-heading'>Enterprises</span>
+                        <span className='tru-list-heading'>Empresas</span>
                         <span className='uk-text-small uk-text-muted uk-text-truncate'>
                           {user.get('groups').map(group => {
                             return group.get('name') + (user.get('groups').toArray().length > 1 ? ', ' : '')
@@ -207,7 +207,7 @@ class AccountsContainer extends React.Component {
                     )}
                     {!customer && user.get('teams') && (
                       <div className='tru-list-content'>
-                        <span className='tru-list-heading'>Teams</span>
+                        <span className='tru-list-heading'>Equipes</span>
                         <span className='uk-text-small uk-text-muted uk-text-truncate'>
                           {user.get('teams').map(team => {
                             return team.get('name') + (user.get('teams').toArray().length > 1 ? ', ' : '')
@@ -219,7 +219,7 @@ class AccountsContainer extends React.Component {
                   {!customer && user.get('departments') && (
                     <li>
                       <div className='tru-list-content'>
-                        <span className='tru-list-heading'>Departments</span>
+                        <span className='tru-list-heading'>Departamentos</span>
                         <span className='uk-text-small uk-text-muted uk-text-truncate'>
                           {user.get('departments').map(department => {
                             return department.get('name') + (user.get('departments').toArray().length > 1 ? ', ' : '')
