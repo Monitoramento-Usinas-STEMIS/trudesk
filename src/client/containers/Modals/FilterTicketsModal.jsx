@@ -137,10 +137,10 @@ class FilterTicketsModal extends React.Component {
 
     return (
       <BaseModal options={{ bgclose: false }}>
-        <h2 style={{ marginBottom: 20 }}>Filter</h2>
+        <h2 style={{ marginBottom: 20 }}>Filtrar Ticket</h2>
         <form className={'uk-form-stacked'} onSubmit={e => this.onSubmit(e)}>
           <div className='uk-margin-medium-bottom'>
-            <label>Subject</label>
+            <label>Assunto</label>
             <input type='text' name={'subject'} className={'md-input'} />
           </div>
           <div className='uk-margin-medium-bottom'>
@@ -150,7 +150,7 @@ class FilterTicketsModal extends React.Component {
           <div className='uk-grid uk-grid-collapse uk-margin-small-bottom'>
             <div className='uk-width-1-2' style={{ padding: '0 15px 0 0' }}>
               <label htmlFor='filterDate_Start' className='uk-form-label nopadding nomargin'>
-                Date Start
+                Data de início
               </label>
               <input
                 id='filterDate_Start'
@@ -162,7 +162,7 @@ class FilterTicketsModal extends React.Component {
             </div>
             <div className='uk-width-1-2' style={{ padding: '0 0 0 15px' }}>
               <label htmlFor='filterDate_End' className='uk-form-label nopadding nomargin'>
-                Date End
+                Data de término
               </label>
               <input
                 id='filterDate_End'
@@ -176,7 +176,7 @@ class FilterTicketsModal extends React.Component {
           <div className='uk-grid uk-grid-collapse uk-margin-small-bottom'>
             <div className='uk-width-1-1'>
               <label htmlFor='filterStatus' className='uk-form-label' style={{ paddingBottom: 0, marginBottom: 0 }}>
-                Status
+                Estado
               </label>
               <SingleSelect items={statuses} showTextbox={false} multiple={true} ref={r => (this.statusSelect = r)} />
             </div>
@@ -184,7 +184,7 @@ class FilterTicketsModal extends React.Component {
           <div className='uk-grid uk-grid-collapse uk-margin-small-bottom'>
             <div className='uk-width-1-1'>
               <label htmlFor='filterStatus' className='uk-form-label' style={{ paddingBottom: 0, marginBottom: 0 }}>
-                Ticket Equipments
+                Equipmentos
               </label>
               <SingleSelect items={tags} showTextbox={true} multiple={true} ref={r => (this.tagsSelect = r)} />
             </div>
@@ -193,7 +193,7 @@ class FilterTicketsModal extends React.Component {
             <div className='uk-grid uk-grid-collapse uk-margin-small-bottom'>
               <div className='uk-width-1-1'>
                 <label htmlFor='filterStatus' className='uk-form-label' style={{ paddingBottom: 0, marginBottom: 0 }}>
-                  Ticket Error Types
+                  Erros
                 </label>
                 <SingleSelect items={errorTypes} showTextbox={true} multiple={true} ref={r => (this.errorTypesSelect = r)} />
               </div>
@@ -202,7 +202,7 @@ class FilterTicketsModal extends React.Component {
           <div className='uk-grid uk-grid-collapse uk-margin-small-bottom'>
             <div className='uk-width-1-1'>
               <label htmlFor='filterStatus' className='uk-form-label' style={{ paddingBottom: 0, marginBottom: 0 }}>
-                Assignee
+                Assinado
               </label>
               <SingleSelect
                 items={assignees}
@@ -215,7 +215,7 @@ class FilterTicketsModal extends React.Component {
           <div className='uk-grid uk-grid-collapse uk-margin-small-bottom'>
             <div className='uk-width-1-1'>
               <label htmlFor='filterStatus' className='uk-form-label' style={{ paddingBottom: 0, marginBottom: 0 }}>
-                Enterprises
+                Empresa
               </label>
               <SingleSelect items={groups} showTextbox={false} multiple={true} ref={r => (this.groupSelect = r)} />
             </div>
