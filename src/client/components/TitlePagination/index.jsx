@@ -39,11 +39,13 @@ class TitlePagination extends React.Component {
   render () {
     const { limit, total, prevEnabled, nextEnabled, currentPage, prevPage, nextPage, type, filter } = this.props
     const link = page => {
-      if (!type) return '#'
-      if (type.toLowerCase() === 'filter') {
-        return `${filter.raw}&page=${page}`
+      if (!type) return '#';
+      if (this.props.isWarranty) {
+        return `/warranty/${type}/page/${page}/`;
+      } else if (type.toLowerCase() === 'filter') {
+        return `${filter.raw}&page=${page}`;
       } else {
-        return `/tickets/${type}/page/${page}/`
+        return `/tickets/${type}/page/${page}/`;
       }
     }
 

@@ -246,6 +246,7 @@ class WarrantyTicketsContainer extends React.Component {
                                     prevPage={this.props.prevPage}
                                     nextPage={this.props.nextPage}
                                     filter={this.props.filter}
+                                    isWarranty={true}
                                 />
                                 <PageTitleButton
                                     fontAwesomeIcon={'fa-refresh'}
