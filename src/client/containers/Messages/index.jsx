@@ -309,7 +309,7 @@ class MessagesContainer extends React.Component {
         <Grid>
           <GridItem width={'3-10'} extraClass={'full-height'}>
             <PageTitle
-              title={'Conversations'}
+              title={'Conversas'}
               extraClasses={'page-title-border-right'}
               hideBorderBottom={true}
               rightComponent={
@@ -317,7 +317,7 @@ class MessagesContainer extends React.Component {
                   <div id='convo-actions' style={{ position: 'absolute', top: 20, right: 15 }}>
                     {!this.userListShown && (
                       <a
-                        title='Start Conversation'
+                        title='Iniciar Conversa'
                         className='no-ajaxy'
                         style={{ display: 'block', height: 28 }}
                         onClick={e => this.showUserList(e)}
@@ -333,7 +333,7 @@ class MessagesContainer extends React.Component {
                         style={{ height: 28, lineHeight: '30px', fontSize: '16px', fontWeight: 300 }}
                         onClick={e => this.hideUserList(e)}
                       >
-                        Cancel
+                        Cancelar
                       </a>
                     )}
                   </div>
@@ -377,7 +377,7 @@ class MessagesContainer extends React.Component {
                 <div className='search-box'>
                   <input
                     type='text'
-                    placeholder={'Search'}
+                    placeholder={'Pesquisar'}
                     value={this.userListSearchText}
                     onChange={e => this.onUserListSearchChange(e)}
                   />

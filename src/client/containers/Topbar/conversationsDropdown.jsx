@@ -61,7 +61,7 @@ class ConversationsDropdownPartial extends React.Component {
       <PDropDown
         ref={forwardedRef}
         id={'conversations'}
-        title={'Conversations'}
+        title={'Conversas'}
         titleHref={'/messages'}
         topOffset={-4}
         leftOffset={4}
@@ -70,7 +70,7 @@ class ConversationsDropdownPartial extends React.Component {
         }}
         rightComponent={
           <a href={'/messages/startconversation'} className={'hoverUnderline'}>
-            Start Conversation
+            Iniciar Conversa
           </a>
         }
         footerComponent={
@@ -81,7 +81,7 @@ class ConversationsDropdownPartial extends React.Component {
                 History.pushState(null, null, '/messages')
               }}
             >
-              View All Conversations
+              Ver Todas as Conversas
             </a>
           </div>
         }

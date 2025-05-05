@@ -97,7 +97,7 @@ class OnlineUserListPartial extends React.Component {
       <OffCanvas title={'Online Users'} id={'online-user-list'}>
         <div style={{ padding: '0 5px' }}>
           <div className='active-now'>
-            <h5>Active Now</h5>
+            <h5>Ativo Agora</h5>
             <div className='online-list-wrapper'>
               <ul className='online-list'>
                 {entries(this.activeUsers).map(([key, value]) => {
@@ -124,7 +124,7 @@ class OnlineUserListPartial extends React.Component {
             </div>
           </div>
 
-          <h5>More Conversations</h5>
+          <h5>Outras Conversas</h5>
           <div className='user-list-wrapper' style={{ lineHeight: 'normal' }}>
             <div
               className='online-list-search-box search-box'

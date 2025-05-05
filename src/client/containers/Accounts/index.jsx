@@ -127,13 +127,13 @@ class AccountsContainer extends React.Component {
         if (canDeleteAccount) {
           if (user.get('deleted')) {
             actionMenu.push(
-              <DropdownItem key={2} text={'Enable'} onClick={e => this.onEnableAccountClicked(e, user)} />
+              <DropdownItem key={2} text={'Habilitar'} onClick={e => this.onEnableAccountClicked(e, user)} />
             )
           } else {
             actionMenu.push(
               <DropdownItem
                 key={1}
-                text={'Delete'}
+                text={'Deletar'}
                 extraClass={'uk-text-danger'}
                 onClick={e => this.onDeleteAccountClicked(e, user)}
               />

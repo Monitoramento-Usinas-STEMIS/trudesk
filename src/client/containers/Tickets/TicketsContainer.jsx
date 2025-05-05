@@ -245,7 +245,7 @@ class TicketsContainer extends React.Component {
     return (
       <div>
         <PageTitle
-          title={'Tickets'}
+          title={'Tickets de Suporte'}
           shadow={false}
           rightComponent={
             <div>

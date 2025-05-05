@@ -224,26 +224,6 @@ class Sidebar extends React.Component {
                 active={activeItem === 'departments'}
               />
             )}
-            {sessionUser && Helpers.canUser('reports:view') && (
-              <SidebarItem
-                text='Relatórios'
-                icon='assessment'
-                href='/reports/generate'
-                class='navReports no-ajaxy'
-                hasSubmenu={true}
-                subMenuTarget='reports'
-                active={activeItem === 'reports'}
-              >
-                <Submenu id='reports'>
-                  <SubmenuItem
-                    text='Gerar'
-                    icon='timeline'
-                    href='/reports/generate'
-                    active={activeSubItem === 'reports-generate'}
-                  />
-                </Submenu>
-              </SidebarItem>
-            )}
             {sessionUser && Helpers.canUser('notices:view') && (
               <SidebarItem
                 text='Noticias'

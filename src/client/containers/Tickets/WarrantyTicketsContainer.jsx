@@ -231,7 +231,7 @@ class WarrantyTicketsContainer extends React.Component {
         return (
             <div>
                 <PageTitle
-                    title={'Warranty Tickets'}
+                    title={'Tickets de Garantia'}
                     shadow={false}
                     rightComponent={
                         <div>
