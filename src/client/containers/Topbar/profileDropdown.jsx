@@ -79,7 +79,7 @@ class ProfileDropdownPartial extends React.Component {
                   {this.props.sessionUser.fullname}
                 </span>
                 <span>{this.props.sessionUser.email}</span>
-                <a href='/profile'>Profile Settings</a>
+                <a href='/profile'>Configurações de Perfil</a>
               </div>
             </div>
           </div>

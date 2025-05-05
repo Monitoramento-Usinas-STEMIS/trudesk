@@ -485,14 +485,14 @@ class ProfileContainer extends React.Component {
                         }
                       />
                       <TruAccordion
-                        headerContent={'Two-Factor Authentication'}
+                        headerContent={'Autenticação de Dois Fatores'}
                         content={
                           <div>
                             {!this.props.sessionUser.hasL2Auth && (
                               <div>
                                 {!this.l2Step2 && (
                                   <div>
-                                    <h4 style={{ fontWeight: 500 }}>Two-factor authentication is not enabled yet</h4>
+                                    <h4 style={{ fontWeight: 500 }}>Autenticação de dois fatores está desativada</h4>
                                     <p style={{ fontSize: '12px', fontWeight: 400 }}>
                                       Ativar a autenticação de dois fatores adiciona uma camada extra de segurança às suas contas.
                                       Uma vez ativada, você precisará inserir tanto sua senha quanto um código de autenticação para fazer login na sua conta.
@@ -588,7 +588,7 @@ class ProfileContainer extends React.Component {
                             {this.props.sessionUser.hasL2Auth && (
                               <div>
                                 <h4 style={{ fontWeight: 500 }}>
-                                  Two-factor authentication is{' '}
+                                  Autenticação de dois fatores está {' '}
                                   <span className={'uk-text-success'} style={{ fontWeight: 600 }}>
                                     habilitada
                                   </span>
