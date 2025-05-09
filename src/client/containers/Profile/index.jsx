@@ -145,7 +145,7 @@ class ProfileContainer extends React.Component {
       return;
     }
     if (this.mobileNumber && !phoneRegex.test(this.mobileNumber)) {
-      helpers.UI.showSnackbar('Número de Celular inválido. Apenas números são permitidos.'', true);
+      helpers.UI.showSnackbar('Número de Celular inválido. Apenas números são permitidos.', true);
       return;
     }
   
