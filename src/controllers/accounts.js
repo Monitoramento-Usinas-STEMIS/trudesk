@@ -87,7 +87,7 @@ accountsController.getCustomers = function (req, res) {
   }
 
   const content = {}
-  content.title = 'Customers'
+  content.title = 'Usuários'
   content.nav = 'accounts'
   content.subnav = 'accounts-customers'
 
@@ -106,7 +106,7 @@ accountsController.getAgents = function (req, res) {
   }
 
   const content = {}
-  content.title = 'Agents'
+  content.title = 'Agentes'
   content.nav = 'accounts'
   content.subnav = 'accounts-agents'
 
@@ -125,7 +125,7 @@ accountsController.getAdmins = function (req, res) {
   }
 
   const content = {}
-  content.title = 'Admins'
+  content.title = 'Administradores'
   content.nav = 'accounts'
   content.subnav = 'accounts-admins'
 
