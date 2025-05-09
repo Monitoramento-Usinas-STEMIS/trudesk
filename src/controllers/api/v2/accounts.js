@@ -429,33 +429,33 @@ accountsApi.update = async function (req, res) {
 }
 
 accountsApi.saveProfile = async (req, res) => {
-  const payload = req.body
-  const user = req.user
+  const payload = req.body;
+  const user = req.user;
 
   if (payload.username !== user.username || payload._id.toString() !== user._id.toString())
-    return apiUtil.sendApiError(res, 400, 'Invalid User Account')
+    return apiUtil.sendApiError(res, 400, 'Invalid User Account');
 
   try {
-    let dbUser = await User.findOne({ _id: payload._id })
-    if (!dbUser) return apiUtil.sendApiError(res, 404, 'Invalid User Account')
+    let dbUser = await User.findOne({ _id: payload._id });
+    if (!dbUser) return apiUtil.sendApiError(res, 404, 'Invalid User Account');
 
-    if (!_.isUndefined(payload.fullname) && !_.isNull(payload.fullname)) dbUser.fullname = payload.fullname
-    if (!_.isUndefined(payload.title) && !_.isNull(payload.title)) dbUser.title = payload.title
-    if (!_.isUndefined(payload.workNumber) && !_.isNull(payload.workNumber)) dbUser.workNumber = payload.workNumber
-    if (!_.isUndefined(payload.mobileNumber) && !_.isNull(payload.mobileNumber))
-      dbUser.mobileNumber = payload.mobileNumber
+    if (!_.isUndefined(payload.fullname) && !_.isNull(payload.fullname)) dbUser.fullname = payload.fullname;
+    if (!_.isUndefined(payload.title) && !_.isNull(payload.title)) dbUser.title = payload.title;
+    if (!_.isUndefined(payload.email) && !_.isNull(payload.email)) dbUser.email = payload.email;
+    if (!_.isUndefined(payload.workNumber) && !_.isNull(payload.workNumber)) dbUser.workNumber = payload.workNumber;
+    if (!_.isUndefined(payload.mobileNumber) && !_.isNull(payload.mobileNumber)) dbUser.mobileNumber = payload.mobileNumber;
+    if (!_.isUndefined(payload.companyName) && !_.isNull(payload.companyName)) dbUser.companyName = payload.companyName;
+    if (!_.isUndefined(payload.facebookUrl) && !_.isNull(payload.facebookUrl)) dbUser.facebookUrl = payload.facebookUrl;
+    if (!_.isUndefined(payload.linkedinUrl) && !_.isNull(payload.linkedinUrl)) dbUser.linkedinUrl = payload.linkedinUrl;
+    if (!_.isUndefined(payload.twitterUrl) && !_.isNull(payload.twitterUrl)) dbUser.twitterUrl = payload.twitterUrl;
 
-    // User Preferences
-    if (!_.isUndefined(payload.preferences) && !_.isNull(payload.preferences)) {
-      if (payload.preferences.timezone) dbUser.preferences.timezone = payload.preferences.timezone
-    }
-
-    dbUser = await dbUser.save()
-    return apiUtil.sendApiSuccess(res, { user: dbUser })
-  } catch (error) {
-    return apiUtil.sendApiError(res, 500, error.message)
+    await dbUser.save();
+    return apiUtil.sendApiSuccess(res, { success: true });
+  } catch (err) {
+    winston.error(err);
+    return apiUtil.sendApiError(res, 500, 'An error occurred while saving the profile.');
   }
-}
+};
 
 accountsApi.generateMFA = async (req, res) => {
   const payload = req.body

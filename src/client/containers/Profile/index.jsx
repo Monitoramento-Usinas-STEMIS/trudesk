@@ -96,6 +96,12 @@ class ProfileContainer extends React.Component {
       )
   }
 
+
+  _validatePhoneNumber(number) {
+    const phoneRegex = /^[0-9]+$/; 
+    return phoneRegex.test(number);
+  }
+
   _getTimezones() {
     return moment.tz
       .names()
@@ -118,22 +124,51 @@ class ProfileContainer extends React.Component {
   }
 
   onSaveProfileClicked = e => {
-    e.preventDefault()
+    e.preventDefault();
+  
+    // Verificar comprimento dos campos
     if ((this.fullname && this.fullname.length) > 50 || (this.email && this.email.length > 50)) {
-      helpers.UI.showSnackbar('Field length too long', true)
-      return
+      helpers.UI.showSnackbar('Field length too long', true);
+      return;
     }
-
+  
+    // Validar email
     if (!this._validateEmail(this.email)) {
-      helpers.UI.showSnackbar('Invalid Email', true)
-      return
+      helpers.UI.showSnackbar('Invalid Email', true);
+      return;
     }
-
+  
+    // Validar números de telefone
+    const phoneRegex = /^[0-9]+$/; // Apenas números
+    if (this.workNumber && !phoneRegex.test(this.workNumber)) {
+      helpers.UI.showSnackbar('Número Comercial inválido. Apenas números são permitidos.', true);
+      return;
+    }
+    if (this.mobileNumber && !phoneRegex.test(this.mobileNumber)) {
+      helpers.UI.showSnackbar('Número de Celular inválido. Apenas números são permitidos.'', true);
+      return;
+    }
+  
+    // Validar URLs
+    const urlRegex = /^(https?:\/\/)?([\w\d\-]+\.)+[\w\d\-]+(\/[\w\d\-._~:/?#[\]@!$&'()*+,;=]*)?$/;
+    if (this.facebookUrl && !urlRegex.test(this.facebookUrl)) {
+      helpers.UI.showSnackbar('Invalid Facebook URL.', true);
+      return;
+    }
+    if (this.linkedinUrl && !urlRegex.test(this.linkedinUrl)) {
+      helpers.UI.showSnackbar('Invalid LinkedIn URL.', true);
+      return;
+    }
+    if (this.twitterUrl && !urlRegex.test(this.twitterUrl)) {
+      helpers.UI.showSnackbar('Invalid Twitter URL.', true);
+      return;
+    }
+  
+    // Enviar dados para a API
     this.props
       .saveProfile({
         _id: this.props.sessionUser._id,
         username: this.props.sessionUser.username,
-
         fullname: this.fullname,
         title: this.title,
         email: this.email,
@@ -144,17 +179,21 @@ class ProfileContainer extends React.Component {
         linkedinUrl: this.linkedinUrl,
         twitterUrl: this.twitterUrl,
         preferences: {
-          timezone: this.timezone
-        }
+          timezone: this.timezone,
+        },
       })
       .then(() => {
-        this.editingProfile = false
+        this.editingProfile = false;
         helpers.forceSessionUpdate().then(() => {
-          this.props.setSessionUser()
-          helpers.UI.showSnackbar('Profile saved successfully.')
-        })
+          this.props.setSessionUser();
+          helpers.UI.showSnackbar('Profile saved successfully.');
+        });
       })
-  }
+      .catch(err => {
+        helpers.UI.showSnackbar('An error occurred while saving the profile.', true);
+        console.error(err);
+      });
+  };
 
   onUpdatePasswordClicked = e => {
     e.preventDefault()
