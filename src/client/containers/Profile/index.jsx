@@ -128,13 +128,13 @@ class ProfileContainer extends React.Component {
   
     // Verificar comprimento dos campos
     if ((this.fullname && this.fullname.length) > 50 || (this.email && this.email.length > 50)) {
-      helpers.UI.showSnackbar('Field length too long', true);
+      helpers.UI.showSnackbar('Texto excede o tamanho permitido.', true);
       return;
     }
   
     // Validar email
     if (!this._validateEmail(this.email)) {
-      helpers.UI.showSnackbar('Invalid Email', true);
+      helpers.UI.showSnackbar('Email Inválido', true);
       return;
     }
   
@@ -152,15 +152,15 @@ class ProfileContainer extends React.Component {
     // Validar URLs
     const urlRegex = /^(https?:\/\/)?([\w\d\-]+\.)+[\w\d\-]+(\/[\w\d\-._~:/?#[\]@!$&'()*+,;=]*)?$/;
     if (this.facebookUrl && !urlRegex.test(this.facebookUrl)) {
-      helpers.UI.showSnackbar('Invalid Facebook URL.', true);
+      helpers.UI.showSnackbar('URL do Facebook inválida', true);
       return;
     }
     if (this.linkedinUrl && !urlRegex.test(this.linkedinUrl)) {
-      helpers.UI.showSnackbar('Invalid LinkedIn URL.', true);
+      helpers.UI.showSnackbar('URL do Linkedin inválida', true);
       return;
     }
     if (this.twitterUrl && !urlRegex.test(this.twitterUrl)) {
-      helpers.UI.showSnackbar('Invalid Twitter URL.', true);
+      helpers.UI.showSnackbar('URL do Twitter inválida', true);
       return;
     }
   
@@ -186,11 +186,11 @@ class ProfileContainer extends React.Component {
         this.editingProfile = false;
         helpers.forceSessionUpdate().then(() => {
           this.props.setSessionUser();
-          helpers.UI.showSnackbar('Profile saved successfully.');
+          helpers.UI.showSnackbar('Perfil salvo com sucesso.');
         });
       })
       .catch(err => {
-        helpers.UI.showSnackbar('An error occurred while saving the profile.', true);
+        helpers.UI.showSnackbar('Ocorreu um erro ao salvar o perfil.', true);
         console.error(err);
       });
   };
@@ -199,17 +199,17 @@ class ProfileContainer extends React.Component {
     e.preventDefault()
 
     if (!this.currentPassword || !this.newPassword || !this.confirmPassword) {
-      helpers.UI.showSnackbar('Invalid Form Data')
+      helpers.UI.showSnackbar('Dados do formulário inválidos.')
       return
     }
 
     if (this.currentPassword.length < 4 || this.newPassword.length < 4 || this.confirmPassword.length < 4) {
-      helpers.UI.showSnackbar('Password length is too short', true)
+      helpers.UI.showSnackbar('Senha muito curta', true)
       return
     }
 
     if (this.currentPassword.length > 255 || this.newPassword.length > 255 || this.confirmPassword.length > 255) {
-      helpers.UI.showSnackbar('Password length is too long', true)
+      helpers.UI.showSnackbar('Senha muito longa', true)
       return
     }
 
@@ -221,7 +221,7 @@ class ProfileContainer extends React.Component {
       })
       .then(res => {
         if (res.data && res.data.success) {
-          helpers.UI.showSnackbar('Password Updated Successfully')
+          helpers.UI.showSnackbar('Sua senha foi atualizada com sucesso!')
           setTimeout(() => {
             window.location.reload()
           }, 1000)
