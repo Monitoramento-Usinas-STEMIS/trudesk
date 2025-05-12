@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { observer } from 'mobx-react'
 import { makeObservable, observable } from 'mobx'
-import { each, without, uniq } from 'lodash'
+import { each, without, uniq, filter } from 'lodash'
 
 import Log from '../../logger'
 import axios from 'axios'
@@ -257,6 +257,8 @@ class WarrantyTicketsContainer extends React.Component {
                                             .then(this.props.fetchTickets({
                                                 type: this.props.view,
                                                 page: this.props.page,
+                                                isWarranty: true,
+                                                filter: this.props.filter
                                             }))
                                     }}
                                 />
