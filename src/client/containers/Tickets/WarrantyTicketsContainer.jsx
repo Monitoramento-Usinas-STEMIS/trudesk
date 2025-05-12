@@ -258,7 +258,7 @@ class WarrantyTicketsContainer extends React.Component {
                                                 type: this.props.view,
                                                 page: this.props.page,
                                                 isWarranty: true,
-                                                filter: this.props.filter
+                                                filter: {}
                                             }))
                                     }}
                                 />
