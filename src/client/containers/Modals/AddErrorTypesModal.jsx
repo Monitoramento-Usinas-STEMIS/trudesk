@@ -53,11 +53,11 @@ class AddErrorTypesModal extends React.Component {
     let selectedErrorTypes = $(e.target.errorTypes).val()
     if (!selectedErrorTypes) selectedErrorTypes = []
     axios
-      .put(`/api/v1/errorTypes`, {
+      .put(`/api/v1/tickets/${this.props.ticketId}`, { 
         errorTypes: selectedErrorTypes
       })
       .then(() => {
-        this.props.socket.emit(TICKETS_UI_ERROR_TYPES_UPDATE)
+        this.props.socket.emit(TICKETS_UI_ERROR_TYPES_UPDATE , { ticketId: this.props.ticketId })
         this.closeButton.click()
       })
       .catch(error => {
@@ -68,14 +68,14 @@ class AddErrorTypesModal extends React.Component {
 
   onClearClicked () {
     axios
-      .put(`/api/v1/errorTypes`, {
+      .put(`/api/v1/tickets/${this.props.ticketId}`, {
         errorTypes: []
       })
       .then(() => {
         $(this.select)
           .val('')
           .trigger('chosen:updated')
-        this.props.socket.emit(TICKETS_UI_ERROR_TYPES_UPDATE)
+        this.props.socket.emit(TICKETS_UI_ERROR_TYPES_UPDATE, { ticketId: this.props.ticketId })
       })
       .catch(error => {
         Log.error(error)
@@ -155,6 +155,7 @@ class AddErrorTypesModal extends React.Component {
   }
 }
     AddErrorTypesModal.propTypes = {
+      ticketId: PropTypes.string.isRequired,
       currentErrorTypes: PropTypes.array,
       errorTypesSettings: PropTypes.object.isRequired,
       getErrorTypesWithPage: PropTypes.func.isRequired,

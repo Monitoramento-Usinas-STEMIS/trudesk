@@ -151,6 +151,7 @@ class SingleTicketContainer extends React.Component {
     this.props.socket.off(TICKETS_UI_GROUP_UPDATE, this.onUpdateTicketGroup)
     this.props.socket.off(TICKETS_UI_DUEDATE_UPDATE, this.onUpdateTicketDueDate)
     this.props.socket.off(TICKETS_UI_TAGS_UPDATE, this.onUpdateTicketTags)
+    this.props.socket.on(TICKETS_UI_ERROR_TYPES_UPDATE, this.onUpdateTicketErrorTypes)
     this.props.socket.off(TICKETS_UI_USINA_UPDATE, this.onUpdateTicketUsina)
 
     this.props.unloadGroups()

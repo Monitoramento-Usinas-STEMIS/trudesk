@@ -847,6 +847,13 @@ apiTickets.update = function (req, res) {
             return cb()
           },
           function (cb) {
+            if (!_.isUndefined(reqTicket.errorTypes) && !_.isNull(reqTicket.errorTypes)) {
+              ticket.errorTypes = reqTicket.errorTypes
+            }
+
+            return cb()
+          },
+          function (cb) {
             if (!_.isUndefined(reqTicket.issue) && !_.isNull(reqTicket.issue)) {
               ticket.issue = sanitizeHtml(reqTicket.issue).trim()
             }
