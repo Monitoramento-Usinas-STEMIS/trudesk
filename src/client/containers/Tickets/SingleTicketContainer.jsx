@@ -97,6 +97,7 @@ class SingleTicketContainer extends React.Component {
     this.onUpdateTicketGroup = this.onUpdateTicketGroup.bind(this)
     this.onUpdateTicketDueDate = this.onUpdateTicketDueDate.bind(this)
     this.onUpdateTicketTags = this.onUpdateTicketTags.bind(this)
+    this.onUpdateTicketErrorTypes= this.onUpdateTicketErrorTypes.bind(this)
     this.onUpdateTicketUsina = this.onUpdateTicketUsina.bind(this)
   }
 
