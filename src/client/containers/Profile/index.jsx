@@ -37,9 +37,6 @@ class ProfileContainer extends React.Component {
   @observable workNumber = null
   @observable mobileNumber = null
   @observable companyName = null
-  @observable facebookUrl = null
-  @observable linkedinUrl = null
-  @observable twitterUrl = null
 
   // Security
   // -- Password
@@ -76,9 +73,6 @@ class ProfileContainer extends React.Component {
       this.workNumber = this.props.sessionUser.workNumber
       this.mobileNumber = this.props.sessionUser.mobileNumber
       this.companyName = this.props.sessionUser.companyName
-      this.facebookUrl = this.props.sessionUser.facebookUrl
-      this.linkedinUrl = this.props.sessionUser.linkedinUrl
-      this.twitterUrl = this.props.sessionUser.twitterUrl
 
       if (this.props.sessionUser.preferences) {
         this.timezone = this.props.sessionUser.preferences.timezone
@@ -126,20 +120,18 @@ class ProfileContainer extends React.Component {
   onSaveProfileClicked = e => {
     e.preventDefault();
   
-    // Verificar comprimento dos campos
     if ((this.fullname && this.fullname.length) > 50 || (this.email && this.email.length > 50)) {
       helpers.UI.showSnackbar('Texto excede o tamanho permitido.', true);
       return;
     }
-  
-    // Validar email
+
     if (!this._validateEmail(this.email)) {
       helpers.UI.showSnackbar('Email Inválido', true);
       return;
     }
   
-    // Validar números de telefone
-    const phoneRegex = /^[0-9]+$/; // Apenas números
+
+    const phoneRegex = /^[0-9]+$/; 
     if (this.workNumber && !phoneRegex.test(this.workNumber)) {
       helpers.UI.showSnackbar('Número Comercial inválido. Apenas números são permitidos.', true);
       return;
@@ -148,23 +140,8 @@ class ProfileContainer extends React.Component {
       helpers.UI.showSnackbar('Número de Celular inválido. Apenas números são permitidos.', true);
       return;
     }
-  
-    // Validar URLs
-    const urlRegex = /^(https?:\/\/)?([\w\d\-]+\.)+[\w\d\-]+(\/[\w\d\-._~:/?#[\]@!$&'()*+,;=]*)?$/;
-    if (this.facebookUrl && !urlRegex.test(this.facebookUrl)) {
-      helpers.UI.showSnackbar('URL do Facebook inválida', true);
-      return;
-    }
-    if (this.linkedinUrl && !urlRegex.test(this.linkedinUrl)) {
-      helpers.UI.showSnackbar('URL do Linkedin inválida', true);
-      return;
-    }
-    if (this.twitterUrl && !urlRegex.test(this.twitterUrl)) {
-      helpers.UI.showSnackbar('URL do Twitter inválida', true);
-      return;
-    }
-  
-    // Enviar dados para a API
+
+    
     this.props
       .saveProfile({
         _id: this.props.sessionUser._id,
@@ -175,9 +152,6 @@ class ProfileContainer extends React.Component {
         workNumber: this.workNumber,
         mobileNumber: this.mobileNumber,
         companyName: this.companyName,
-        facebookUrl: this.facebookUrl,
-        linkedinUrl: this.linkedinUrl,
-        twitterUrl: this.twitterUrl,
         preferences: {
           timezone: this.timezone,
         },
@@ -437,32 +411,6 @@ class ProfileContainer extends React.Component {
                           paddingLeft={30}
                           paddingRight={0}
                           onUpdate={val => (this.mobileNumber = val)}
-                        />
-                      </div>
-                      <Spacer top={25} bottom={25} showBorder={true} />
-                      <h4 style={{ marginBottom: 15 }}>Outras Informações</h4>
-                      <div style={{ display: 'flex', marginTop: 25 }}>
-                        <InfoItem
-                          label={'Facebook Url'}
-                          prop={this.props.sessionUser.facebookUrl}
-                          paddingLeft={0}
-                          paddingRight={30}
-                          onUpdate={val => (this.facebookUrl = val)}
-                        />
-                        <InfoItem
-                          label={'LinkedIn Url'}
-                          prop={this.props.sessionUser.linkedinUrl}
-                          paddingLeft={30}
-                          paddingRight={30}
-                          onUpdateK
-                          onUpdate={val => (this.linkedinUrl = val)}
-                        />
-                        <InfoItem
-                          label={'Twitter Url'}
-                          prop={this.props.sessionUser.twitterUrl}
-                          paddingLeft={30}
-                          paddingRight={0}
-                          onUpdate={val => (this.twitterUrl = val)}
                         />
                       </div>
                       {this.editingProfile && (
