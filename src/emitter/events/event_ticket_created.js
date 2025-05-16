@@ -44,7 +44,7 @@ const sendSocketUpdateToUser = (user, ticket) => {
 
 const getTeamMembers = async group => {
   const departments = await Department.getDepartmentsByGroup(group._id)
-  if (!departments) throw new Error('Group is not assigned to any departments. Exiting...')
+  if (!departments) throw new Error('O grupo não está atribuído a nenhum departamento. Encerrando...')
   return flattenDeep(
     departments.map(department => {
       return department.teams.map(team => {

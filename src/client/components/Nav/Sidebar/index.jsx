@@ -112,13 +112,13 @@ class Sidebar extends React.Component {
                     active={activeSubItem === 'tickets-active'}
                   />
                   <SubmenuItem
-                    text='Assinados'
+                    text='Atribuídos'
                     icon='assignment_ind'
                     href='/tickets/assigned'
                     active={activeSubItem === 'tickets-assigned'}
                   />
                   <SubmenuItem
-                    text='Não Assinados'
+                    text='Não Atribuídos'
                     icon='person_add_disabled'
                     href='/tickets/unassigned'
                     active={activeSubItem === 'tickets-unassigned'}
@@ -144,13 +144,13 @@ class Sidebar extends React.Component {
                     active={activeSubItem === 'warranty-active'}
                   />
                   <SubmenuItem
-                    text='Assinados'
+                    text='Atribuidos'
                     icon='assignment_ind'
                     href='/warranty/assigned'
                     active={activeSubItem === 'warranty-assigned'}
                   />
                   <SubmenuItem
-                    text='Não Assinados'
+                    text='Não Atribuidos'
                     icon='person_add_disabled'
                     href='/warranty/unassigned'
                     active={activeSubItem === 'warranty-unassigned'}
