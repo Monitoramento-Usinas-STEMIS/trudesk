@@ -31,7 +31,7 @@ ticketsV2.create = function (req, res) {
 ticketsV2.get = async (req, res) => {
     const query = req.query;
     const type = query.type || 'all';
-    const isWarranty = query.isWarranty === 'true'; 
+    const isWarranty = query.isWarranty === 'true';
 
     let limit = 50;
     let page = 0;
@@ -63,7 +63,7 @@ ticketsV2.get = async (req, res) => {
         const statuses = await ticketStatusSchema.find({ isResolved: false });
 
         const warrantyType = await Models.TicketType.findOne({ name: 'Garantia' });
-        
+
         if (!warrantyType && isWarranty) {
             logger.warn('Warranty type "Garantia" not found');
             return apiUtils.sendApiError(res, 500, 'Warranty type not configured');
@@ -71,10 +71,10 @@ ticketsV2.get = async (req, res) => {
 
         const warrantyTypeId = warrantyType ? warrantyType._id : null;
 
-        const nonWarrantyTypes = await Models.TicketType.find({ 
-            _id: { $ne: warrantyTypeId } 
+        const nonWarrantyTypes = await Models.TicketType.find({
+            _id: { $ne: warrantyTypeId }
         });
-        
+
         const nonWarrantyTypeIds = nonWarrantyTypes.map(type => type._id);
 
         if (isWarranty) {
@@ -115,10 +115,24 @@ ticketsV2.get = async (req, res) => {
                 try {
                     queryObject.filter = JSON.parse(query.filter);
                     queryObject.status = queryObject.filter.status;
+
+                    for (const key in queryObject.filter) {
+                        const val = queryObject.filter[key];
+
+                        if (Array.isArray(val) && val.length === 1 && typeof val[0] === 'string' && val[0].includes(',')) {
+                            queryObject.filter[key] = val[0].split(',').map(v => v.trim());
+                        }
+
+                        if (Array.isArray(queryObject.filter[key]) && queryObject.filter[key].every(v => typeof v === 'string' && /^[0-9a-fA-F]{24}$/.test(v))) {
+                            queryObject.filter[key] = queryObject.filter[key].map(id => new mongoose.Types.ObjectId(id));
+                        }
+                    }
+
                 } catch (error) {
-                    logger.warn(error);
+                    logger.warn('Erro ao processar filtro:', error);
                 }
                 break;
+
         }
 
         if (!permissions.canThis(req.user.role, 'tickets:viewall', false)) queryObject.owner = req.user._id;

@@ -743,7 +743,7 @@ ticketSchema.statics.getAll = function (callback) {
 ticketSchema.statics.getForCache = function (callback) {
   const self = this
   return new Promise((resolve, reject) => {
-    ;(async () => {
+    ; (async () => {
       try {
         const t365 = moment
           .utc()
@@ -882,7 +882,7 @@ ticketSchema.statics.getTicketsByDepartments = function (departments, object, ca
   }
 }
 
-function buildQueryWithObject (SELF, grpId, object, count) {
+function buildQueryWithObject(SELF, grpId, object, count) {
   const limit = object.limit || 10
   const page = object.page || 0
   let _status = object.status
@@ -894,11 +894,9 @@ function buildQueryWithObject (SELF, grpId, object, count) {
     _status = _.join(_status, ',').split(',')
   }
 
-  if (object.filter && object.filter.groups)
-    grpId = _.intersection(
-      object.filter.groups,
-      _.map(grpId, g => g._id.toString())
-    )
+  if (object.filter && object.filter.groups && object.filter.groups.length > 0) {
+    grpId = object.filter.groups.map((id) => new mongoose.Types.ObjectId(id))
+  }
 
   let query
   if (count) query = SELF.model(COLLECTION).countDocuments({ groups: { $in: grpId }, deleted: false })
@@ -952,7 +950,7 @@ function buildQueryWithObject (SELF, grpId, object, count) {
 
     // Subject Filter
     if (object.filter.subject) query.or([{ subject: new RegExp(object.filter.subject, 'i') }])
-    
+
     // Usina Filter
     if (object.filter.usina) query.or([{ usina: new RegExp(object.filter.usina, 'i') }])
 
@@ -973,7 +971,7 @@ function buildQueryWithObject (SELF, grpId, object, count) {
     query.where({ type: { $in: object.type } }) // Adiciona filtro por tipo
   }
   if (object.owner) query.where('owner', object.owner)
-    
+
   if (object.assignedSelf) query.where('assignee', object.user)
   if (object.unassigned) query.where({ assignee: { $exists: false } })
 
@@ -983,7 +981,7 @@ function buildQueryWithObject (SELF, grpId, object, count) {
 ticketSchema.statics.getTicketsWithObject = async function (grpId, object, callback) {
   const self = this
   return new Promise((resolve, reject) => {
-    ;(async () => {
+    ; (async () => {
       try {
         if (!grpId || !_.isArray(grpId) || !_.isObject(object))
           throw new Error('Invalid parameter in - TicketSchema.GetTicketsWithObject()')
@@ -1007,7 +1005,7 @@ ticketSchema.statics.getTicketsWithObject = async function (grpId, object, callb
 ticketSchema.statics.getCountWithObject = async function (grpId, object, callback) {
   const self = this
   return new Promise((resolve, reject) => {
-    ;(async () => {
+    ; (async () => {
       try {
         if (!grpId || !_.isArray(grpId) || !_.isObject(object))
           throw new Error('Invalid parameter in - TicketSchema.GetCountWithObject()')
@@ -1102,7 +1100,7 @@ ticketSchema.statics.getTicketById = async function (id, callback) {
   const self = this
 
   return new Promise((resolve, reject) => {
-    ;(async () => {
+    ; (async () => {
       if (_.isUndefined(id)) {
         const error = new Error('Invalid Id - TicketSchema.GetTicketById()')
 
