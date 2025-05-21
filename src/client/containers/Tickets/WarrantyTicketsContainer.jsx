@@ -55,7 +55,7 @@ class WarrantyTicketsContainer extends React.Component {
         this.props.socket.on('$trudesk:client:ticket:updated', this.onTicketUpdated);
         this.props.socket.on('$trudesk:client:ticket:deleted', this.onTicketDeleted);
 
-        this.props.fetchTickets({ limit: 50, page: this.props.page, type: this.props.view, filter: this.props.filter, isWarranty: this.props.isWarranty || true})
+        this.props.fetchTickets({ limit: 50, page: this.props.page, type: this.props.view, filter: this.props.filter, isWarranty: this.props.isWarranty || true })
         this.props.fetchTicketStatus()
     }
 
@@ -85,7 +85,7 @@ class WarrantyTicketsContainer extends React.Component {
         this.timeline.play()
     }
 
-    componentWillUnmount () {
+    componentWillUnmount() {
         anime.remove('tr.overdue td')
         this.timeline = null
         this.props.unloadTickets()
@@ -94,8 +94,12 @@ class WarrantyTicketsContainer extends React.Component {
         this.props.socket.off('$trudesk:client:ticket:deleted', this.onTicketDeleted)
     }
 
-    onTicketCreated (ticket) {
-        if (this.props.page === '0') this.props.ticketEvent({ type: 'created', data: ticket })
+    onTicketCreated(ticket) {
+        if (!ticket || !ticket._id) return;
+        const ticketExists = this.props.tickets.some(t => t.get('_id') === ticket._id);
+        if (this.props.page === '0' && !ticketExists && ticket.type?.name === 'Garantia') {
+            this.props.ticketEvent({ type: 'created', data: ticket });
+        }
     }
 
     onTicketUpdated(data) {
@@ -143,7 +147,7 @@ class WarrantyTicketsContainer extends React.Component {
         this._clearChecked()
     }
 
-    onSearchTermChanged (e) {
+    onSearchTermChanged(e) {
         this.searchTerm = e.target.value
         if (this.searchTerm.length > 3) {
             SearchResults.toggleAnimation(true, true)
@@ -157,9 +161,9 @@ class WarrantyTicketsContainer extends React.Component {
         if (this.searchTerm.length > 3) SearchResults.toggleAnimation(true, true)
     }
 
-    onSearchKeypress (e) {
+    onSearchKeypress(e) {
         if (this.searchTerm.length > 3) this.props.fetchSearchResults({ term: this.searchTerm })
-    
+
         // e.persist()
         // if (e.charCode === 13) {
         //   const searchString = e.target.value
