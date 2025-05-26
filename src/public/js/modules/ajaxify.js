@@ -181,6 +181,8 @@ define('modules/ajaxify', ['jquery', 'lodash', 'modules/helpers', 'history'], fu
               window.react.dom.unmountComponentAtNode(document.getElementById('dashboard-container'))
             if (document.getElementById('tickets-container'))
               window.react.dom.unmountComponentAtNode(document.getElementById('tickets-container'))
+            if (document.getElementById('warranty-tickets-container'))
+              window.react.dom.unmountComponentAtNode(document.getElementById('warranty-tickets-container'));
             if (document.getElementById('single-ticket-container'))
               window.react.dom.unmountComponentAtNode(document.getElementById('single-ticket-container'))
             if (document.getElementById('settings-container'))
