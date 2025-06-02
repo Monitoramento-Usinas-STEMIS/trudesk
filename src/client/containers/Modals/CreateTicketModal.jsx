@@ -203,9 +203,9 @@ class CreateTicketModal extends React.Component {
               placeholder='Exemplo: TCU 02 com alarme de PERDA DE COMUNICAÇÃO'
               data-validation='length'
               data-validation-length={`min${viewdata.get('ticketSettings').get('minSubject')}`}
-              data-validation-error-msg={`Please enter a valid Subject. Subject must contain at least ${viewdata
+              data-validation-error-msg={`Esse campo é obrigatório e deve conter pelo menos ${viewdata
                 .get('ticketSettings')
-                .get('minSubject')} characters.`}
+                .get('minSubject')} caracteres .`}
             />
           </div>
           <div className='uk-margin-medium-bottom'>
