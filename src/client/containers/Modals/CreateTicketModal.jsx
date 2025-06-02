@@ -50,6 +50,7 @@ class CreateTicketModal extends React.Component {
       usina: '',
       selectedType: this.props.viewdata.get('defaultTicketType').get('_id') || ''
     }
+    this.onGroupSelectChange = this.onGroupSelectChange.bind(this);
   }
 
   componentDidMount() {
@@ -73,6 +74,11 @@ class CreateTicketModal extends React.Component {
         this.selectedPriority = head(this.priorities) ? head(this.priorities)._id : ''
       }
     )
+  }
+
+  onGroupSelectChange(e) {
+    const selectedGroup = e.target.value;
+    this.setState({ selectedGroup });
   }
 
   componentWillUnmount() {
