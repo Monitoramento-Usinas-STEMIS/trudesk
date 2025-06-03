@@ -17,7 +17,7 @@ import clsx from 'clsx'
 import { observer } from 'mobx-react'
 import { observable, makeObservable } from 'mobx'
 import { connect } from 'react-redux'
-
+import helpers from 'lib/helpers'
 import { TICKETS_STATUS_SET, TICKETS_UI_STATUS_UPDATE } from 'serverSocket/socketEventConsts'
 import { fetchTicketStatus } from 'actions/tickets'
 
@@ -25,7 +25,7 @@ import { fetchTicketStatus } from 'actions/tickets'
 class StatusSelector extends React.Component {
   @observable status = null
 
-  constructor (props) {
+  constructor(props) {
     super(props)
     makeObservable(this)
 
@@ -35,34 +35,34 @@ class StatusSelector extends React.Component {
     this.onUpdateTicketStatus = this.onUpdateTicketStatus.bind(this)
   }
 
-  componentDidMount () {
+  componentDidMount() {
     document.addEventListener('click', this.onDocumentClick)
 
     this.props.socket.on(TICKETS_UI_STATUS_UPDATE, this.onUpdateTicketStatus)
     this.props.fetchTicketStatus()
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     if (prevProps.status !== this.props.status) this.status = this.props.status
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     document.removeEventListener('click', this.onDocumentClick)
     this.props.socket.off(TICKETS_UI_STATUS_UPDATE, this.onUpdateTicketStatus)
   }
 
-  onDocumentClick (e) {
+  onDocumentClick(e) {
     if (!this.selectorButton.contains(e.target) && this.dropMenu.classList.contains('shown')) this.forceClose()
   }
 
-  onUpdateTicketStatus (data) {
+  onUpdateTicketStatus(data) {
     if (this.props.ticketId === data.tid) {
       this.status = data.status
       if (this.props.onStatusChange) this.props.onStatusChange(this.status)
     }
   }
 
-  toggleDropMenu (e) {
+  toggleDropMenu(e) {
     e.stopPropagation()
     if (!this.props.hasPerm) return
     const hasHide = this.dropMenu.classList.contains('hide')
@@ -71,19 +71,26 @@ class StatusSelector extends React.Component {
     hasShown ? this.dropMenu.classList.remove('shown') : this.dropMenu.classList.add('shown')
   }
 
-  forceClose () {
+  forceClose() {
     this.dropMenu.classList.remove('shown')
     this.dropMenu.classList.add('hide')
   }
 
-  changeStatus (status) {
-    if (!this.props.hasPerm) return
+  changeStatus(status) {
+    if (!this.props.hasPerm) return;
 
-    this.props.socket.emit(TICKETS_STATUS_SET, { _id: this.props.ticketId, value: status })
-    this.forceClose()
+    const isResolved = this.props.ticketStatuses.find(s => s.get('_id') === status)?.get('isResolved');
+    if (isResolved && !this.props.assignee) {
+      helpers.UI.showSnackbar('Você não pode finalizar um ticket que não tem ninguém atribuído.', true);
+      return; 
+    }
+
+    this.props.socket.emit(TICKETS_STATUS_SET, { _id: this.props.ticketId, value: status });
+
+    this.forceClose();
   }
 
-  render () {
+  render() {
     const currentStatus = this.props.ticketStatuses
       ? this.props.ticketStatuses.find(s => s.get('_id') === this.status)
       : null

@@ -233,42 +233,48 @@ ticketSchema.virtual('commentsAndNotes').get(function () {
  *      3 - Closed
  */
 ticketSchema.methods.setStatus = function (ownerId, status, callback) {
-  const self = this
+  const self = this;
   return new Promise((resolve, reject) => {
     if (_.isUndefined(status)) {
-      if (typeof callback === 'function') callback('Invalid Status', null)
-      return reject(new Error('Invalid Status'))
+      if (typeof callback === 'function') callback('Status inválido', null);
+      return reject(new Error('Status inválido'));
     }
 
-    const statusSchema = require('./ticketStatus')
+    const statusSchema = require('./ticketStatus');
     statusSchema.getStatusById(status, function (err, statusModel) {
       if (err) {
-        if (typeof callback === 'function') return callback(err)
-        return reject(new Error('Invalid Status'))
+        if (typeof callback === 'function') return callback(err);
+        return reject(new Error('Status inválido'));
       }
 
       if (!status) {
-        if (typeof callback === 'function') return callback('Invalid Status')
-        return reject(new Error('Invalid Status'))
+        if (typeof callback === 'function') return callback('Status inválido');
+        return reject(new Error('Status inválido'));
       }
 
-      self.closedDate = statusModel.isResolved ? new Date() : null
-      self.status = status
+      if (statusModel.isResolved && !self.assignee) {
+        const errorMessage = 'Não é possível finalizar o ticket sem um responsável atribuído.';
+        if (typeof callback === 'function') callback(errorMessage, null);
+        return reject(new Error(errorMessage));
+      }
+
+      self.closedDate = statusModel.isResolved ? new Date() : null;
+      self.status = status;
 
       const historyItem = {
         action: 'ticket:set:status:' + statusModel.name,
-        description: 'Ticket Status set to: ' + statusModel.name,
-        owner: ownerId
-      }
+        description: 'Status do ticket alterado para: ' + statusModel.name,
+        owner: ownerId,
+      };
 
-      self.history.push(historyItem)
+      self.history.push(historyItem);
 
-      if (typeof callback === 'function') callback(null, self)
+      if (typeof callback === 'function') callback(null, self);
 
-      return resolve(self)
-    })
-  })
-}
+      return resolve(self);
+    });
+  });
+};
 
 /**
  * Set Assignee on Instanced Ticket

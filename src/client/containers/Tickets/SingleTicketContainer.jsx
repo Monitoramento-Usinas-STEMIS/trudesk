@@ -306,6 +306,7 @@ class SingleTicketContainer extends React.Component {
                     ticketId={this.ticket._id}
                     status={this.ticket.status._id}
                     socket={this.props.socket}
+                    assignee={this.ticket.assignee}
                     onStatusChange={status => {
                       this.ticket.status = status
                     }}
