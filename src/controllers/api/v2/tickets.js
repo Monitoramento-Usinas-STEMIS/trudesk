@@ -95,9 +95,11 @@ ticketsV2.get = async (req, res) => {
                 queryObject.filter = {
                     assignee: [req.user._id]
                 };
+                queryObject.status = statuses.map(i => i._id.toString()); 
                 break;
             case 'unassigned':
                 queryObject.unassigned = true;
+                queryObject.status = statuses.map(i => i._id.toString()); 
                 break;
             case 'new':
                 queryObject.status = [0];
