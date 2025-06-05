@@ -27,11 +27,12 @@ import Button from 'components/Button'
 import helpers from 'lib/helpers'
 
 class FilterTicketsModal extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
+    this.errorTypesSelect = null 
   }
 
-  componentDidMount () {
+  componentDidMount() {
     helpers.UI.inputs()
     this.props.fetchGroups()
     this.props.fetchAccounts({ page: 0, limit: -1, type: 'agents', showDeleted: false })
@@ -41,11 +42,11 @@ class FilterTicketsModal extends React.Component {
     this.props.fetchTicketStatus()
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     helpers.UI.reRenderInputs()
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.props.unloadGroups()
     this.props.unloadAccounts()
   }
@@ -58,7 +59,7 @@ class FilterTicketsModal extends React.Component {
     const usina = e.target.usina.value
     const statuses = this.statusSelect.value
     const tags = this.tagsSelect.value
-    const errorTypes = this.errorTypesSelect.value
+    const errorTypes = this.errorTypesSelect ? this.errorTypesSelect.value : [] 
     const groups = this.groupSelect.value
     const assignees = this.assigneeSelect.value
 
@@ -69,39 +70,34 @@ class FilterTicketsModal extends React.Component {
     if (usina) queryString += `&un=${usina}`
 
     each(statuses, i => {
-        queryString += `&st=${i}`
+      queryString += `&st=${i}`
     })
 
-    // each(types, i => {
-    //     queryString += `&tt=${i}`
-    // })
-
     each(tags, i => {
-        queryString += `&tag=${i}`
+      queryString += `&tag=${i}`
     })
 
     each(errorTypes, i => {
-        queryString += `&et=${i}`
+      queryString += `&et=${i}`
     })
 
     each(groups, i => {
-        queryString += `&gp=${i}`
+      queryString += `&gp=${i}`
     })
 
     each(assignees, i => {
-        queryString += `&au=${i}`
+      queryString += `&au=${i}`
     })
 
-    // Verifica se o contexto é Warranty ou Tickets
     const basePath = this.props.isWarranty ? '/warranty/filter/' : '/tickets/filter/'
     History.pushState(null, null, `${basePath}${queryString}&r=${Math.floor(Math.random() * (99999 - 1 + 1)) + 1}`)
     this.props.hideModal()
-}
+  }
 
-  render () {
+  render() {
     const { shared } = this.props
 
-    const isCustomer = !shared.sessionUser.role.isAdmin && !shared.sessionUser.role.isAgent;
+    const isCustomer = !shared.sessionUser.role.isAdmin && !shared.sessionUser.role.isAgent
     const statuses = this.props.ticketStatuses.map(s => ({ text: s.get('name'), value: s.get('_id') })).toArray()
 
     const tags = this.props.ticketTags
@@ -115,12 +111,6 @@ class FilterTicketsModal extends React.Component {
         return { text: t.get('name'), value: t.get('_id') }
       })
       .toArray()
-
-    // const types = this.props.ticketTypes
-    //   .map(t => {
-    //     return { text: t.get('name'), value: t.get('_id') }
-    //   })
-    //   .toArray()
 
     const groups = this.props.groupsState.groups
       .map(g => {
@@ -248,7 +238,6 @@ FilterTicketsModal.propTypes = {
   ticketStatuses: PropTypes.object.isRequired,
   isWarranty: PropTypes.bool.isRequired
 }
-
 
 const mapStateToProps = state => ({
   shared: state.shared,
