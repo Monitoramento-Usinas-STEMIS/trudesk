@@ -26,8 +26,7 @@ import {
   TICKETS_UI_ERROR_TYPES_UPDATE,
   TICKETS_COMMENT_NOTE_REMOVE,
   TICKETS_COMMENT_NOTE_SET,
-  TICKETS_UI_USINA_UPDATE,
-  TICKETS_USINA_SET
+
 } from 'serverSocket/socketEventConsts'
 
 import AssigneeDropdownPartial from 'containers/Tickets/AssigneeDropdownPartial'
@@ -58,7 +57,6 @@ const fetchTicket = parent => {
       parent.ticket = res.data.ticket
       parent.isSubscribed =
         parent.ticket && parent.ticket.subscribers.findIndex(i => i._id === parent.props.shared.sessionUser._id) !== -1
-      parent.usina = res.data.ticket.usina || ''
     })
     .catch(error => {
       if (error.response.status === 403) {
@@ -81,7 +79,6 @@ const showPriorityConfirm = () => {
 class SingleTicketContainer extends React.Component {
   @observable ticket = null
   @observable isSubscribed = false
-  @observable usina = ''
   assigneeDropdownPartial = createRef()
 
   constructor (props) {
@@ -98,7 +95,6 @@ class SingleTicketContainer extends React.Component {
     this.onUpdateTicketDueDate = this.onUpdateTicketDueDate.bind(this)
     this.onUpdateTicketTags = this.onUpdateTicketTags.bind(this)
     this.onUpdateTicketErrorTypes= this.onUpdateTicketErrorTypes.bind(this)
-    this.onUpdateTicketUsina = this.onUpdateTicketUsina.bind(this)
   }
 
   @computed
@@ -131,7 +127,6 @@ class SingleTicketContainer extends React.Component {
     this.props.socket.on(TICKETS_UI_DUEDATE_UPDATE, this.onUpdateTicketDueDate)
     this.props.socket.on(TICKETS_UI_TAGS_UPDATE, this.onUpdateTicketTags)
     this.props.socket.on(TICKETS_UI_ERROR_TYPES_UPDATE, this.onUpdateTicketErrorTypes)
-    this.props.socket.on(TICKETS_UI_USINA_UPDATE, this.onUpdateTicketUsina)
 
     fetchTicket(this)
     this.props.fetchTicketTypes()
@@ -153,7 +148,6 @@ class SingleTicketContainer extends React.Component {
     this.props.socket.off(TICKETS_UI_DUEDATE_UPDATE, this.onUpdateTicketDueDate)
     this.props.socket.off(TICKETS_UI_TAGS_UPDATE, this.onUpdateTicketTags)
     this.props.socket.on(TICKETS_UI_ERROR_TYPES_UPDATE, this.onUpdateTicketErrorTypes)
-    this.props.socket.off(TICKETS_UI_USINA_UPDATE, this.onUpdateTicketUsina)
 
     this.props.unloadGroups()
   }
@@ -161,7 +155,6 @@ class SingleTicketContainer extends React.Component {
   onUpdateTicket (data) {
     if (this.ticket._id === data._id) {
       this.ticket = data
-      this.usina = data.usina || ''
     }
   }
 
@@ -203,12 +196,6 @@ class SingleTicketContainer extends React.Component {
 
   onUpdateTicketErrorTypes (data) {
     if (this.ticket._id === data._id) this.ticket.errorTypes = data.errorTypes
-  }
-
-  onUpdateTicketUsina (data) {
-    if (this.ticket._id === data._id) {
-      this.ticket.usina = data.usina
-    }
   }
 
   onCommentNoteSubmit (e, type) {
@@ -496,29 +483,6 @@ class SingleTicketContainer extends React.Component {
                           )}
                         </div>
                         <div className='uk-width-1-1 nopadding'>
-                          <span>Usina</span>
-                          {hasTicketUpdate && (
-                            <input
-                              type='text'
-                              className='md-input'
-                              value={this.ticket.usina || ''}
-                              onChange={e => {
-                                const newValue = e.target.value;
-                                this.ticket.usina = newValue; 
-                              }}
-                              onBlur={() => {
-                                this.props.socket.emit('TICKETS_USINA_SET', {
-                                  _id: this.ticket._id,
-                                  value: this.ticket.usina
-                                });
-                              }}
-                            />
-                          )}
-                          {!hasTicketUpdate && (
-                            <div className={'input-box'}>{this.ticket.usina || 'Não especificado'}</div>
-                          )}
-                        </div>
-                        <div className='uk-width-1-1 nopadding'>
                           <span>
                             Equipments
                             {hasTicketUpdate && (
@@ -683,6 +647,7 @@ class SingleTicketContainer extends React.Component {
                       status={statusObj}
                       owner={this.ticket.owner}
                       subject={this.ticket.subject}
+                      usina={this.ticket.usina}
                       issue={this.ticket.issue}
                       date={this.ticket.date}
                       dateFormat={`${this.props.common.get('longDateFormat')}, ${this.props.common.get('timeFormat')}`}
@@ -722,6 +687,7 @@ class SingleTicketContainer extends React.Component {
                                 key={item._id}
                                 ticketStatus={statusObj}
                                 ticketSubject={this.ticket.subject}
+                                ticketUsina={this.ticket.usina}
                                 comment={item}
                                 isNote={item.isNote}
                                 dateFormat={`${this.props.common.get('longDateFormat')}, ${this.props.common.get(
@@ -730,6 +696,7 @@ class SingleTicketContainer extends React.Component {
                                 onEditClick={() => {
                                   this.editorWindow.openEditorWindow({
                                     showSubject: false,
+                                    showUsina: false,
                                     text: !item.isNote ? item.comment : item.note,
                                     onPrimaryClick: data => {
                                       this.props.socket.emit(TICKETS_COMMENT_NOTE_SET, {
@@ -760,6 +727,7 @@ class SingleTicketContainer extends React.Component {
                                   key={comment._id}
                                   ticketStatus={statusObj}
                                   ticketSubject={this.ticket.subject}
+                                  ticketUsina={this.ticket.usina}
                                   comment={comment}
                                   dateFormat={`${this.props.common.get('longDateFormat')}, ${this.props.common.get(
                                     'timeFormat'
@@ -767,6 +735,7 @@ class SingleTicketContainer extends React.Component {
                                   onEditClick={() => {
                                     this.editorWindow.openEditorWindow({
                                       showSubject: false,
+                                      showUsina: false,
                                       text: comment.comment,
                                       onPrimaryClick: data => {
                                         this.props.socket.emit(TICKETS_COMMENT_NOTE_SET, {
@@ -797,6 +766,7 @@ class SingleTicketContainer extends React.Component {
                                   key={note._id}
                                   ticketStatus={statusObj}
                                   ticketSubject={this.ticket.subject}
+                                  ticketUsina={this.ticket.usina}
                                   comment={note}
                                   isNote={true}
                                   dateFormat={`${this.props.common.get('longDateFormat')}, ${this.props.common.get(
@@ -805,6 +775,7 @@ class SingleTicketContainer extends React.Component {
                                   onEditClick={() => {
                                     this.editorWindow.openEditorWindow({
                                       showSubject: false,
+                                      showUsina: false,
                                       text: note.note,
                                       onPrimaryClick: data => {
                                         this.props.socket.emit(TICKETS_COMMENT_NOTE_SET, {

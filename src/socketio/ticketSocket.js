@@ -45,7 +45,7 @@ function register (socket) {
   events.onCommentNoteSet(socket)
   events.onRemoveCommentNote(socket)
   events.onAttachmentsUIUpdate(socket)
-  events.onSetTicketUsina(socket);
+
 }
 
 function eventLoop () {}
@@ -108,42 +108,6 @@ events.onUpdateAssigneeList = function (socket) {
   })
 }
 
-events.onSetTicketUsina = function (socket) {
-  socket.on('TICKETS_USINA_SET', async data => {
-    const ticketId = data._id;
-    const usina = data.value;
-    const ownerId = socket.request.user._id;
-
-    if (!ticketId || !usina) return;
-
-    try {
-      const ticket = await ticketSchema.findById(ticketId);
-      if (!ticket) return;
-
-      ticket.usina = usina; 
-      ticket.history.push({
-        action: 'ticket:usina:updated',
-        description: `Usina updated to "${usina}"`,
-        owner: ownerId,
-        date: new Date()
-      });
-
-      await ticket.save();
-
-      socket.broadcast.emit('TICKETS_UI_USINA_UPDATE', {
-        _id: ticketId,
-        usina
-      });
-
-      socket.emit('TICKETS_UI_USINA_UPDATE', {
-        _id: ticketId,
-        usina
-      });
-    } catch (error) {
-      console.error('Erro ao atualizar o campo Usina:', error);
-    }
-  });
-};
 
 events.onSetAssignee = function (socket) {
   socket.on(socketEvents.TICKETS_ASSIGNEE_SET, function (data) {
@@ -359,12 +323,14 @@ events.onSetTicketIssue = socket => {
     const ticketId = data._id
     const issue = data.value
     const subject = data.subject
+    const usina = data.usina
     const ownerId = socket.request.user._id
     if (_.isUndefined(ticketId) || _.isUndefined(issue)) return true
 
     try {
       let ticket = await ticketSchema.getTicketById(ticketId)
       if (subject !== ticket.subject) ticket = await ticket.setSubject(ownerId, subject)
+      if (usina !== ticket.usina) ticket = await ticket.setUsina(ownerId, usina)
       if (issue !== ticket.issue) ticket = await ticket.setIssue(ownerId, issue)
 
       ticket = await ticket.save()

@@ -469,7 +469,7 @@ apiTickets.create = function (req, res) {
 
         // Sanitizar campos
         ticket.subject = sanitizeHtml(ticket.subject).trim()
-        ticket.usina = sanitizeHtml(ticket.usina || '').trim()
+        ticket.usina = sanitizeHtml(ticket.usina).trim()
 
         var marked = require('marked')
         var tIssue = ticket.issue

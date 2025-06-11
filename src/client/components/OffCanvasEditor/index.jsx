@@ -26,29 +26,33 @@ import helpers from 'lib/helpers'
 class OffCanvasEditor extends React.Component {
   @observable mdeText = ''
   @observable subjectText = ''
+  @observable usinaText = ''
   @observable showSubject = true
+  @observable showUsina = true
   @observable onPrimaryClick = null
 
-  constructor (props) {
+  constructor(props) {
     super(props)
     makeObservable(this)
 
     this.primaryClick = this.primaryClick.bind(this)
   }
 
-  componentDidMount () {
+  componentDidMount() {
     helpers.UI.inputs()
     $('.off-canvas-bottom').DivResizer({})
     this.showSubject = this.props.showSubject
+    this.showUsina = this.props.showUsina
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     helpers.UI.reRenderInputs()
   }
 
-  primaryClick () {
+  primaryClick() {
     const data = {
       subjectText: this.subjectText,
+      usinaText: this.usinaText,
       text: this.mdeText
     }
 
@@ -57,11 +61,13 @@ class OffCanvasEditor extends React.Component {
     this.closeEditorWindow()
   }
 
-  openEditorWindow (data) {
+  openEditorWindow(data) {
     this.subjectText = data.subject || ''
+    this.usinaText = data.usina || ''
     this.mdeText = data.text || ''
     this.editor.setEditorText(this.mdeText)
     this.showSubject = data.showSubject !== undefined ? data.showSubject : true
+    this.showUsina = data.showUsina !== undefined ? data.showUsina : true
 
     this.onPrimaryClick = data.onPrimaryClick || null
 
@@ -70,7 +76,7 @@ class OffCanvasEditor extends React.Component {
       .addClass('open')
   }
 
-  closeEditorWindow (e) {
+  closeEditorWindow(e) {
     if (e) e.preventDefault()
 
     $(this.editorWindow)
@@ -78,7 +84,7 @@ class OffCanvasEditor extends React.Component {
       .addClass('closed')
   }
 
-  render () {
+  render() {
     return (
       <div className='off-canvas-bottom closed' ref={r => (this.editorWindow = r)}>
         <div className='edit-window-wrapper'>
@@ -90,6 +96,17 @@ class OffCanvasEditor extends React.Component {
                 className='md-input mb-10'
                 value={this.subjectText}
                 onChange={e => (this.subjectText = e.target.value)}
+              />
+            </div>
+          )}
+          {this.showUsina && ( 
+            <div className='edit-subject-wrap'>
+              <label htmlFor='edit-subject-input'>Usina</label>
+              <input
+                id='edit-subject-input'
+                className='md-input mb-10'
+                value={this.usinaText} 
+                onChange={e => (this.usinaText = e.target.value)} 
               />
             </div>
           )}
@@ -127,6 +144,7 @@ class OffCanvasEditor extends React.Component {
 
 OffCanvasEditor.propTypes = {
   showSubject: PropTypes.bool,
+  showUsina: PropTypes.bool,
   primaryLabel: PropTypes.string.isRequired,
   onPrimaryClick: PropTypes.func,
   closeLabel: PropTypes.string,
@@ -136,6 +154,7 @@ OffCanvasEditor.propTypes = {
 
 OffCanvasEditor.defaultProps = {
   showSubject: true,
+  showUsina: true,
   closeLabel: 'Cancel',
   allowUploads: false
 }

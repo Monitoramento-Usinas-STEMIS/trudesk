@@ -41,6 +41,7 @@ class IssuePartial extends React.Component {
   @observable status = null
   @observable owner = null
   @observable subject = ''
+  @observable usina = ''
   @observable issue = ''
   @observable attachments = []
 
@@ -52,6 +53,7 @@ class IssuePartial extends React.Component {
     this.status = this.props.status
     this.owner = this.props.owner
     this.subject = this.props.subject
+    this.usina = this.props.usina
     this.issue = this.props.issue
     this.attachments = this.props.attachments
 
@@ -70,6 +72,7 @@ class IssuePartial extends React.Component {
     if (prevProps.status !== this.props.status) this.status = this.props.status
     if (prevProps.owner !== this.props.owner) this.owner = this.props.owner
     if (prevProps.subject !== this.props.subject) this.subject = this.props.subject
+    if (prevProps.usina !== this.props.usina) this.usina = this.props.usina
     if (prevProps.issue !== this.props.issue) this.issue = this.props.issue
     if (prevProps.attachments !== this.props.attachments) this.attachments = this.props.attachments
   }
@@ -129,6 +132,7 @@ class IssuePartial extends React.Component {
         {/* Issue */}
         <div className='issue-text'>
           <h3 className='subject-text'>{this.subject}</h3>
+          <h4 className='usina-text'>{this.usina}</h4>
           <a href={`mailto:${this.owner.email}`}>
             {this.owner.fullname} &lt;{this.owner.email}&gt;
           </a>
@@ -171,12 +175,14 @@ class IssuePartial extends React.Component {
                   if (this.props.editorWindow)
                     this.props.editorWindow.openEditorWindow({
                       subject: this.subject,
+                      usina: this.usina,
                       text: this.issue,
                       onPrimaryClick: data => {
                         this.props.socket.emit(TICKETS_ISSUE_SET, {
                           _id: this.ticketId,
                           value: data.text,
-                          subject: data.subjectText
+                          subject: data.subjectText,
+                          usina: data.usinaText
                         })
                       }
                     })
@@ -208,6 +214,7 @@ IssuePartial.propTypes = {
   status: PropTypes.object.isRequired,
   owner: PropTypes.object.isRequired,
   subject: PropTypes.string.isRequired,
+  usina: PropTypes.string.isRequired,
   issue: PropTypes.string.isRequired,
   date: PropTypes.string.isRequired,
   dateFormat: PropTypes.string.isRequired,

@@ -47,7 +47,6 @@ class CreateTicketModal extends React.Component {
     super(props)
     makeObservable(this)
     this.state = {
-      usina: '',
       selectedType: this.props.viewdata.get('defaultTicketType').get('_id') || ''
     }
     this.onGroupSelectChange = this.onGroupSelectChange.bind(this);
@@ -162,7 +161,7 @@ class CreateTicketModal extends React.Component {
     data.errorTypes = this.errorTypeSelect?.value || []
     data.priority = this.selectedPriority || null
     data.issue = this.issueMde.easymde.value()
-    data.usina = this.state.usina
+    data.usina = e.target.usina.value
     data.socketid = this.props.socket.io.engine.id
 
     this.props.createTicket(data)
@@ -221,8 +220,6 @@ class CreateTicketModal extends React.Component {
               name={'usina'}
               className={'md-input'}
               placeholder='Exemplo: Avelar 32'
-              onChange={e => this.setState({ usina: e.target.value })}
-              value={this.state.usina || ''}
               data-validation='required'
               data-validation-error-msg='Esse campo é obrigatório.'
             />

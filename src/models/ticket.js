@@ -130,6 +130,7 @@ ticketSchema.pre('findOne', autoPopulate).pre('find', autoPopulate)
 
 ticketSchema.pre('save', function (next) {
   this.subject = utils.sanitizeFieldPlainText(this.subject.trim())
+  this.usina = utils.sanitizeFieldPlainText(this.usina.trim())
   this.wasNew = this.isNew
 
   if (!_.isUndefined(this.uid) || this.uid) {
@@ -490,6 +491,25 @@ ticketSchema.methods.setSubject = function (ownerId, subject, callback) {
     const historyItem = {
       action: 'ticket:update:subject',
       description: 'Ticket Subject was updated.',
+      owner: ownerId
+    }
+
+    self.history.push(historyItem)
+
+    if (typeof callback === 'function') callback(null, self)
+
+    return resolve(self)
+  })
+}
+
+
+ticketSchema.methods.setUsina = function (ownerId, usina, callback) {
+  const self = this
+  return new Promise(resolve => {
+    self.usina = usina
+    const historyItem = {
+      action: 'ticket:update:usina',
+      description: 'Ticket Usina was updated.',
       owner: ownerId
     }
 
