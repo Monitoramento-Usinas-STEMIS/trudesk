@@ -77,16 +77,23 @@ class CreateAccountModal extends React.Component {
   }
 
   onRoleSelectChange(e) {
-    this.selectedRole = e.target.value
+    this.selectedRole = e.target.value;
 
-    const roleObject = this.props.roles.find(role => {
-      return role.get('_id') === this.selectedRole
-    })
+    let roleObject;
+    try {
+      roleObject = this.props.roles.find(role => {
+        return role.get('_id') === this.selectedRole;
+      });
 
-    this.isAgentRole = roleObject.get('isAdmin') || roleObject.get('isAgent')
+      this.isAgentRole = roleObject.get('isAdmin') || roleObject.get('isAgent');
+    } catch (error) {
+    }
 
-    if (!this.selectedRole || this.selectedRole.length < 1) this.roleSelectErrorMessage.classList.remove('hide')
-    else this.roleSelectErrorMessage.classList.add('hide')
+    if (!this.selectedRole || this.selectedRole.length < 1) {
+      this.roleSelectErrorMessage.classList.remove('hide');
+    } else {
+      this.roleSelectErrorMessage.classList.add('hide');
+    }
   }
 
   onGroupSelectChange() {
